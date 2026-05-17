@@ -1,0 +1,116 @@
+version: "3"
+
+# ============================================================
+# StoryWriter Studio — Root Taskfile
+# https://taskfile.dev
+# ============================================================
+# Usage:
+#   task dev             → infra 시작 + DB 마이그레이션 + API + 웹 개발서버 실행
+#   task api:<cmd>       → apps/api/ 태스크 위임 (task api:test, task api:lint ...)
+#   task web:<cmd>       → apps/web/ 태스크 (task web:dev, task web:lint ...)
+#   task lint            → API + 웹 전체 lint
+#   task test            → 전체 테스트
+#   task build           → 프론트엔드 프로덕션 빌드
+# ============================================================
+
+includes:
+  api:
+    taskfile: apps/api/Taskfile.yml
+    dir: apps/api
+
+tasks:
+  default:
+    desc: 사용 가능한 태스크 목록 출력
+    silent: true
+    cmds:
+      - task --list
+
+  dev:
+    desc: "풀스택 개발환경 시작 (infra → migrate → API + 웹 동시 실행)"
+    deps: [api:infra]
+    cmds:
+      - pnpm --dir apps/api run 2>/dev/null || true
+      - |
+        echo ""
+        echo "🚀  StoryWriter Studio 개발서버 시작 중..."
+        echo "     API  : http://localhost:8000"
+        echo "     Docs : http://localhost:8000/docs"
+        echo "     Web  : http://localhost:5173"
+        echo "     Mail : http://localhost:8025"
+        echo ""
+      - task api:migrate
+      - |
+        trap 'kill $(jobs -p) 2>/dev/null' EXIT
+        (cd apps/api && uv run uvicorn main:app --host 0.0.0.0 --port 8000 --reload --reload-dir src --log-level info) &
+        pnpm --dir apps/web dev
+
+  # ── Web frontend ─────────────────────────────────────────────────────────────
+  web:dev:
+    desc: 웹 개발서버 단독 실행
+    cmds:
+      - pnpm --dir apps/web dev
+
+  web:build:
+    desc: 프론트엔드 프로덕션 빌드
+    cmds:
+      - pnpm --dir apps/web build
+
+  web:typecheck:
+    desc: TypeScript 타입 체크
+    cmds:
+      - pnpm --dir apps/web typecheck
+
+  web:lint:
+    desc: Biome 린트 (apps/web)
+    cmds:
+      - pnpm --dir apps/web lint
+
+  web:lint:fix:
+    desc: Biome 린트 자동 수정
+    cmds:
+      - pnpm --dir apps/web lint:fix
+
+  web:install:
+    desc: 프론트엔드 의존성 설치
+    cmds:
+      - pnpm --dir apps/web install
+
+  # ── 집계 태스크 ───────────────────────────────────────────────────────────────
+  lint:
+    desc: API + 웹 전체 lint
+    cmds:
+      - task: api:lint
+      - task: web:lint
+
+  test:
+    desc: 전체 테스트 실행 (API 단위 테스트; 웹 테스트는 추후 추가 예정)
+    cmds:
+      - task: api:test
+
+  build:
+    desc: 프론트엔드 프로덕션 빌드
+    cmds:
+      - task: web:build
+
+  typecheck:
+    desc: API + 웹 전체 타입 체크
+    cmds:
+      - task: api:typecheck
+      - task: web:typecheck
+
+  format:
+    desc: API + 웹 전체 코드 포맷
+    cmds:
+      - task: api:format
+      - task: web:lint:fix
+
+  install:
+    desc: API + 웹 전체 의존성 설치
+    cmds:
+      - task: api:install
+      - task: web:install
+
+  clean:
+    desc: API 빌드/캐시 정리
+    cmds:
+      - task: api:clean

@@ -16,7 +16,7 @@ version: "3"
 # ============================================================
 
 vars:
-  PROJECT: fastapi-bootstrap
+  PROJECT: storywriter-studio-api
   SRC_DIR: src
   TEST_DIR: tests
   HOST: 0.0.0.0
