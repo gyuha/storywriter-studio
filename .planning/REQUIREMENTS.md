@@ -93,9 +93,9 @@
 | PROJ-03 | Phase 2 | Pending |
 | PROJ-04 | Phase 2 | Pending |
 | CHAP-01 | Phase 2 | Pending |
-| CHAP-02 | Phase 3 | Pending |
-| CHAP-03 | Phase 3 | Pending |
-| CHAP-04 | Phase 3 | Pending |
+| CHAP-02 | Phase 2 | Pending |
+| CHAP-03 | Phase 2 | Pending |
+| CHAP-04 | Phase 2 | Pending |
 | CHAP-05 | Phase 2 | Pending |
 | CHAP-06 | Phase 2 | Pending |
 | WORLD-01 | Phase 3 | Pending |
@@ -121,4 +121,4 @@
 
 ---
 *Requirements defined: 2026-05-17*
-*Last updated: 2026-05-17 after initial definition*
+*Last updated: 2026-05-17 after roadmap creation*
