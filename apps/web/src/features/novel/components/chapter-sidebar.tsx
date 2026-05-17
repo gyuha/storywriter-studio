@@ -64,23 +64,8 @@ export function ChapterSidebar({ novelId, currentChapterId }: ChapterSidebarProp
               novelId={novelId}
               onReorder={handleReorder}
               onChapterClick={handleChapterClick}
+              onStatusChange={handleStatusChange}
             />
-            {chapters.map((chapter) => (
-              <div key={`status-${chapter.id}`} className="px-3 pb-1">
-                <select
-                  value={chapter.status}
-                  onChange={(e) =>
-                    handleStatusChange(chapter.id, e.target.value as ChapterStatus)
-                  }
-                  className="w-full text-xs border rounded px-1 py-0.5 bg-background"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <option value="draft">초안</option>
-                  <option value="reviewing">검토 중</option>
-                  <option value="done">완성</option>
-                </select>
-              </div>
-            ))}
           </div>
         ) : (
           <p className="text-xs text-muted-foreground px-4">챕터가 없습니다</p>

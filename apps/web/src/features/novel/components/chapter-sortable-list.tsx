@@ -16,7 +16,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { GripVertical } from 'lucide-react';
-import type { Chapter } from '../types/novel';
+import type { Chapter, ChapterStatus } from '../types/novel';
 import { calcOrderKey, needsReindex } from '../lib/order-key';
 import { cn } from '@/lib/utils';
 
@@ -26,16 +26,25 @@ interface ChapterSortableListProps {
   novelId: string;
   onReorder: (activeId: string, newOrderKey: number) => void;
   onChapterClick: (chapter: Chapter) => void;
+  onStatusChange: (chapterId: string, status: ChapterStatus) => void;
 }
+
+const STATUS_OPTIONS: { value: ChapterStatus; label: string }[] = [
+  { value: 'draft', label: '초안' },
+  { value: 'reviewing', label: '검토 중' },
+  { value: 'done', label: '완성' },
+];
 
 function SortableChapterItem({
   chapter,
   isCurrent,
   onChapterClick,
+  onStatusChange,
 }: {
   chapter: Chapter;
   isCurrent: boolean;
   onChapterClick: (chapter: Chapter) => void;
+  onStatusChange: (chapterId: string, status: ChapterStatus) => void;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: chapter.id,
@@ -52,20 +61,35 @@ function SortableChapterItem({
       ref={setNodeRef}
       style={style}
       className={cn(
-        'flex items-center gap-2 px-3 py-2 rounded-md cursor-pointer hover:bg-muted',
+        'flex flex-col px-3 py-2 rounded-md hover:bg-muted',
         isCurrent && 'bg-primary/10 border-l-2 border-primary'
       )}
-      onClick={() => onChapterClick(chapter)}
     >
-      <div
-        {...attributes}
-        {...listeners}
-        className="cursor-grab text-muted-foreground hover:text-foreground flex-shrink-0"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <GripVertical className="w-4 h-4" />
+      <div className="flex items-center gap-2 cursor-pointer" onClick={() => onChapterClick(chapter)}>
+        <div
+          {...attributes}
+          {...listeners}
+          className="cursor-grab text-muted-foreground hover:text-foreground flex-shrink-0"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <GripVertical className="w-4 h-4" />
+        </div>
+        <span className="text-sm truncate flex-1">{chapter.title}</span>
       </div>
-      <span className="text-sm truncate flex-1">{chapter.title}</span>
+      <div className="mt-1 pl-6">
+        <select
+          value={chapter.status}
+          onChange={(e) => onStatusChange(chapter.id, e.target.value as ChapterStatus)}
+          className="w-full text-xs border rounded px-1 py-0.5 bg-background"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {STATUS_OPTIONS.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+      </div>
     </div>
   );
 }
@@ -76,6 +100,7 @@ export function ChapterSortableList({
   novelId: _novelId,
   onReorder,
   onChapterClick,
+  onStatusChange,
 }: ChapterSortableListProps) {
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -108,6 +133,7 @@ export function ChapterSortableList({
               chapter={chapter}
               isCurrent={chapter.id === currentChapterId}
               onChapterClick={onChapterClick}
+              onStatusChange={onStatusChange}
             />
           ))}
         </div>
