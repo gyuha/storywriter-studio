@@ -6,6 +6,9 @@ version: "3"
 # ============================================================
 # Usage:
 #   task dev             → infra 시작 + DB 마이그레이션 + API + 웹 개발서버 실행
+#   task infra:up        → 개발 인프라 컨테이너 시작 (postgres, redis, mailpit)
+#   task infra:down      → 개발 인프라 컨테이너 중지
+#   task infra:logs      → 인프라 로그 실시간 확인
 #   task api:<cmd>       → apps/api/ 태스크 위임 (task api:test, task api:lint ...)
 #   task web:<cmd>       → apps/web/ 태스크 (task web:dev, task web:lint ...)
 #   task lint            → API + 웹 전체 lint
@@ -43,6 +46,22 @@ tasks:
         trap 'kill $(jobs -p) 2>/dev/null' EXIT
         (cd apps/api && uv run uvicorn main:app --host 0.0.0.0 --port 8000 --reload --reload-dir src --log-level info) &
         pnpm --dir apps/web dev
+
+  # ── Infrastructure (Docker) ──────────────────────────────────────────────────
+  infra:up:
+    desc: 개발 인프라 컨테이너 시작 (postgres, redis, mailpit)
+    cmds:
+      - task: api:infra
+
+  infra:down:
+    desc: 개발 인프라 컨테이너 중지
+    cmds:
+      - task: api:infra-down
+
+  infra:logs:
+    desc: 인프라 로그 실시간 확인
+    cmds:
+      - task: api:infra-logs
 
   # ── Web frontend ─────────────────────────────────────────────────────────────
   web:dev:
