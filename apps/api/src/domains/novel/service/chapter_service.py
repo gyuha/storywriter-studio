@@ -54,7 +54,7 @@ class ChapterService:
         data: ChapterUpdate,
     ) -> Chapter:
         chapter = await self.get_chapter(novel_id, chapter_id, user_id)
-        return await self.chapter_repo.update(chapter, **data.model_dump(exclude_none=True))
+        return await self.chapter_repo.update(chapter, **data.model_dump(exclude_unset=True))
 
     async def reorder_chapter(
         self,

@@ -49,7 +49,7 @@ class NovelService:
         self, novel_id: uuid.UUID, user_id: uuid.UUID, data: NovelUpdate
     ) -> Novel:
         novel = await self.get_novel(novel_id, user_id)
-        return await self.repo.update(novel, **data.model_dump(exclude_none=True))
+        return await self.repo.update(novel, **data.model_dump(exclude_unset=True))
 
     async def delete_novel(self, novel_id: uuid.UUID, user_id: uuid.UUID) -> None:
         novel = await self.get_novel(novel_id, user_id)
