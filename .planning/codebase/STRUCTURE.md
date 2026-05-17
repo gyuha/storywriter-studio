@@ -5,273 +5,282 @@
 ## Directory Layout
 
 ```
-storywriter-studio/          # Monorepo root
+storywriter-studio/              # Monorepo root
 ├── apps/
-│   └── api/                 # Python FastAPI backend
-│       ├── alembic/         # DB migration engine
-│       │   └── versions/    # Migration scripts (SQL history)
-│       ├── docs/            # API documentation
-│       ├── scripts/         # Dev/ops helper scripts
-│       ├── src/             # Application source root (Python path root)
-│       │   ├── main.py      # FastAPI app factory + entry point
-│       │   ├── __main__.py  # `python -m app` runner
-│       │   ├── core/        # Cross-cutting infrastructure (never imports domain)
-│       │   │   ├── config.py      # Pydantic settings, env loading
-│       │   │   ├── database.py    # SQLAlchemy engine, session factory, Base
-│       │   │   ├── redis.py       # Redis pool + JTI blacklist helpers
-│       │   │   ├── middleware.py  # CorrelationIdMiddleware
-│       │   │   ├── exceptions.py  # AppError hierarchy + exception handlers
-│       │   │   └── logging.py     # structlog configuration
-│       │   ├── domains/     # Bounded contexts (business logic)
-│       │   │   ├── shared/  # DDD shared kernel — Entity, AggregateRoot, etc.
-│       │   │   ├── auth/    # Auth bounded context
-│       │   │   │   ├── models/      # SQLAlchemy ORM models
-│       │   │   │   ├── schemas/     # Pydantic request/response schemas
-│       │   │   │   ├── router/      # FastAPI routers (HTTP layer)
-│       │   │   │   ├── service/     # Business logic (no HTTP)
-│       │   │   │   ├── repository/  # DB I/O (SQLAlchemy queries)
-│       │   │   │   ├── oauth/       # OAuth2 provider adapters (google, kakao, naver)
-│       │   │   │   ├── security.py  # JWT, password hashing, RBAC deps
-│       │   │   │   └── email.py     # Email delivery service
-│       │   │   └── chat/    # Chat/LLM bounded context
-│       │   │       ├── models/      # SQLAlchemy ORM models
-│       │   │       ├── schemas/     # Pydantic request/response schemas
-│       │   │       ├── router/      # FastAPI routers (HTTP layer)
-│       │   │       ├── service/     # Business logic (no HTTP)
-│       │   │       ├── repository/  # DB I/O
-│       │   │       ├── ports.py     # LLMClientProtocol, AbstractLLMPort (interfaces)
-│       │   │       ├── llm_client.py # Concrete LLM client + factory
-│       │   │       └── container.py  # DI wiring: interface → concrete
-│       │   └── infra/       # Infrastructure adapters (third-party library wrappers)
-│       │       └── llm/
-│       │           └── provider_factory.py  # LangChain-LiteLLM adapter
-│       ├── tests/           # pytest test suite
-│       │   ├── auth/        # Auth domain tests
-│       │   ├── chat/        # Chat domain tests
-│       │   ├── infra/llm/   # LLM infra tests
-│       │   └── shared/      # Shared kernel tests
-│       ├── pyproject.toml   # Python project metadata + dependencies
-│       ├── uv.lock          # Lockfile
-│       ├── Dockerfile       # Container image
-│       ├── docker-compose.yml       # Dev infra (Postgres, Redis, Mailpit)
-│       ├── docker-compose.prod.yml  # Prod compose
-│       └── alembic.ini      # Alembic config
-│
-└── apps/web/                     # React/Vite frontend
-    ├── public/              # Static assets served as-is
-    ├── src/
-    │   ├── main.tsx         # React app entry — mounts RouterProvider
-    │   ├── vite-env.d.ts    # Vite type declarations
-    │   ├── routeTree.gen.ts # Auto-generated route tree (do not edit)
-    │   ├── routes/          # TanStack Router file-based pages
-    │   │   ├── __root.tsx   # Root layout: AppProviders, Toaster, Modals
-    │   │   ├── index.tsx    # / — home page
-    │   │   ├── auth/        # /auth/* — login, signup pages
-    │   │   ├── sample/      # /sample/* — UI demo pages (not production)
-    │   │   └── test/        # /test/* — test/debug routes
-    │   ├── features/        # Vertical feature slices
-    │   │   └── auth/        # Auth feature
-    │   │       ├── components/  # login-form.tsx, signup-form.tsx
-    │   │       ├── hooks/       # use-auth-mutation.ts (React Query)
-    │   │       ├── store/       # auth.store.ts (Zustand)
-    │   │       ├── lib/         # mock-auth-api.ts (placeholder for real API)
-    │   │       ├── schema/      # Zod validation schemas
-    │   │       └── types/       # TypeScript types for auth
-    │   ├── components/      # Shared UI components
-    │   │   ├── ui/          # shadcn/ui primitives (button, input, dialog, etc.)
-    │   │   ├── layout/      # Layout shells (auth-shell.tsx)
-    │   │   └── dev/         # Dev-only debug components
-    │   ├── hooks/           # Shared React hooks (use-mobile, use-theme)
-    │   ├── lib/             # Shared utilities
-    │   │   ├── router.ts    # TanStack Router instance
-    │   │   └── utils.ts     # General utilities (cn, etc.)
-    │   ├── providers/       # React context providers
-    │   │   └── app-providers.tsx  # QueryClientProvider wrapper
-    │   ├── stores/          # Global Zustand stores
-    │   │   ├── modal-store.ts     # Modal stack store
-    │   │   └── modal.types.ts     # Modal type definitions
-    │   ├── styles/          # Global CSS
-    │   └── sample/          # UI demo/reference code (mirrors sample routes)
-    │       ├── apps/        # Apps demo feature
-    │       ├── auth/        # Auth demo
-    │       ├── chats/       # Chat UI demo
-    │       ├── dashboard/   # Dashboard demo
-    │       ├── errors/      # Error page demos
-    │       ├── help-center/ # Help center demo
-    │       ├── i18n/        # i18n locale files (en, ko)
-    │       ├── layout/      # SampleAdminShell layout
-    │       ├── settings/    # Settings demo
-    │       ├── tasks/       # Tasks data table demo
-    │       └── users/       # Users data table demo
-    ├── vite.config.ts       # Vite build config
-    ├── tsconfig.json        # TypeScript config with `@/*` path alias
-    └── package.json         # Frontend dependencies
+│   ├── api/                     # FastAPI backend (Python 3.12)
+│   │   ├── alembic/             # Database migration runner
+│   │   │   └── versions/        # Migration scripts (0001_initial_schema.py)
+│   │   ├── docs/                # API documentation assets
+│   │   ├── scripts/             # Dev/ops helper scripts
+│   │   ├── src/                 # Python package root (hatchling src layout)
+│   │   │   ├── core/            # Cross-cutting concerns — never imports domain code
+│   │   │   │   ├── config.py    # Settings singleton (pydantic-settings, @lru_cache)
+│   │   │   │   ├── database.py  # Async SQLAlchemy engine + session factory + Base
+│   │   │   │   ├── exceptions.py # AppError hierarchy + global exception handlers
+│   │   │   │   ├── logging.py   # structlog configuration
+│   │   │   │   ├── middleware.py # CorrelationIdMiddleware
+│   │   │   │   └── redis.py     # Redis async pool + JWT blacklist helpers
+│   │   │   ├── domains/         # Domain-Driven Design bounded contexts
+│   │   │   │   ├── auth/        # Auth bounded context
+│   │   │   │   │   ├── email.py         # Transactional email (fastapi-mail)
+│   │   │   │   │   ├── security.py      # JWT encode/decode, password hash, auth deps
+│   │   │   │   │   ├── models/          # SQLAlchemy ORM models (User, Role, RefreshToken, ...)
+│   │   │   │   │   ├── oauth/           # OAuth2 provider flows (google.py, kakao.py, naver.py)
+│   │   │   │   │   ├── repository/      # All DB I/O (AuthRepository)
+│   │   │   │   │   ├── router/          # FastAPI APIRouter (auth_router.py)
+│   │   │   │   │   ├── schemas/         # Pydantic request/response models
+│   │   │   │   │   └── service/         # Business logic (auth_service.py)
+│   │   │   │   ├── chat/        # Chat / LLM bounded context
+│   │   │   │   │   ├── container.py     # DI container — binds factory to interface
+│   │   │   │   │   ├── llm_client.py    # LLMClient wrapping ChatLiteLLM
+│   │   │   │   │   ├── llm_factory.py   # DefaultLLMClientFactory
+│   │   │   │   │   ├── ports.py         # LLMClientProtocol, AbstractLLMPort (interfaces)
+│   │   │   │   │   ├── models/          # Chat ORM models
+│   │   │   │   │   ├── repository/      # Chat DB I/O
+│   │   │   │   │   ├── router/          # Chat APIRouter (REST + SSE)
+│   │   │   │   │   ├── schemas/         # Pydantic schemas
+│   │   │   │   │   └── service/         # Chat business logic
+│   │   │   │   └── shared/      # Shared DDD primitives (used by all domains)
+│   │   │   │       ├── base.py          # Entity, AggregateRoot, ValueObject
+│   │   │   │       ├── events.py        # Domain events
+│   │   │   │       └── types.py         # Shared value types
+│   │   │   ├── infra/           # External adapters (infrastructure layer)
+│   │   │   │   └── llm/
+│   │   │   │       └── provider_factory.py  # ONLY file importing langchain_litellm
+│   │   │   ├── main.py          # FastAPI app factory + lifespan + router registration
+│   │   │   └── __main__.py      # Direct execution entry (python -m app)
+│   │   ├── tests/               # pytest test suite
+│   │   │   ├── conftest.py      # Shared fixtures (app, client, session, redis)
+│   │   │   ├── auth/            # Auth domain tests
+│   │   │   ├── chat/            # Chat domain tests
+│   │   │   ├── infra/llm/       # LLM provider/factory tests
+│   │   │   └── shared/          # Shared base type tests
+│   │   ├── pyproject.toml       # Project metadata, deps, ruff/mypy config
+│   │   ├── Dockerfile           # Multi-stage production image
+│   │   └── docker-compose.yml   # PostgreSQL 16, Redis 7, Mailpit
+│   │
+│   └── web/                     # React 19 frontend (TypeScript 5.8)
+│       ├── public/              # Static assets served as-is
+│       └── src/
+│           ├── components/      # Shared UI not tied to a feature
+│           │   ├── ui/          # Radix/shadcn-style primitives (button, input, dialog, ...)
+│           │   │   └── modal/   # Imperative modal system components
+│           │   ├── layout/      # Page shells (auth-shell.tsx)
+│           │   ├── dev/         # Dev-only tools (form-devtool.tsx)
+│           │   └── theme-toggle.tsx
+│           ├── features/        # Vertical feature slices
+│           │   └── auth/        # Auth feature (currently the only production feature)
+│           │       ├── components/  # login-form.tsx, signup-form.tsx
+│           │       ├── hooks/       # use-auth-mutation.ts (React Query mutations)
+│           │       ├── lib/         # mock-auth-api.ts (temporary mock — NOT production)
+│           │       ├── schema/      # auth.schema.ts (zod validation schemas)
+│           │       ├── store/       # auth.store.ts (Zustand slice)
+│           │       └── types/       # auth.ts (TypeScript interfaces)
+│           ├── hooks/           # Shared React hooks (use-mobile.ts, use-theme.ts)
+│           ├── lib/             # Shared utilities
+│           │   ├── router.ts    # TanStack Router instance (imports routeTree.gen.ts)
+│           │   └── utils.ts     # cn() utility (clsx + tailwind-merge)
+│           ├── providers/       # React context/provider wrappers
+│           │   └── app-providers.tsx  # QueryClientProvider
+│           ├── routes/          # TanStack Router file-based routes
+│           │   ├── __root.tsx   # Root layout (AppProviders, Modals, Toaster)
+│           │   ├── index.tsx    # Home page (/)
+│           │   ├── auth/        # Production auth routes (/auth/login, /auth/signup)
+│           │   ├── sample/      # Reference/demo routes (NOT production)
+│           │   └── test/        # Dev test routes
+│           ├── sample/          # Reference UI — implementation reference ONLY
+│           │   ├── auth/        # Sample auth pages and tests
+│           │   ├── users/       # Sample user management
+│           │   ├── dashboard/   # Sample dashboard
+│           │   ├── chats/       # Sample chat UI
+│           │   ├── settings/    # Sample settings pages
+│           │   ├── tasks/       # Sample task management with data-table
+│           │   ├── layout/      # Sample admin shell
+│           │   ├── errors/      # Sample error pages (401, 403, 404, 500, 503)
+│           │   ├── help-center/ # Sample help center
+│           │   └── i18n/        # i18n setup + Korean/English locale files
+│           ├── stores/          # Global Zustand stores (cross-feature)
+│           │   ├── modal-store.ts   # Imperative modal stack
+│           │   └── modal.types.ts   # ModalProps type definitions
+│           ├── styles/          # Global CSS (Tailwind base)
+│           ├── main.tsx         # DOM mount + RouterProvider
+│           ├── routeTree.gen.ts # AUTO-GENERATED by Vite plugin — do not edit
+│           └── vite-env.d.ts    # Vite env type declarations
+├── .planning/                   # GSD planning artifacts
+│   ├── codebase/                # Codebase analysis documents (this file)
+│   └── research/                # Research notes
+└── CLAUDE.md                    # Project instructions for Claude
 ```
 
 ## Directory Purposes
 
 **`apps/api/src/core/`:**
-- Purpose: Infrastructure primitives shared by all domains — never imports domain code
-- Contains: Config (Pydantic settings), DB engine, Redis pool, middleware, exception hierarchy, logging setup
-- Key files: `config.py`, `database.py`, `redis.py`, `exceptions.py`, `middleware.py`
+- Purpose: Cross-cutting concerns shared by all layers
+- Rule: Never import from `domains/` or `infra/`
+- Key files: `config.py` (settings), `database.py` (engine + Base), `exceptions.py` (AppError), `redis.py` (pool)
 
-**`apps/api/src/domains/`:**
-- Purpose: Business logic organized as bounded contexts
-- Contains: `auth`, `chat`, and `shared` sub-packages, each with router/service/repository/models/schemas layers
-- Key constraint: `auth` and `chat` must not import each other; both may import `shared`
+**`apps/api/src/domains/<name>/`:**
+- Purpose: One directory per bounded context; each is self-contained
+- Rule: `auth` and `chat` must not import each other; both may import `shared` and `core`
+- Subdirs: `router/`, `service/`, `repository/`, `models/`, `schemas/`
 
 **`apps/api/src/domains/shared/`:**
-- Purpose: DDD shared kernel — foundation types available to all domains
-- Contains: `Entity`, `AggregateRoot`, `ValueObject`, `DomainEvent`, type aliases (`UserId`, `ConversationId`)
-- Key files: `__init__.py` (public exports), `base.py`, `events.py`, `types.py`
+- Purpose: DDD vocabulary reusable across all bounded contexts
+- Key files: `base.py` (Entity, AggregateRoot, ValueObject)
 
 **`apps/api/src/infra/`:**
-- Purpose: Third-party library adapters that live outside domain boundaries
-- Contains: `llm/provider_factory.py` — the only file that imports `langchain_litellm`
-- Key rule: Domain code depends on ports (`domains/chat/ports.py`), not on this layer directly
+- Purpose: Concrete adapters for external libraries
+- Rule: Only `infra/llm/provider_factory.py` imports `langchain_litellm`
 
-**`apps/api/alembic/versions/`:**
-- Purpose: DB schema migration history
-- Contains: Auto-generated Alembic migration scripts
-- Generated: Yes (by `alembic revision --autogenerate`)
-- Committed: Yes (tracks schema history)
+**`apps/api/alembic/`:**
+- Purpose: Database schema migration runner
+- Generated: `versions/` files are generated by `alembic revision --autogenerate`
+- Key: `versions/0001_initial_schema.py` — initial schema
 
-**`apps/web/src/routes/`:**
-- Purpose: File-based routing — each `.tsx` file becomes a URL route
-- Contains: TanStack Router page components using `createFileRoute`
-- Key rule: `routeTree.gen.ts` is auto-generated by Vite plugin — never edit manually
-
-**`apps/web/src/features/`:**
-- Purpose: Feature-sliced vertical slices; each feature owns its components, hooks, store, types
-- Contains: `auth/` only for now; future features (chat, story, etc.) go here
-- Key pattern: Features export from their own index or are imported directly by routes
+**`apps/web/src/features/<name>/`:**
+- Purpose: Vertical feature slice owning all code for one domain
+- Structure: `components/`, `hooks/`, `lib/`, `schema/`, `store/`, `types/`
+- Current production features: `auth` only
 
 **`apps/web/src/components/ui/`:**
-- Purpose: shadcn/ui component library primitives
-- Contains: Pre-built accessible components (button, input, dialog, select, table, etc.)
-- Key rule: These are copied/generated UI primitives — edit with care; match shadcn/ui patterns
+- Purpose: Shared design system primitives (Radix/shadcn-style)
+- Usage: Used across features and routes; styled with Tailwind + `cn()`
+
+**`apps/web/src/routes/`:**
+- Purpose: TanStack Router file-based pages
+- Rule: Never edit `routeTree.gen.ts` — it is auto-generated
+- Production routes: `auth/` (login, signup), `index.tsx`
+- Reference routes: `sample/` (not production code)
 
 **`apps/web/src/sample/`:**
-- Purpose: UI reference/demo section — not production application code
-- Contains: Full demo features (dashboard, tasks table, users, chats, settings)
-- Key note: This is a template reference, not part of the real storywriter application features
+- Purpose: Reference UI components and pages — not production code
+- Safe to use as implementation reference; do not import from production features
+
+**`apps/web/src/stores/`:**
+- Purpose: Global Zustand stores for cross-feature client state
+- Add here when state is needed by more than one feature
 
 ## Key File Locations
 
-**Backend Entry Points:**
-- `apps/api/src/main.py`: FastAPI app factory, lifespan, middleware registration, router registration
-- `apps/api/src/__main__.py`: `python -m app` runner (sets uvicorn host/port from settings)
-
-**Frontend Entry Points:**
-- `apps/web/src/main.tsx`: React DOM mount, RouterProvider
-- `apps/web/src/routes/__root.tsx`: Root layout, AppProviders, Toaster, Modals
+**Entry Points:**
+- `apps/api/src/main.py`: FastAPI app factory, `app = create_app()`
+- `apps/api/src/__main__.py`: `python -m app` direct execution
+- `apps/web/src/main.tsx`: React DOM mount
 
 **Configuration:**
-- `apps/api/src/core/config.py`: All backend settings (DB, Redis, JWT, LLM, OAuth, mail)
-- `apps/web/vite.config.ts`: Vite plugins (TanStack Router, React, Tailwind, tsconfig-paths)
-- `apps/web/tsconfig.json`: TypeScript config with `@/*` → `./src/*` alias
+- `apps/api/src/core/config.py`: All backend settings, `get_settings()` dependency
+- `apps/api/pyproject.toml`: Python deps, ruff/mypy config
+- `apps/web/vite.config.ts`: Vite + TanStack Router plugin + Tailwind
+- `apps/web/tsconfig.json`: TypeScript strict config, `@/*` path alias
 
-**Database:**
-- `apps/api/src/core/database.py`: SQLAlchemy async engine + `Base` declarative class
-- `apps/api/alembic/`: Migration engine configuration and version history
-- `apps/api/alembic/versions/0001_initial_schema.py`: First (and currently only) migration
+**Core Logic:**
+- `apps/api/src/domains/auth/service/auth_service.py`: All auth business logic
+- `apps/api/src/domains/auth/security.py`: JWT creation/decode, password hashing, FastAPI auth deps
+- `apps/api/src/domains/chat/ports.py`: LLM abstraction interfaces
+- `apps/api/src/infra/llm/provider_factory.py`: LLM provider construction
+- `apps/web/src/features/auth/store/auth.store.ts`: Auth session state
+- `apps/web/src/stores/modal-store.ts`: Global modal stack
+- `apps/web/src/lib/utils.ts`: `cn()` class merging utility
 
-**Auth Core:**
-- `apps/api/src/domains/auth/security.py`: JWT create/decode/blacklist, argon2 hashing, `get_current_user`, `require_permission`
-- `apps/api/src/domains/auth/router/auth_router.py`: All auth HTTP endpoints
-- `apps/api/src/domains/auth/service/auth_service.py`: `AuthService` class — all auth business logic
+**Testing:**
+- `apps/api/tests/conftest.py`: Shared pytest fixtures
+- `apps/api/tests/auth/`: Auth unit and integration tests
+- `apps/api/tests/chat/`: Chat + LLM mock tests
+- `apps/web/src/sample/auth/*.test.ts`: Frontend auth component tests
 
-**LLM Integration:**
-- `apps/api/src/domains/chat/ports.py`: `LLMClientProtocol`, `AbstractLLMPort` (interfaces)
-- `apps/api/src/domains/chat/container.py`: DI wiring (`get_llm_factory`, `get_chat_service`)
-- `apps/api/src/infra/llm/provider_factory.py`: `make_chat_litellm()` — concrete LangChain-LiteLLM adapter
-
-**Frontend Auth:**
-- `apps/web/src/features/auth/store/auth.store.ts`: Zustand auth state (`useAuthStore`)
-- `apps/web/src/features/auth/hooks/use-auth-mutation.ts`: React Query mutations for login/signup
-- `apps/web/src/features/auth/lib/mock-auth-api.ts`: Mock API functions (replace with real HTTP client)
-
-**Global State:**
-- `apps/web/src/stores/modal-store.ts`: Zustand modal stack (`useModal`)
-- `apps/web/src/providers/app-providers.tsx`: `QueryClient` singleton + `QueryClientProvider`
+**Auto-generated (do not edit):**
+- `apps/web/src/routeTree.gen.ts`: TanStack Router route tree
 
 ## Naming Conventions
 
-**Backend Files:**
-- Domain modules: `{domain}_{layer}.py` — e.g., `auth_router.py`, `auth_service.py`, `auth_repository.py`
-- Core modules: plain name — e.g., `config.py`, `database.py`, `middleware.py`
-- Snake_case throughout for Python files, functions, variables
+**Backend files:**
+- Modules: `snake_case` — `auth_service.py`, `auth_router.py`, `auth_repository.py`
+- One module per layer component per domain: `<domain>_<layer>.py`
 
-**Frontend Files:**
-- Route files: `{route-name}.tsx` using kebab-case — e.g., `login.tsx`, `signup.tsx`
-- Feature files: `{name}.{type}.ts(x)` — e.g., `auth.store.ts`, `use-auth-mutation.ts`
-- Component files: kebab-case — e.g., `login-form.tsx`, `auth-shell.tsx`
-- UI primitives: kebab-case matching shadcn/ui conventions — e.g., `button.tsx`, `alert-dialog.tsx`
-- Hooks: `use-{name}.ts` prefix
+**Backend Python:**
+- Classes: `PascalCase` — `AuthService`, `SignupRequest`, `UserResponse`
+- Constants: `UPPER_SNAKE_CASE` — `ACCESS_TOKEN_EXPIRE_MINUTES`
+- Pydantic schemas: `<Entity><Role>` — `SignupRequest`, `TokenResponse`, `UserResponse`
+- Private helpers: prefix `_` — `_normalize_display_name()`
 
-**Backend Classes:**
-- Services: `{Domain}Service` — e.g., `AuthService`, `ChatService`
-- Repositories: `{Domain}Repository` — e.g., `AuthRepository`, `ChatRepository`
-- Routers: module-level `router = APIRouter(prefix="/{domain}")`
-- Models: PascalCase matching entity names — e.g., `User`, `RefreshToken`, `OAuthAccount`
+**Frontend files:**
+- React components: `PascalCase.tsx` — `LoginForm.tsx` (but kebab-case filenames: `login-form.tsx`)
+- Non-component modules: `kebab-case.ts` — `mock-auth-api.ts`, `auth.schema.ts`
+- Stores: `<name>.store.ts` — `auth.store.ts`, `modal-store.ts`
+- Schemas: `<name>.schema.ts` — `auth.schema.ts`
+- Hooks: `use-<name>.ts` — `use-auth-mutation.ts`, `use-mobile.ts`
+- Types: `<name>.ts` — `auth.ts`
+
+**Frontend exports:**
+- Named exports only — no default exports (except where framework requires, e.g. route `component`)
 
 ## Where to Add New Code
 
-**New Backend Domain (e.g., `stories`):**
-1. Create `apps/api/src/domains/stories/` with subdirs: `models/`, `schemas/`, `router/`, `service/`, `repository/`
-2. Add ORM models inheriting from `core.database.Base`
-3. Create Alembic migration: `alembic revision --autogenerate -m "add_stories"`
-4. Register router in `apps/api/src/main.py` → `_register_routers()` with `prefix="/api/v1"`
+**New backend domain (e.g., `novel`):**
+```
+apps/api/src/domains/novel/
+  router/novel_router.py    # APIRouter, Pydantic schemas import
+  service/novel_service.py  # Business logic; raises AppError
+  repository/novel_repository.py  # All DB I/O via AsyncSession
+  models/novel_models.py    # SQLAlchemy ORM (extends core.database.Base)
+  schemas/novel_schemas.py  # Pydantic request/response models
+```
+Register in `apps/api/src/main.py` inside `_register_routers()`.
 
-**New Backend API Endpoint in Existing Domain:**
-- Router: `apps/api/src/domains/{domain}/router/{domain}_router.py`
-- Service method: `apps/api/src/domains/{domain}/service/{domain}_service.py`
-- Repository method: `apps/api/src/domains/{domain}/repository/{domain}_repository.py`
-- Request/response schema: `apps/api/src/domains/{domain}/schemas/{domain}_schemas.py`
+**New backend database migration:**
+```bash
+cd apps/api && uv run alembic revision --autogenerate -m "description"
+```
+File lands in `apps/api/alembic/versions/`.
 
-**New Frontend Feature:**
-- Create `apps/web/src/features/{feature}/` with: `components/`, `hooks/`, `store/`, `types/`, `lib/`
-- Add route file: `apps/web/src/routes/{feature}/index.tsx` using `createFileRoute`
-- Route tree regenerates automatically on next Vite dev server start
+**New frontend feature (e.g., `novel`):**
+```
+apps/web/src/features/novel/
+  components/   # React components
+  hooks/        # use-<name>-mutation.ts, use-<name>-query.ts
+  store/        # novel.store.ts (Zustand slice)
+  schema/       # novel.schema.ts (zod)
+  types/        # novel.ts (TypeScript interfaces)
+  lib/          # API client functions (NOT mock — real API calls)
+```
 
-**New Frontend Page (Route):**
-- Add `apps/web/src/routes/{path}.tsx` using `createFileRoute('/{path}')({ component: ... })`
-- `routeTree.gen.ts` is regenerated automatically — do not edit it
+**New frontend page route:**
+- Create `apps/web/src/routes/<path>.tsx` with `createFileRoute('/<path>')({ component: ... })`
+- The Vite plugin auto-regenerates `apps/web/src/routeTree.gen.ts`
 
-**Shared UI Components:**
-- Generic primitives: `apps/web/src/components/ui/{name}.tsx`
-- Layout wrappers: `apps/web/src/components/layout/{name}.tsx`
-- Shared hooks: `apps/web/src/hooks/use-{name}.ts`
+**New shared UI component:**
+- Add to `apps/web/src/components/ui/<name>.tsx`
+- Follow existing Radix/shadcn pattern with `cn()` for class merging
 
-**Global State:**
-- App-wide Zustand stores: `apps/web/src/stores/{name}-store.ts`
-- Feature-scoped state stays inside `apps/web/src/features/{feature}/store/`
+**New global cross-feature state:**
+- Add Zustand store to `apps/web/src/stores/<name>-store.ts`
+- Feature-local state: `apps/web/src/features/<name>/store/<name>.store.ts`
 
-**Utilities:**
-- Frontend shared helpers: `apps/web/src/lib/utils.ts`
-- Backend shared helpers: Add to `apps/api/src/core/` only if truly cross-domain; otherwise keep inside the domain
+**New shared utility:**
+- Shared helpers: `apps/web/src/lib/utils.ts` (if small) or new `apps/web/src/lib/<name>.ts`
 
 ## Special Directories
 
-**`apps/api/alembic/`:**
-- Purpose: Alembic migration runner + version history
-- Generated: Migration scripts are generated by `alembic revision --autogenerate`
-- Committed: Yes — schema history must be committed
+**`apps/web/src/sample/`:**
+- Purpose: Reference UI components — not production code
+- Generated: No — hand-written reference implementations
+- Committed: Yes
+- Usage: Safe to read and copy patterns from; do NOT import into production features
 
 **`apps/web/src/routeTree.gen.ts`:**
-- Purpose: TanStack Router auto-generated route tree
-- Generated: Yes — by the `@tanstack/router-plugin/vite` Vite plugin on dev/build
-- Committed: Yes (needed for type checking), but never manually edited
+- Purpose: Auto-generated TanStack Router route tree
+- Generated: Yes — by `@tanstack/router-plugin` on every dev/build
+- Committed: Yes (required for TypeScript)
+- Rule: Never edit manually
 
-**`apps/web/src/sample/`:**
-- Purpose: UI reference demos bundled with the app for developer reference
-- Generated: No — hand-authored demo code
-- Production code: No — treat as template/scaffold reference, not business logic
+**`apps/api/alembic/`:**
+- Purpose: Alembic migration runner and version scripts
+- Generated: `versions/` files are auto-generated by `alembic revision --autogenerate`
+- Committed: Yes
 
-**`apps/api/src/domains/*/\_\_pycache\_\_/`:**
-- Purpose: Python bytecode cache
+**`apps/api/src/__pycache__/` and `apps/api/.venv/`:**
 - Generated: Yes
-- Committed: No (in .gitignore)
+- Committed: No
 
 ---
 

@@ -2,62 +2,113 @@
 
 **Analysis Date:** 2026-05-17
 
-## Overview
+## Test Framework
 
-Two separate test suites: Python pytest for the FastAPI backend (`apps/api/tests/`) and TypeScript script-style tests for the web frontend (`apps/web/src/`). They are structurally and philosophically different.
+### Backend (`apps/api/`)
 
----
+**Runner:**
+- pytest 8.3+
+- Config: `apps/api/pyproject.toml` under `[tool.pytest.ini_options]`
 
-## Python API Tests (`apps/api/`)
+**Key pytest settings:**
+- `asyncio_mode = "auto"` — all `async def test_*` functions run with asyncio automatically (no `@pytest.mark.asyncio` decorator needed)
+- `testpaths = ["tests"]`
+- `pythonpath = ["src"]` — `src/` is on the Python path so tests import as `from domains.auth.service import AuthService`
+- `--strict-markers` — undeclared markers fail the run
+- Coverage: `--cov=src --cov-report=term-missing --cov-report=html:htmlcov --cov-fail-under=70`
 
-### Test Framework
+**Assertion library:** Python built-in `assert`
 
-**Runner:** pytest 8.3+
-**Config:** `apps/api/pyproject.toml` (`[tool.pytest.ini_options]`)
-**Async support:** `pytest-asyncio` 0.24+ with `asyncio_mode = "auto"` — all async test functions run automatically without `@pytest.mark.asyncio`
-
-**Run Commands:**
+**Run commands:**
 ```bash
-cd apps/api
-uv run pytest                          # Run all tests with coverage
-uv run pytest tests/auth/              # Run auth domain tests only
-uv run pytest -k "test_signup"         # Run tests matching name pattern
-uv run pytest --co -q                  # List collected tests (dry run)
+cd apps/api && uv run pytest                                          # all tests + coverage
+cd apps/api && uv run pytest tests/auth/test_auth_flows.py            # single file
+cd apps/api && uv run pytest -m unit                                   # unit only
+cd apps/api && uv run pytest -m integration                            # integration only
+cd apps/api && uv run pytest --cov-report=html:htmlcov                 # with HTML report
 ```
 
-**Coverage:** `pytest-cov` with `--cov-fail-under=70`
-- Report: `term-missing` + HTML at `htmlcov/`
-- Branch coverage enabled
-- Source: `src/`
+### Frontend (`apps/web/`)
 
-### Test File Organization
+**Runner:** None — no jest/vitest configured. Frontend tests in `apps/web/src/sample/` are **plain TypeScript scripts** run via `node` or imported as ES modules. They use `throw new Error(...)` to signal failure rather than any test assertion library. These are reference-implementation validation scripts, not traditional unit tests.
 
-**Location:** Separate `tests/` directory mirroring the `src/` domain structure
+No `vitest.config.*` or `jest.config.*` exists in `apps/web/`.
+
+## Test File Organization
+
+### Backend
+
+**Location:** Separate `apps/api/tests/` directory, mirroring domain structure.
 
 ```
-apps/api/
-├── src/
-│   ├── domains/auth/
-│   └── domains/chat/
-└── tests/
-    ├── conftest.py          ← root fixtures (autouse cache clearing)
-    ├── auth/
-    │   ├── conftest.py      ← auth-domain fixtures
-    │   └── test_*.py
-    ├── chat/
-    │   ├── conftest.py      ← chat-domain fixtures
-    │   ├── _mocks.py        ← shared mock classes (not fixtures)
-    │   └── test_*.py
-    └── infra/
-        └── llm/
-            └── test_*.py
+apps/api/tests/
+├── conftest.py                        # Root: settings cache isolation (autouse)
+├── auth/
+│   ├── conftest.py                    # FakeRedis, FakeAuthRepository, auth_service fixture
+│   ├── test_auth_flows.py             # E2E service flow tests (TestSignup, TestLogin, etc.)
+│   ├── test_signup_route.py           # HTTP route tests with ASGI test client
+│   ├── test_signup_schemas.py         # Pydantic schema validation tests
+│   ├── test_login_route.py
+│   ├── test_login_schemas.py
+│   ├── test_refresh_route.py
+│   ├── test_refresh_schemas.py
+│   ├── test_verify_email_route.py
+│   ├── test_password_reset_route.py
+│   ├── test_password_reset_schemas.py
+│   ├── test_password_reset_repository.py
+│   ├── test_refresh_repository.py
+│   ├── test_access_token_context.py
+│   ├── test_signup_password_hashing.py
+│   ├── test_email_backend.py
+│   └── test_signup_mailpit_integration.py  # Integration: requires mailpit
+├── chat/
+│   ├── conftest.py                    # Provider env fixtures, LLMClient fixtures
+│   ├── _mocks.py                      # Shared test doubles (FakeChatLiteLLM, StubLLMClient)
+│   ├── test_auth_flows.py
+│   ├── test_llm_client.py
+│   ├── test_llm_factory.py
+│   ├── test_ports.py
+│   ├── test_provider_mocks.py
+│   ├── test_provider_routing.py
+│   ├── test_api_provider_switching.py
+│   └── test_di_container.py
+├── infra/llm/
+│   └── test_provider_factory.py
+├── shared/
+│   └── test_shared_domain.py
+├── test_config.py
+├── test_dev_server.py
+├── test_main_runtime.py
+└── test_migrations.py
 ```
 
-**Naming:** `test_<what_is_being_tested>.py` — e.g., `test_signup_route.py`, `test_auth_flows.py`, `test_llm_client.py`
+**Naming:**
+- Test files: `test_<domain>_<subject>.py`
+- Test classes: `Test<Subject>` — e.g., `TestSignup`, `TestLogin`, `TestRefresh`
+- Test functions: `test_<describes_exact_behavior>` — verbose, behavior-centric names
 
-### Test Structure
+### Frontend (Sample Scripts)
 
-Tests grouped by domain operation in classes:
+```
+apps/web/src/sample/auth/
+├── sign-in-page.test.ts          # Validates sign-in page constraints
+├── sign-up-page.test.ts
+├── sign-in-form-ui.test.ts
+├── sign-up-form-ui.test.ts
+├── otp-page.test.ts
+├── forgot-password-page.test.ts
+└── auth-demo-submit-handlers.test.ts
+apps/web/src/sample/layout/
+└── navigation.test.ts
+apps/web/src/sample/errors/
+└── maintenance-error-route.test.ts
+```
+
+## Test Structure
+
+### Backend — Suite Organization
+
+Tests are grouped in classes by the operation under test:
 
 ```python
 class TestSignup:
@@ -73,109 +124,28 @@ class TestSignup:
         assert user.email == _EMAIL.lower()
         assert user.display_name == "Alice"
         assert user.is_verified is False
+
+    async def test_signup_duplicate_email_raises_conflict(
+        self,
+        auth_service: AuthService,
+        fake_repo: Any,
+    ) -> None:
+        from core.exceptions import ConflictError
+
+        await auth_service.signup(_EMAIL, _PASSWORD)
+        with pytest.raises(ConflictError, match="already exists"):
+            await auth_service.signup(_EMAIL, "AnotherPass2!")
 ```
 
-Test function names are full sentences describing behavior:
-- `test_signup_delegates_validated_payload_to_auth_service`
-- `test_signup_rejects_invalid_payload_before_service_call`
-- `test_signup_persists_normalized_identity_fields`
+**Patterns:**
+- Setup via fixtures, not `setUp` methods
+- Inline imports for exceptions being asserted (`from core.exceptions import ConflictError`)
+- Module-level helper constants: `_EMAIL = "alice@example.com"`, `_PASSWORD = "Password1!"`
+- Private helper methods in classes prefixed with `_`: `async def _signup_and_verify(...)`
 
-**Module-level test constants** for repeated test data:
-```python
-_EMAIL = "alice@example.com"
-_PASSWORD = "Password1!"
-```
+### Route Tests (HTTP Layer)
 
-### Fixtures (`conftest.py`)
-
-**Root `conftest.py`** (`apps/api/tests/conftest.py`):
-- `settings_cache_clear` — `autouse=True`, clears `get_settings()` LRU cache before/after every test to prevent env var leakage
-
-**Auth conftest** (`apps/api/tests/auth/conftest.py`):
-- `fake_redis` — in-memory async Redis stub (`FakeRedis` class)
-- `fake_repo` — in-memory `FakeAuthRepository` implementing full `AuthRepository` interface
-- `auth_service` — `AuthService` wired to `fake_repo` + `fake_redis`
-
-**Chat conftest** (`apps/api/tests/chat/conftest.py`):
-- `env_openai` / `env_ollama` — `monkeypatch` env var fixtures for provider switching
-- `openai_llm_settings` / `ollama_llm_settings` — pure `LLMSettings` instances (no env side effects)
-- `patched_chat_litellm` — patches `ChatLiteLLM` with `MagicMock` for call-arg assertions
-- `fake_chat_litellm_openai` / `fake_chat_litellm_ollama` — patches with `FakeChatLiteLLM`
-- `llm_client_openai` / `llm_client_ollama` — real `LLMClient` with patched `ChatLiteLLM`
-- `mock_llm_client` — `MagicMock` for call-count / call-arg assertions on `ChatService`
-- `stub_llm_client` / `streaming_stub_llm_client` — pure Python stubs, zero patches
-- `stub_chat_service` / `chat_service_openai` / `chat_service_ollama` — `ChatService` instances
-
-### Mocking
-
-**Philosophy:** Intercept at the lowest-level I/O boundary, test everything above with real implementations.
-
-**Pattern 1: Hand-written Fake Classes** (preferred for domain logic)
-
-Fakes implement the full interface of the dependency they replace:
-
-```python
-class FakeRedis:
-    """Minimal async Redis stub for auth tests."""
-    def __init__(self) -> None:
-        self._store: dict[str, Any] = {}
-        self.expirations: dict[str, int | None] = {}
-
-    async def get(self, key: str) -> str | None:
-        return self._store.get(key)
-
-    async def set(self, key: str, value: Any, ex: int | None = None) -> None:
-        self._store[key] = value
-        self.expirations[key] = ex
-```
-
-Fakes also track call metadata for assertion:
-```python
-self.locked_refresh_jtis: list[str] = []
-self.invalidated_session_user_ids: list[str] = []
-```
-
-**Pattern 2: `unittest.mock.patch`** (for third-party library boundaries)
-
-Used to intercept `ChatLiteLLM` at the import location where it is used:
-
-```python
-with patch("infra.llm.provider_factory.ChatLiteLLM") as mock_cls:
-    yield mock_cls
-```
-
-```python
-with patch("infra.llm.provider_factory.ChatLiteLLM", return_value=fake_instance):
-    yield fake_instance
-```
-
-**Pattern 3: `MagicMock` / `AsyncMock`** (for call-count/call-arg assertions)
-
-```python
-mock = MagicMock(spec=["ainvoke", "astream", "invoke", "stream"])
-mock.ainvoke = AsyncMock(return_value=AIMessage(content=FAKE_RESPONSE_TEXT))
-
-async def _astream(messages: Any, **kwargs: Any) -> AsyncIterator[str]:
-    for token in FAKE_STREAM_TOKENS:
-        yield token
-
-mock.astream = _astream
-```
-
-**What to mock:**
-- Database sessions and repositories
-- Redis connections
-- External LLM provider clients (`ChatLiteLLM`)
-- Email delivery services
-- OAuth HTTP calls
-
-**What NOT to mock:**
-- The service layer when testing route handlers (use `FastAPI.dependency_overrides` instead)
-- Business logic in `AuthService` or `ChatService` when testing them
-
-### HTTP / Route Tests
-
-FastAPI route tests use `httpx.AsyncClient` with `ASGITransport`:
+Route tests use `httpx.AsyncClient` with `ASGITransport` — no running server needed:
 
 ```python
 @pytest.fixture
@@ -191,190 +161,232 @@ async def test_signup_delegates_validated_payload_to_auth_service(
 ) -> None:
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://testserver") as client:
-        response = await client.post(
-            "/api/v1/auth/signup",
-            json={"email": "alice@example.com", "password": "Password1!", "display_name": "Alice"},
-        )
+        response = await client.post("/api/v1/auth/signup", json={...})
 
     assert response.status_code == 201
-    assert response.json()["user"]["email"] == "alice@example.com"
 ```
 
-Use `FastAPI.dependency_overrides` to inject fakes — do NOT patch the service constructor.
+## Mocking
 
-### Parametrize
+### Backend Mocking Strategy
 
-Used for error mapping and multi-case schema validation:
+**Philosophy:** Intercept at the lowest I/O boundary. Everything above gets the real implementation.
+
+**Three layers of test doubles:**
+
+**1. Fake classes (in-memory stubs):**
+- `FakeRedis` in `tests/auth/conftest.py` — async Redis stub with `get/set/exists/delete/ping`, tracks expirations
+- `FakeAuthRepository` in `tests/auth/conftest.py` — full in-memory repository, tracks all mutations
+- `FakeChatLiteLLM` in `tests/chat/_mocks.py` — drop-in for `ChatLiteLLM`, returns configurable pre-canned responses
+
+```python
+class FakeRedis:
+    def __init__(self) -> None:
+        self._store: dict[str, Any] = {}
+        self.expirations: dict[str, int | None] = {}
+
+    async def get(self, key: str) -> str | None:
+        return self._store.get(key)
+
+    async def set(self, key: str, value: Any, ex: int | None = None) -> None:
+        self._store[key] = value
+        self.expirations[key] = ex
+```
+
+**2. MagicMock / AsyncMock (call assertions):**
+- Used for LLM client fixtures when test needs to assert call count/arguments
+- `mock.ainvoke = AsyncMock(return_value=AIMessage(content=FAKE_RESPONSE_TEXT))`
+- Async generators assigned directly: `mock.astream = _astream` (not AsyncMock)
+
+**3. `unittest.mock.patch` (module boundary isolation):**
+- Patches `infra.llm.provider_factory.ChatLiteLLM` to inject `FakeChatLiteLLM`
+- Used as context manager fixture via `with patch(...) as mock_cls: yield mock_cls`
+
+**FastAPI DI override (route tests):**
+```python
+application.dependency_overrides[_get_service] = lambda: signup_service
+```
+
+**monkeypatch (env var isolation):**
+- `monkeypatch.setenv("LLM_PROVIDER", "openai")` — restored automatically after test
+- Root `settings_cache_clear` autouse fixture clears `get_settings.cache_clear()` before/after every test
+
+**What to mock:**
+- All external I/O: Redis, database, email, HTTP requests, LLM API calls
+- `ChatLiteLLM` (network boundary for LLM) — patch at `infra.llm.provider_factory.ChatLiteLLM`
+- Service layer injected into router tests via `dependency_overrides`
+
+**What NOT to mock:**
+- Business logic (service methods)
+- Security helpers (`hash_password`, `decode_token`) — test these with real implementations
+- Pydantic validation
+
+## Fixtures and Factories
+
+### Conftest Hierarchy
+
+```
+tests/conftest.py           # autouse: settings_cache_clear (clears lru_cache)
+tests/auth/conftest.py      # FakeRedis, FakeAuthRepository, auth_service
+tests/chat/conftest.py      # env_openai/ollama, LLM client fixtures, ChatService fixtures
+```
+
+**Root fixture (autouse):**
+```python
+@pytest.fixture(autouse=True)
+def settings_cache_clear() -> None:
+    get_settings.cache_clear()
+    yield
+    get_settings.cache_clear()
+```
+
+**Composable service fixture:**
+```python
+@pytest.fixture
+def auth_service(fake_repo: FakeAuthRepository, fake_redis: FakeRedis) -> Any:
+    return AuthService(repo=fake_repo, redis=fake_redis)
+```
+
+**Test data:**
+- Module-level constants for reusable test inputs: `_EMAIL`, `_PASSWORD`
+- In-test helper objects: `CapturingAuthEmailService` (captures sent emails for assertion)
+- `MagicMock()` with manual attribute assignment for ORM-like objects
+
+**Shared test doubles location:**
+- `tests/chat/_mocks.py` — plain module (not conftest) for classes importable without pytest
+- Constants: `FAKE_RESPONSE_TEXT`, `FAKE_STREAM_TOKENS`, `OPENAI_TEST_KEY`, `OLLAMA_TEST_URL`
+
+## Coverage
+
+**Requirement:** `--cov-fail-under=70` (70% minimum, CI fails below this)
+
+**Coverage config (`[tool.coverage.run]`):**
+- `branch = true` — branch coverage enabled
+- Source: `src/`
+- Omits: `*/migrations/*`, `*/alembic/*`, `*/tests/*`
+
+**View coverage:**
+```bash
+cd apps/api && uv run pytest --cov-report=html:htmlcov
+open apps/api/htmlcov/index.html
+```
+
+**Excluded lines (no cover):**
+- `pragma: no cover`
+- `def __repr__`
+- `if TYPE_CHECKING:`
+- `raise NotImplementedError`
+- `...` (ellipsis — Protocol stubs)
+
+## Test Types and Markers
+
+Markers declared in `pyproject.toml`:
+- `unit` — pure unit tests (no I/O)
+- `integration` — tests that hit DB / Redis (requires Docker infrastructure)
+- `e2e` — end-to-end tests against the running server
+
+**Current test distribution:**
+- Auth service tests (`test_auth_flows.py`) — unit (in-memory fakes, no DB/Redis)
+- Route tests (`test_signup_route.py`, etc.) — unit (ASGITransport, fake services)
+- Schema tests (`test_signup_schemas.py`, etc.) — unit (pure Pydantic validation)
+- Repository tests — integration (require real AsyncSession)
+- Mailpit test (`test_signup_mailpit_integration.py`) — integration (requires mailpit container)
+- LLM tests — unit (patched ChatLiteLLM or StubLLMClient)
+
+## Common Patterns
+
+### Async Testing
+
+No `@pytest.mark.asyncio` needed — `asyncio_mode = "auto"` in pyproject.toml applies globally:
+
+```python
+async def test_signup_creates_user(
+    self,
+    auth_service: AuthService,
+    fake_repo: Any,
+) -> None:
+    user, raw_token = await auth_service.signup(_EMAIL, _PASSWORD, "Alice")
+    assert user.email == _EMAIL.lower()
+```
+
+### Error Testing
+
+```python
+async def test_signup_duplicate_email_raises_conflict(
+    self,
+    auth_service: AuthService,
+    fake_repo: Any,
+) -> None:
+    from core.exceptions import ConflictError
+
+    await auth_service.signup(_EMAIL, _PASSWORD)
+    with pytest.raises(ConflictError, match="already exists"):
+        await auth_service.signup(_EMAIL, "AnotherPass2!")
+```
+
+### Parametrized Tests (route error mapping)
 
 ```python
 @pytest.mark.parametrize(
     ("service_error", "expected_status", "expected_detail"),
     [
-        (ConflictError("An account ..."), 409, "An account ..."),
-        (AppError("Signup payload rejected"), 400, "Signup payload rejected"),
-        (UnauthorizedError("Email verification required"), 401, "Email verification ..."),
+        (ConflictError("..."), 409, "..."),
+        (AppError("..."), 400, "..."),
+        (UnauthorizedError("..."), 401, "..."),
+        (ForbiddenError("..."), 403, "..."),
+        (NotFoundError("Invite"), 404, "Invite not found."),
     ],
 )
 async def test_signup_maps_application_service_errors_to_http_responses(
     app, signup_service, service_error, expected_status, expected_detail
 ) -> None:
     signup_service.error = service_error
-    ...
-    assert response.status_code == expected_status
+    # ... make request and assert status + body
 ```
 
-### Pytest Markers
-
-Defined in `pyproject.toml`:
-
-| Marker | Meaning |
-|--------|---------|
-| `unit` | Pure unit test — no I/O |
-| `integration` | Tests hitting DB / Redis |
-| `e2e` | End-to-end against running server |
-
-Currently only `unit` and `integration` are actively used. Most tests do not carry a marker (they default to running in all contexts).
-
-### Environment Variable Isolation
-
-Use `monkeypatch.setenv` + `settings_cache_clear` autouse fixture:
+### Logger Capture (monkeypatch)
 
 ```python
-def test_with_openai_env(monkeypatch, env_openai):
-    from core.config import get_settings
-    s = get_settings()
-    assert s.llm_provider.value == "openai"
+warning_events: list[tuple[str, dict[str, Any]]] = []
+
+class CapturingLogger:
+    def warning(self, event: str, **kwargs: Any) -> None:
+        warning_events.append((event, kwargs))
+
+monkeypatch.setattr(auth_service_module, "logger", CapturingLogger())
 ```
 
-For full env isolation, use `patch.dict(os.environ, base_env, clear=True)`:
+### Async Streaming Test
 
 ```python
-def make_settings(**env_overrides: str) -> Settings:
-    base_env = {"SECRET_KEY": "test-secret-key", "JWT_SECRET_KEY": "test-jwt-secret"}
-    base_env.update(env_overrides)
-    with patch.dict(os.environ, base_env, clear=True):
-        get_settings.cache_clear()
-        return Settings(_env_file=None)
+async def test_astream(streaming_stub_llm_client):
+    from langchain_core.messages import HumanMessage
+    service = ChatService(llm_client=streaming_stub_llm_client)
+    chunks = [c async for c in service.stream([HumanMessage(content="hi")])]
+    assert chunks == FAKE_STREAM_TOKENS
 ```
 
-### Test Helper Location
+### SQLAlchemy IntegrityError Injection
 
-Shared mock classes NOT backed by `@pytest.fixture` live in `tests/<domain>/_mocks.py`:
+```python
+async def create_user_raises_unique_violation(*args: Any, **kwargs: Any) -> Any:
+    raise IntegrityError(
+        statement="INSERT INTO users ...",
+        params={"email": "alice@example.com"},
+        orig=Exception("duplicate key value violates unique constraint users_email_key"),
+    )
 
-- `apps/api/tests/chat/_mocks.py` — `FakeChatLiteLLM`, `StubLLMClient`, constants
-
-This separates plain helper classes (importable by any module) from pytest fixture functions (only available via fixture injection).
-
-### Coverage
-
-- **Target:** 70% minimum (`--cov-fail-under=70`)
-- **Excluded:** migrations, alembic, tests themselves
-- **Branch coverage:** enabled
-- **Report command:** `uv run pytest --cov=src --cov-report=html:htmlcov`
-
----
-
-## Web Frontend Tests (`apps/web/`)
-
-### Framework
-
-The web test files (`*.test.ts`) are **not standard Jest/Vitest tests**. No test runner is configured in `apps/web/package.json`. These files are TypeScript modules that execute assertions as top-level `throw new Error(...)` calls — they run as plain Node scripts or are executed by the TypeScript compiler via `ts-node`/`tsx`.
-
-**No `describe()` blocks, no `it()` blocks, no `expect()` calls.** Assertions use `throw new Error(message)` directly.
-
-```typescript
-const parsedValidValues = sampleSignInSchema.safeParse(validSignInValues);
-
-if (!parsedValidValues.success) {
-  throw new Error('Sign-in schema must accept a valid email and password.');
-}
+fake_repo.create_user = create_user_raises_unique_violation
 ```
 
-### What the Web Tests Cover
+## Frontend Test Scripts (Sample)
 
-These tests are **schema validation tests** and **source code contract tests**. They do not test DOM rendering or component behavior.
+Frontend "tests" in `apps/web/src/sample/` are plain TypeScript modules that:
+- Execute assertions at module load time using `throw new Error(...)` 
+- Parse TypeScript source files using the `typescript` compiler API to enforce structural constraints
+- Validate that sample UI components do not make real network calls, use forbidden patterns, or violate UI isolation rules
 
-**Schema validation tests** (e.g., `sign-in-page.test.ts`, `sign-up-page.test.ts`):
-- Zod schema accepts valid input
-- Schema rejects invalid input with expected error messages
-- One validation message is shown at a time per field
-
-**Source code contract tests** (e.g., `sign-in-page.test.ts`):
-- Sample reference files do not import forbidden APIs (fetch, XMLHttpRequest, axios, useMutation, useNavigate, toast, redirect, etc.)
-- Route files import the correct page component
-- Route files declare the correct path
-- `Link` elements set `preload={false}` in sample references
-
-The contract tests use the TypeScript compiler API (`import ts from 'typescript'`) to parse and walk the AST of source files.
-
-**Test data:**
-```typescript
-const validSignInValues = {
-  email: ' Name@Example.COM ',
-  password: 'password',
-};
-```
-
-### Test File Location
-
-Co-located with the modules they test inside `src/sample/`:
-
-```
-apps/web/src/sample/
-├── auth/
-│   ├── sign-in-page.test.ts          ← schema + AST contract tests
-│   ├── sign-up-page.test.ts
-│   ├── sign-in-form-ui.test.ts
-│   ├── sign-up-form-ui.test.ts
-│   ├── otp-page.test.ts
-│   ├── forgot-password-page.test.ts
-│   └── auth-demo-submit-handlers.test.ts
-├── layout/
-│   └── navigation.test.ts
-└── errors/
-    └── maintenance-error-route.test.ts
-```
-
-There are **no test files** in `src/features/`, `src/components/`, `src/routes/`, `src/stores/`, or `src/hooks/`. Only `src/sample/` contains tests.
-
-### Assertion Pattern
-
-```typescript
-function assertRejectedField(
-  values: { email: string; password: string },
-  fieldName: 'email' | 'password',
-  message: string
-) {
-  const parsedValues = sampleSignInSchema.safeParse(values);
-
-  if (parsedValues.success) {
-    throw new Error(`Sign-in schema must reject invalid ${fieldName} values client-side.`);
-  }
-
-  const hasExpectedIssue = parsedValues.error.issues.some(
-    (issue) => issue.path.join('.') === fieldName && issue.message === message
-  );
-
-  if (!hasExpectedIssue) {
-    throw new Error(`Sign-in schema must return the expected ${fieldName} validation message.`);
-  }
-}
-```
-
-Helper assertion functions defined locally in each test file — no shared test utility library.
-
-### Forbidden Pattern Checks
-
-The AST-based tests scan source files for forbidden import patterns, verifying sample reference code does not include real network calls or navigation side effects:
-
-```typescript
-const forbiddenSourcePatterns = [
-  { pattern: /\bfetch\s*\(/, reason: 'Network fetch calls are forbidden ...' },
-  { pattern: /\buseMutation\b/, reason: 'Mutation hooks are forbidden ...' },
-  { pattern: /\bredirect\s*\(/, reason: 'Redirect helpers are forbidden ...' },
-  // ...
-];
-```
+They are NOT run by a test runner — they are validation scripts. No frontend unit test framework (Vitest, Jest) is configured.
 
 ---
 
