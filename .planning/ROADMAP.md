@@ -27,7 +27,12 @@
   2. 사용자가 이메일/비밀번호로 회원가입하면 즉시 계정이 생성되고 로그인 상태로 전환된다
   3. 인증되지 않은 사용자가 소설 프로젝트 URL에 직접 접근하면 로그인 페이지로 리다이렉트된다
   4. 관리자가 관리자 페이지에서 사용자 목록을 조회하고 계정을 활성화/비활성화할 수 있다
-**Plans:** TBD
+**Plans:** 4 plans
+Plans:
+- [ ] 01-01-PLAN.md — 백엔드 관리자 API (admin_router.py, admin_schemas.py, DB seed migration)
+- [ ] 01-02-PLAN.md — 프론트엔드 auth 타입/API 레이어 (types/auth.ts 확장, auth-api.ts 생성, mock 삭제)
+- [ ] 01-03-PLAN.md — 프론트엔드 인증 연결 (use-init-auth, use-auth-mutation 교체, _authenticated.tsx, __root.tsx)
+- [ ] 01-04-PLAN.md — 관리자 사용자 관리 UI (AdminUsersPage, admin 훅, 라우트)
 **UI hint:** yes
 
 ### Phase 2: 소설/챕터 관리
@@ -75,7 +80,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. 인증 연동 | 0/TBD | Not started | - |
+| 1. 인증 연동 | 0/4 | Not started | - |
 | 2. 소설/챕터 관리 | 0/TBD | Not started | - |
 | 3. 세계관 데이터베이스 | 0/TBD | Not started | - |
 | 4. 에디터 사이드패널 + AI 초안 생성 | 0/TBD | Not started | - |
