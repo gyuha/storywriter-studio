@@ -53,7 +53,7 @@ class Chapter(Base):
     status: Mapped[ChapterStatus] = mapped_column(
         SAEnum(ChapterStatus, name="chapter_status_enum"),
         nullable=False,
-        server_default="draft",
+        default=ChapterStatus.DRAFT,
     )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
