@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { Loader2 } from 'lucide-react';
 import { useChapter } from '@/features/novel/hooks/use-chapter-queries';
 import { ChapterEditor } from '@/features/novel/components/chapter-editor';
+import { ChapterSidebar } from '@/features/novel/components/chapter-sidebar';
 
 export const Route = createFileRoute(
   '/_authenticated/novels/$novelId/chapters/$chapterId/edit'
@@ -31,10 +32,7 @@ function ChapterEditPage() {
 
   return (
     <div className="flex h-screen">
-      {/* Sidebar placeholder — replaced in 02-04 */}
-      <div className="w-64 border-r flex items-center justify-center text-sm text-muted-foreground">
-        챕터 목록 로드 중...
-      </div>
+      <ChapterSidebar novelId={novelId} currentChapterId={chapterId} />
       {/* Editor area */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <div className="px-6 py-3 border-b">
