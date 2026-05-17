@@ -1,0 +1,1 @@
+"""Novel domain — novels, chapters."""
