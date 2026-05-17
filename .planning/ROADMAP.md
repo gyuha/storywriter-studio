@@ -85,7 +85,20 @@ Plans:
   3. 사용자가 시간표/연표 항목을 생성하고 특정 챕터와 연결할 수 있다
   4. 세계관 항목 목록에서 이름 또는 유형으로 검색·필터링하여 원하는 항목을 빠르게 찾을 수 있다
 
-**Plans:** TBD
+**Plans:** 3 plans
+Plans:
+**Wave 1**
+
+- [ ] 03-01-PLAN.md — DB 스키마 + 백엔드 도메인 (5개 테이블 마이그레이션, domains/world/ 전체, character+location+world_setting router, HeyAPI 재생성)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 03-02-PLAN.md — 세계관 관리 프론트엔드 (features/world/ 타입·API·훅·컴포넌트, 캐릭터·장소·세계관설정 탭, /novels/:id/world 라우트)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 03-03-PLAN.md — 타임라인 + 캐릭터 관계 (백엔드 timeline/relationship router, HeyAPI 재생성, 시간표 탭, 캐릭터 관계 서브섹션)
+
 **UI hint:** yes
 
 ### Phase 4: 에디터 사이드패널 + AI 초안 생성
@@ -112,5 +125,5 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. 인증 연동 | 0/4 | Not started | - |
 | 2. 소설/챕터 관리 | 0/4 | Not started | - |
-| 3. 세계관 데이터베이스 | 0/TBD | Not started | - |
+| 3. 세계관 데이터베이스 | 0/3 | Not started | - |
 | 4. 에디터 사이드패널 + AI 초안 생성 | 0/TBD | Not started | - |
