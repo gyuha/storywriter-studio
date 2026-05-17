@@ -1,3 +1,85 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Development Commands
+
+### Backend (`apps/api/`)
+
+```bash
+# Start infrastructure (PostgreSQL 16, Redis 7, Mailpit)
+cd apps/api && docker compose up -d
+
+# Run dev server
+cd apps/api && uv run uvicorn src.main:app --reload
+
+# Database migrations
+cd apps/api && uv run alembic upgrade head
+cd apps/api && uv run alembic revision --autogenerate -m "description"
+
+# Tests
+cd apps/api && uv run pytest                                      # all tests
+cd apps/api && uv run pytest tests/unit/auth/test_auth_service.py # single file
+cd apps/api && uv run pytest -m unit                              # unit only
+cd apps/api && uv run pytest -m integration                       # integration only
+
+# Lint / format / typecheck
+cd apps/api && uv run ruff check .
+cd apps/api && uv run ruff format .
+cd apps/api && uv run mypy src/
+```
+
+### Frontend (`web/`)
+
+```bash
+cd web && pnpm dev          # dev server
+cd web && pnpm build        # production build (tsc + vite)
+cd web && pnpm typecheck    # tsc --noEmit only
+cd web && pnpm lint         # biome check
+cd web && pnpm lint:fix     # biome check --write
+```
+
+## Critical Architecture Notes
+
+### Frontend auth is currently mocked
+
+`web/src/features/auth/lib/mock-auth-api.ts` is used instead of real API calls. The actual FastAPI backend is not yet wired to the frontend. This is the primary gap for Phase 1.
+
+### Adding a new backend domain
+
+Follow `domains/auth/` exactly:
+```
+domains/<name>/
+  router/<name>_router.py   # FastAPI APIRouter, Pydantic schemas
+  service/<name>_service.py # Business logic; raises AppError, never HTTPException
+  repository/<name>_repository.py  # All DB I/O via AsyncSession
+  models/<name>_models.py   # SQLAlchemy ORM models
+  schemas/<name>_schemas.py # Pydantic request/response models
+```
+Register the router in `apps/api/src/main.py`. Domain rules: `auth` and `chat` must not import each other; both may import `shared` and `core`.
+
+### LLM provider isolation
+
+Only `apps/api/src/infra/llm/provider_factory.py` imports `langchain_litellm`. All other code depends on the Protocol/ABC in `apps/api/src/domains/chat/ports.py`. Switching LLM providers requires only changing the `LLM_PROVIDER` env var.
+
+### Error handling pattern
+
+Service layer raises `AppError` subclasses (`ConflictError`, `UnauthorizedError`, `NotFoundError`). Router layer catches via `_app_error_to_http()`. Never raise `HTTPException` in service code.
+
+### Frontend routing
+
+TanStack Router uses file-based routing. `web/src/routes/routeTree.gen.ts` is auto-generated — do not edit. Create route files with `createFileRoute('/<path>')({ component: ... })`.
+
+### Frontend state
+
+- **Zustand** (`web/src/stores/`, `web/src/features/*/store/`) — client state
+- **React Query** (`useMutation`, `useQuery`) — server state, API calls
+- Do not use React Context for shared feature state; use a Zustand slice instead.
+
+### `web/src/sample/`
+
+Reference UI components only — not production code. Safe to use as implementation reference.
+
 <!-- GSD:project-start source:PROJECT.md -->
 ## Project
 
@@ -113,7 +195,6 @@ AI 기반 웹소설 집필 에이전트 플랫폼. 작가가 소설 프로젝트
 <!-- GSD:conventions-start source:CONVENTIONS.md -->
 ## Conventions
 
-## Overview
 ## Python API (`apps/api/`)
 ### Toolchain
 - Line length: 100
@@ -123,194 +204,70 @@ AI 기반 웹소설 집필 에이전트 플랫폼. 작가가 소설 프로젝트
 - `python_version = "3.12"`, `strict = true`
 - Pydantic and SQLAlchemy plugins enabled
 ### Naming Patterns
-- Modules use `snake_case`: `auth_service.py`, `auth_router.py`, `auth_schemas.py`
-- One logical unit per file, named after its primary class/function
-- `snake_case` for all functions and methods
-- Private helpers prefixed with `_`: `_normalize_display_name()`, `_app_error_to_http()`
-- Async functions named same as sync (no `async_` prefix)
-- `PascalCase`: `AuthService`, `AuthRepository`, `SignupRequest`, `UserResponse`
-- Pydantic schemas follow `<Entity><Role>` naming — documented in `apps/api/src/domains/auth/schemas/auth_schemas.py`:
-- `UPPER_SNAKE_CASE`: `EMAIL_VERIFY_EXPIRE_HOURS`, `ACCESS_TOKEN_EXPIRE_MINUTES`
-- `StrEnum` subclasses with lowercase values: `AppEnv.development`, `LLMProvider.openai`
-### Module Structure
-### Import Organization
-### Type Annotations
+- Modules: `snake_case` (`auth_service.py`, `auth_router.py`)
+- Classes: `PascalCase` (`AuthService`, `SignupRequest`, `UserResponse`)
+- Constants: `UPPER_SNAKE_CASE`; `StrEnum` subclasses with lowercase values
+- Private helpers prefixed with `_`; async functions use same name as sync (no `async_` prefix)
+- Pydantic schemas: `<Entity><Role>` — e.g. `SignupRequest`, `UserResponse`
 ### Error Handling
-- `AppError(Exception)` — base, carries `message` and `status_code`
-- `NotFoundError(AppError)` → 404
-- `ConflictError(AppError)` → 409
-- `UnauthorizedError(AppError)` → 401
-- `ForbiddenError(AppError)` → 403
-- `HTTPException` → JSON with `detail` field
-- `RequestValidationError` → 422 with structured errors (Pydantic ctx errors sanitized)
-- `Exception` → 500 with safe message `"Internal server error."`
+- `AppError(Exception)` — base with `message` and `status_code`
+- Subclasses: `NotFoundError` (404), `ConflictError` (409), `UnauthorizedError` (401), `ForbiddenError` (403)
+- Global handlers in `apps/api/src/core/exceptions.py` cover `HTTPException`, `RequestValidationError`, bare `Exception`
 ### Logging
-- `json` format in production/staging
-- `console` format in local development
-- Correlation IDs propagated via `structlog.contextvars`
-- Never use `print()` — enforced by `T20` Ruff ruleset
-### Comments and Docstrings
-- All public modules have a module-level docstring with Usage examples
-- Public classes and functions have docstrings
-- Section separators use `# ------` comments for visual grouping within long files
-- Inline comments explain non-obvious decisions, not what the code does
+- Never use `print()` — enforced by `T20` ruff rule; use `structlog` instead
+- JSON format in production, console format in development
 ### Pydantic Models
 - `from_attributes = True` for ORM-backed response models
-- Use `field_validator` (Pydantic v2 API — no `@validator` from v1)
-- Validators use `mode="before"` for normalization (e.g., email trimming/lowercasing)
-### FastAPI Dependency Injection
+- Use `field_validator` (Pydantic v2); `mode="before"` for normalization
 ## Web Frontend (`web/`)
 ### Toolchain
-- `indentStyle: "space"`, `indentWidth: 2`, `lineWidth: 100`
-- Quote style: `single`
-- Trailing commas: `es5`
-- Recommended rules enabled
-- `strict: true`, `noUnusedLocals: true`, `noUnusedParameters: true`
-- Path alias: `@/*` maps to `./src/*`
+- Biome: `indentStyle: "space"`, `indentWidth: 2`, `lineWidth: 100`, single quotes, trailing commas `es5`
+- TypeScript strict; path alias `@/*` → `./src/*`
 ### Naming Patterns
-- React components: `PascalCase.tsx` — `LoginForm.tsx`, `SignupForm.tsx`
-- Non-component modules: `kebab-case.ts` — `mock-auth-api.ts`, `auth.schema.ts`
-- Stores: `<name>.store.ts` — `auth.store.ts`, `modal-store.ts`
-- Schemas: `<name>.schema.ts` — `auth.schema.ts`
-- Types: `<name>.types.ts` or `<name>.ts` inside `types/` directory
-- React components: `PascalCase` named function exports: `export function LoginForm()`
-- Hooks: `camelCase` prefixed with `use`: `useLoginMutation`, `useAuthStore`
-- Utilities: `camelCase`: `cn()`, `mockLogin()`
-- `camelCase` for all variables and object properties
-- Constants: `UPPER_SNAKE_CASE` for exported path constants (e.g., `SAMPLE_SIGN_IN_PATH`)
-- `PascalCase`: `AuthUser`, `LoginInput`, `AuthState`
-- Interfaces preferred over type aliases for object shapes
-- `type` keyword used for union types and function signatures
-### Import Organization
+- React components: `PascalCase.tsx`; non-component modules: `kebab-case.ts`
+- Stores: `<name>.store.ts`; schemas: `<name>.schema.ts`
+- Hooks: `camelCase` prefixed with `use`; constants: `UPPER_SNAKE_CASE`
+- Named exports only (no default exports)
 ### React Component Patterns
-- Named exports, not default exports (enables refactor-safe imports)
 - `react-hook-form` + `zodResolver` for all form validation
-- Tailwind CSS classes via `cn()` utility (`clsx` + `tailwind-merge`)
+- Tailwind classes via `cn()` utility (`clsx` + `tailwind-merge`)
 - `motion/react` for animations
-### State Management
-### Schema / Validation
 ### Error Handling (Frontend)
-- Mutation errors displayed inline via `isError` + `error` from `useMutation`
-- Toast notifications via `sonner` for success states
-- No global error boundary pattern observed in feature code
-### UI Components
+- Mutation errors via `isError` + `error` from `useMutation`
+- Success toasts via `sonner`
 <!-- GSD:conventions-end -->
 
 <!-- GSD:architecture-start source:ARCHITECTURE.md -->
 ## Architecture
 
-## System Overview
-```text
-```
-## Component Responsibilities
-| Component | Responsibility | File |
-|-----------|----------------|------|
-| FastAPI app factory | App creation, middleware, router registration | `apps/api/src/main.py` |
-| core/config | Pydantic settings, env-var loading, LLM provider config | `apps/api/src/core/config.py` |
-| core/database | SQLAlchemy async engine, session factory, Base | `apps/api/src/core/database.py` |
-| core/redis | Redis connection pool, JTI blacklist helpers | `apps/api/src/core/redis.py` |
-| core/middleware | CorrelationIdMiddleware — X-Correlation-ID propagation | `apps/api/src/core/middleware.py` |
-| core/exceptions | AppError hierarchy, global FastAPI exception handlers | `apps/api/src/core/exceptions.py` |
-| domains/shared | DDD base types: Entity, AggregateRoot, ValueObject, DomainEvent | `apps/api/src/domains/shared/` |
-| domains/auth/router | HTTP handlers for auth endpoints (signup, login, OAuth, etc.) | `apps/api/src/domains/auth/router/auth_router.py` |
-| domains/auth/service | Auth business logic — no HTTP awareness, raises AppError | `apps/api/src/domains/auth/service/auth_service.py` |
-| domains/auth/repository | All auth DB I/O via SQLAlchemy async session | `apps/api/src/domains/auth/repository/auth_repository.py` |
-| domains/auth/security | JWT create/decode/blacklist, argon2 hashing, RBAC deps | `apps/api/src/domains/auth/security.py` |
-| domains/chat/ports | LLMClientProtocol, AbstractLLMPort interfaces (hexagonal) | `apps/api/src/domains/chat/ports.py` |
-| domains/chat/container | DI container: binds DefaultLLMClientFactory to interface | `apps/api/src/domains/chat/container.py` |
-| domains/chat/service | Chat business logic; depends only on AbstractLLMPort | `apps/api/src/domains/chat/service/chat_service.py` |
-| infra/llm/provider_factory | LangChain-LiteLLM adapter; only place that imports langchain_litellm | `apps/api/src/infra/llm/provider_factory.py` |
-| web/main.tsx | React app entry point — mounts RouterProvider | `web/src/main.tsx` |
-| web/routes/__root.tsx | Root route: wraps AppProviders, Toaster, Modals | `web/src/routes/__root.tsx` |
-| web/providers/app-providers.tsx | QueryClientProvider (React Query) | `web/src/providers/app-providers.tsx` |
-| web/features/auth | Auth feature: components, hooks (React Query mutations), Zustand store | `web/src/features/auth/` |
-| web/stores/modal-store.ts | Global Zustand modal stack with devtools | `web/src/stores/modal-store.ts` |
-| web/sample/ | Reference UI samples (dashboard, tasks, users, settings, chats) — not production code | `web/src/sample/` |
-## Pattern Overview
-- Backend domains (`auth`, `chat`) are isolated: they may import from `shared` but not from each other.
-- Each backend domain follows a strict Router → Service → Repository layering; service has no HTTP imports.
-- The LLM infrastructure is isolated in `infra/llm/`; chat domain depends only on the Protocol/ABC defined in `domains/chat/ports.py`.
-- Frontend routing is file-based via TanStack Router; `routeTree.gen.ts` is auto-generated.
-- The `web/src/sample/` subtree is a UI reference/demo section, not production application code.
-## Layers
-- Purpose: Validate requests, call service, serialize responses
-- Location: `apps/api/src/domains/*/router/`
-- Contains: FastAPI `APIRouter`, Pydantic request/response models, dependency factories
-- Depends on: Service layer, core dependencies
-- Used by: FastAPI application router registration in `main.py`
-- Purpose: Business logic and orchestration; raises `AppError` subclasses, never `HTTPException`
-- Location: `apps/api/src/domains/*/service/`
-- Contains: Domain service classes (`AuthService`, `ChatService`)
-- Depends on: Repository layer, core security/config utilities, domain ports
-- Used by: Router layer via FastAPI `Depends`
-- Purpose: All database I/O — no business logic
-- Location: `apps/api/src/domains/*/repository/`
-- Contains: Repository classes wrapping `AsyncSession` with typed query methods
-- Depends on: SQLAlchemy models, core/database
-- Used by: Service layer
-- Purpose: External adapter implementations (LLM providers)
-- Location: `apps/api/src/infra/`
-- Contains: `provider_factory.py` — sole importer of `langchain_litellm`
-- Depends on: `core/config`, `langchain_litellm`
-- Used by: `domains/chat/llm_client.py` via DI container
-- Purpose: Cross-cutting concerns shared by all domains
-- Location: `apps/api/src/core/`
-- Contains: config, database engine, redis client, middleware, exceptions, security base
-- Depends on: Python stdlib, third-party libraries only (never domain code)
-- Used by: All layers
-- Purpose: File-based page components; map URLs to UI
-- Location: `web/src/routes/`
-- Contains: TanStack Router route files (`createFileRoute`)
-- Depends on: Features, components, stores
-- Purpose: Encapsulated vertical slices (auth only so far)
-- Location: `web/src/features/`
-- Contains: components, hooks (React Query), store (Zustand), types, schemas, lib
-- Depends on: `web/src/lib/`, `web/src/components/`
-- Purpose: Reusable UI primitives
-- Location: `web/src/components/ui/` (shadcn/ui components), `web/src/components/layout/`
-- Depends on: Nothing domain-specific
-## Data Flow
-### Backend: Auth Request Path
-### Backend: Chat Completion Path
-### Frontend: Auth Login Path
-- Backend: Stateless per request. Redis holds JWT blacklist entries and OAuth CSRF state nonces.
-- Frontend: Zustand for auth user state (`web/src/features/auth/store/auth.store.ts`) and modal stack (`web/src/stores/modal-store.ts`). React Query for server-state caching.
-## Key Abstractions
-- Purpose: Typed domain errors that carry HTTP status codes without importing FastAPI
-- Examples: `ConflictError`, `UnauthorizedError`, `NotFoundError` in `apps/api/src/core/exceptions.py`
-- Pattern: Service raises `AppError`; router catches and calls `_app_error_to_http()`
-- Purpose: Hexagonal port — the chat domain's contract for any LLM provider
-- Examples: `apps/api/src/domains/chat/ports.py`
-- Pattern: Protocol for structural duck-typing; ABC for explicit first-party adapters
-- Purpose: Foundation types for DDD — `Entity`, `AggregateRoot`, `ValueObject`, `DomainEvent`
-- Examples: `apps/api/src/domains/shared/`
-- Pattern: `shared` may not import `auth` or `chat`; both may import `shared`
-- Purpose: Each file in `web/src/routes/` becomes a route; tree is auto-generated
-- Examples: `web/src/routes/index.tsx`, `web/src/routes/auth/login.tsx`
-- Pattern: `createFileRoute('/')({ component: ... })` — no manual route registration
-## Entry Points
-- Location: `apps/api/src/main.py`
-- Triggers: `uvicorn` via `make dev` / `uv run python -m app` / Docker
-- Responsibilities: Creates FastAPI app, registers middleware (CorrelationId, CORS, rate limiting), registers domain routers
-- Location: `web/src/main.tsx`
-- Triggers: Vite dev server (`npm run dev`) or static build (`npm run build`)
-- Responsibilities: Mounts `<RouterProvider router={router} />` into `#root` DOM element
-## Architectural Constraints
-- **Threading:** Backend runs on asyncio event loop (single-threaded per worker). All I/O is async. `uvicorn --workers` for multiprocess prod scale.
-- **Global state:** `app` module-level FastAPI instance in `apps/api/src/main.py`. `settings` singleton in `apps/api/src/core/config.py` (lru_cache). Zustand stores are module-level singletons in frontend.
-- **Domain isolation:** `domains/auth` and `domains/chat` must not import each other. Both import from `domains/shared` and `core`. Enforced by code convention, not tooling.
-- **LLM adapter isolation:** Only `apps/api/src/infra/llm/provider_factory.py` and `apps/api/src/domains/chat/llm_client.py` may import `langchain_litellm`. All other code goes through the Protocol/ABC in `ports.py`.
-- **Frontend mock:** `web/src/features/auth/lib/mock-auth-api.ts` is used instead of real API calls. This is a known gap — the real API backend is not yet wired to the frontend.
-## Anti-Patterns
-### Raising HTTPException in the service layer
-### Importing concrete LLM implementation outside the container
-### Cross-domain imports between auth and chat
-## Error Handling
-- Backend service layer: raises `AppError` subclasses (`ConflictError`, `UnauthorizedError`, `NotFoundError`)
-- Backend router layer: catches `AppError`, calls `_app_error_to_http()` to produce `HTTPException`
-- Backend global handlers: registered via `register_exception_handlers(app)` in `apps/api/src/core/exceptions.py` — covers `HTTPException`, `RequestValidationError`, and bare `Exception` (500)
-- All error responses include `X-Correlation-ID` header when available
-## Cross-Cutting Concerns
+**System:** Monorepo — `apps/api/` (FastAPI + DDD) and `web/` (React 19). Currently not connected: frontend uses mock auth.
+
+**Backend layers (per domain):**
+- Router → validates requests, calls service, serializes responses (`domains/*/router/`)
+- Service → business logic, raises `AppError` never `HTTPException` (`domains/*/service/`)
+- Repository → all DB I/O via `AsyncSession` (`domains/*/repository/`)
+- Core → cross-cutting concerns, never imports domain code (`core/`)
+- Infra → external adapters, e.g. LLM provider (`infra/llm/`)
+
+**Domain isolation:** `domains/auth` and `domains/chat` must not import each other. Both may import `domains/shared` and `core`.
+
+**LLM isolation:** Only `infra/llm/provider_factory.py` imports `langchain_litellm`. Chat domain depends only on `domains/chat/ports.py` Protocol/ABC.
+
+**Key components:**
+
+| Component | File |
+|-----------|------|
+| FastAPI app factory + middleware | `apps/api/src/main.py` |
+| Settings singleton (lru_cache) | `apps/api/src/core/config.py` |
+| Async DB engine + session | `apps/api/src/core/database.py` |
+| JWT blacklist + Redis pool | `apps/api/src/core/redis.py` |
+| AppError hierarchy + global handlers | `apps/api/src/core/exceptions.py` |
+| DDD base types (Entity, AggregateRoot) | `apps/api/src/domains/shared/` |
+| LLM provider adapter | `apps/api/src/infra/llm/provider_factory.py` |
+| React app entry | `web/src/main.tsx` |
+| Root route (AppProviders, Toaster) | `web/src/routes/__root.tsx` |
+| Auth feature (components, hooks, store) | `web/src/features/auth/` |
+| Global modal stack | `web/src/stores/modal-store.ts` |
 <!-- GSD:architecture-end -->
 
 <!-- GSD:skills-start source:skills/ -->
@@ -331,8 +288,6 @@ Use these entry points:
 
 Do not make direct repo edits outside a GSD workflow unless the user explicitly asks to bypass it.
 <!-- GSD:workflow-end -->
-
-
 
 <!-- GSD:profile-start -->
 ## Developer Profile
