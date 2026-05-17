@@ -74,8 +74,8 @@ All LLM routing is encapsulated in `apps/api/src/infra/llm/provider_factory.py` 
 - HTTP client for OAuth flows: `httpx` (`apps/api/src/domains/auth/oauth/`)
 
 **Frontend Auth (mock only):**
-- `web/src/features/auth/lib/mock-auth-api.ts` — frontend uses mock auth calls; no real API connection wired in current frontend code
-- Auth state via Zustand store: `web/src/features/auth/store/auth.store.ts`
+- `apps/web/src/features/auth/lib/mock-auth-api.ts` — frontend uses mock auth calls; no real API connection wired in current frontend code
+- Auth state via Zustand store: `apps/web/src/features/auth/store/auth.store.ts`
 
 ## Email
 

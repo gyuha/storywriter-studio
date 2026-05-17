@@ -5,7 +5,7 @@
 ## Languages
 
 **Primary:**
-- TypeScript 5.8 - Frontend (`web/src/`)
+- TypeScript 5.8 - Frontend (`apps/web/src/`)
 - Python 3.12 - Backend API (`apps/api/src/`)
 
 **Secondary:**
@@ -18,30 +18,30 @@
 - Python 3.12 (backend, enforced in `apps/api/pyproject.toml`)
 
 **Package Manager:**
-- Frontend: pnpm 10.28.2 (`web/package.json`)
-  - Lockfile: `web/pnpm-lock.yaml` (present)
+- Frontend: pnpm 10.28.2 (`apps/web/package.json`)
+  - Lockfile: `apps/web/pnpm-lock.yaml` (present)
 - Backend: uv (`apps/api/pyproject.toml`)
   - Lockfile: `apps/api/uv.lock` (present)
 
 ## Frameworks
 
 **Core:**
-- React 19 - Frontend UI framework (`web/src/`)
+- React 19 - Frontend UI framework (`apps/web/src/`)
 - FastAPI >=0.115.0 with uvicorn >=0.30.0 - Backend HTTP framework (`apps/api/src/main.py`)
 
 **Routing (Frontend):**
-- @tanstack/react-router 1.95.0 - File-based routing with auto code splitting (`web/src/routes/`, config in `web/vite.config.ts`)
+- @tanstack/react-router 1.95.0 - File-based routing with auto code splitting (`apps/web/src/routes/`, config in `apps/web/vite.config.ts`)
 
 **State Management (Frontend):**
-- zustand 5.0.3 - Global client state (`web/src/stores/`, `web/src/features/auth/store/auth.store.ts`)
-- @tanstack/react-query 5.75.0 - Server state / async data fetching (`web/src/providers/app-providers.tsx`)
+- zustand 5.0.3 - Global client state (`apps/web/src/stores/`, `apps/web/src/features/auth/store/auth.store.ts`)
+- @tanstack/react-query 5.75.0 - Server state / async data fetching (`apps/web/src/providers/app-providers.tsx`)
 - immer 11.1.4 - Immutable state updates (paired with zustand)
 
 **Forms (Frontend):**
 - react-hook-form 7.55.0 + @hookform/resolvers 4.1.3 + zod 3.24.2 - Form handling with schema validation
 
 **Styling (Frontend):**
-- Tailwind CSS 4.0 - Utility-first CSS (`web/src/styles/`)
+- Tailwind CSS 4.0 - Utility-first CSS (`apps/web/src/styles/`)
 - tailwind-merge 2.6.0 + clsx 2.1.1 + class-variance-authority 0.7.1 - Class name utilities
 - motion 11.18.0 (Framer Motion) - Animations
 
@@ -107,7 +107,7 @@
 ## Build / Dev Tools
 
 **Frontend:**
-- Vite 6.0.0 - Dev server and bundler (`web/vite.config.ts`)
+- Vite 6.0.0 - Dev server and bundler (`apps/web/vite.config.ts`)
 - @vitejs/plugin-react 4.3.4 - React fast refresh
 - @tailwindcss/vite 4.0.0 - Tailwind CSS Vite plugin
 - @tanstack/router-plugin 1.95.0 - Route tree generation
@@ -117,7 +117,7 @@
 - @biomejs/biome 1.9.4 - Unified linter + formatter (replaces ESLint + Prettier)
 
 **Type Checking (Frontend):**
-- TypeScript 5.8 strict mode (`web/tsconfig.json`)
+- TypeScript 5.8 strict mode (`apps/web/tsconfig.json`)
 
 **Backend Dev Tools:**
 - ruff >=0.8.0 - Python linter + formatter (configured in `apps/api/pyproject.toml`)
@@ -153,8 +153,8 @@
 - Vite `VITE_*` prefix convention for public env vars (no `.env` file detected at repo root)
 
 **Build (Frontend):**
-- `web/vite.config.ts` - Vite config with TanStack Router plugin, Tailwind, tsconfig paths
-- `web/tsconfig.json` - TypeScript strict, target ES2022, path alias `@/*` → `./src/*`
+- `apps/web/vite.config.ts` - Vite config with TanStack Router plugin, Tailwind, tsconfig paths
+- `apps/web/tsconfig.json` - TypeScript strict, target ES2022, path alias `@/*` → `./src/*`
 
 **Build (Backend):**
 - `apps/api/pyproject.toml` - hatchling build backend, src layout (`src/` package root)

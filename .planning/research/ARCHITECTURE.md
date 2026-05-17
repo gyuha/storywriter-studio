@@ -181,9 +181,9 @@ class ContextAssemblyService:
 
 | 컴포넌트 | 위치 | 책임 |
 |---------|------|------|
-| `features/story/` | `web/src/features/story/` | 소설 목록, 생성/수정, 대시보드 |
-| `features/chapter/` | `web/src/features/chapter/` | 챕터 목록, 에디터 레이아웃, AI 생성 UI |
-| `features/world/` | `web/src/features/world/` | 캐릭터·장소·세계관 관리 CRUD |
+| `features/story/` | `apps/web/src/features/story/` | 소설 목록, 생성/수정, 대시보드 |
+| `features/chapter/` | `apps/web/src/features/chapter/` | 챕터 목록, 에디터 레이아웃, AI 생성 UI |
+| `features/world/` | `apps/web/src/features/world/` | 캐릭터·장소·세계관 관리 CRUD |
 | `ChapterEditorLayout` | `features/chapter/components/` | Editor + SidePanel 2-패널 레이아웃 |
 | `EditorPanel` | `features/chapter/components/` | TipTap 에디터, AI 생성 버튼, 스트림 렌더 |
 | `ContextSidePanel` | `features/chapter/components/` | 세계관 항목 브라우저, 컨텍스트 핀 토글 |

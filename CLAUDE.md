@@ -29,21 +29,21 @@ cd apps/api && uv run ruff format .
 cd apps/api && uv run mypy src/
 ```
 
-### Frontend (`web/`)
+### Frontend (`apps/web/`)
 
 ```bash
-cd web && pnpm dev          # dev server
-cd web && pnpm build        # production build (tsc + vite)
-cd web && pnpm typecheck    # tsc --noEmit only
-cd web && pnpm lint         # biome check
-cd web && pnpm lint:fix     # biome check --write
+cd apps/web && pnpm dev          # dev server
+cd apps/web && pnpm build        # production build (tsc + vite)
+cd apps/web && pnpm typecheck    # tsc --noEmit only
+cd apps/web && pnpm lint         # biome check
+cd apps/web && pnpm lint:fix     # biome check --write
 ```
 
 ## Critical Architecture Notes
 
 ### Frontend auth is currently mocked
 
-`web/src/features/auth/lib/mock-auth-api.ts` is used instead of real API calls. The actual FastAPI backend is not yet wired to the frontend. This is the primary gap for Phase 1.
+`apps/web/src/features/auth/lib/mock-auth-api.ts` is used instead of real API calls. The actual FastAPI backend is not yet wired to the frontend. This is the primary gap for Phase 1.
 
 ### Adding a new backend domain
 
@@ -68,15 +68,15 @@ Service layer raises `AppError` subclasses (`ConflictError`, `UnauthorizedError`
 
 ### Frontend routing
 
-TanStack Router uses file-based routing. `web/src/routes/routeTree.gen.ts` is auto-generated — do not edit. Create route files with `createFileRoute('/<path>')({ component: ... })`.
+TanStack Router uses file-based routing. `apps/web/src/routes/routeTree.gen.ts` is auto-generated — do not edit. Create route files with `createFileRoute('/<path>')({ component: ... })`.
 
 ### Frontend state
 
-- **Zustand** (`web/src/stores/`, `web/src/features/*/store/`) — client state
+- **Zustand** (`apps/web/src/stores/`, `apps/web/src/features/*/store/`) — client state
 - **React Query** (`useMutation`, `useQuery`) — server state, API calls
 - Do not use React Context for shared feature state; use a Zustand slice instead.
 
-### `web/src/sample/`
+### `apps/web/src/sample/`
 
 Reference UI components only — not production code. Safe to use as implementation reference.
 
@@ -102,23 +102,23 @@ AI 기반 웹소설 집필 에이전트 플랫폼. 작가가 소설 프로젝트
 ## Technology Stack
 
 ## Languages
-- TypeScript 5.8 - Frontend (`web/src/`)
+- TypeScript 5.8 - Frontend (`apps/web/src/`)
 - Python 3.12 - Backend API (`apps/api/src/`)
 - None
 ## Runtime
 - Node.js >=18.17.0 (frontend dev/build)
 - Python 3.12 (backend, enforced in `apps/api/pyproject.toml`)
-- Frontend: pnpm 10.28.2 (`web/package.json`)
+- Frontend: pnpm 10.28.2 (`apps/web/package.json`)
 - Backend: uv (`apps/api/pyproject.toml`)
 ## Frameworks
-- React 19 - Frontend UI framework (`web/src/`)
+- React 19 - Frontend UI framework (`apps/web/src/`)
 - FastAPI >=0.115.0 with uvicorn >=0.30.0 - Backend HTTP framework (`apps/api/src/main.py`)
-- @tanstack/react-router 1.95.0 - File-based routing with auto code splitting (`web/src/routes/`, config in `web/vite.config.ts`)
-- zustand 5.0.3 - Global client state (`web/src/stores/`, `web/src/features/auth/store/auth.store.ts`)
-- @tanstack/react-query 5.75.0 - Server state / async data fetching (`web/src/providers/app-providers.tsx`)
+- @tanstack/react-router 1.95.0 - File-based routing with auto code splitting (`apps/web/src/routes/`, config in `apps/web/vite.config.ts`)
+- zustand 5.0.3 - Global client state (`apps/web/src/stores/`, `apps/web/src/features/auth/store/auth.store.ts`)
+- @tanstack/react-query 5.75.0 - Server state / async data fetching (`apps/web/src/providers/app-providers.tsx`)
 - immer 11.1.4 - Immutable state updates (paired with zustand)
 - react-hook-form 7.55.0 + @hookform/resolvers 4.1.3 + zod 3.24.2 - Form handling with schema validation
-- Tailwind CSS 4.0 - Utility-first CSS (`web/src/styles/`)
+- Tailwind CSS 4.0 - Utility-first CSS (`apps/web/src/styles/`)
 - tailwind-merge 2.6.0 + clsx 2.1.1 + class-variance-authority 0.7.1 - Class name utilities
 - motion 11.18.0 (Framer Motion) - Animations
 - @base-ui/react 1.4.1 - Unstyled accessible UI primitives
@@ -153,13 +153,13 @@ AI 기반 웹소설 집필 에이전트 플랫폼. 작가가 소설 프로젝트
 - fakeredis >=2.26.0 - In-memory Redis stub
 - anyio >=4.6.0 - Async test helpers
 ## Build / Dev Tools
-- Vite 6.0.0 - Dev server and bundler (`web/vite.config.ts`)
+- Vite 6.0.0 - Dev server and bundler (`apps/web/vite.config.ts`)
 - @vitejs/plugin-react 4.3.4 - React fast refresh
 - @tailwindcss/vite 4.0.0 - Tailwind CSS Vite plugin
 - @tanstack/router-plugin 1.95.0 - Route tree generation
 - vite-tsconfig-paths 5.1.4 - TypeScript path alias resolution
 - @biomejs/biome 1.9.4 - Unified linter + formatter (replaces ESLint + Prettier)
-- TypeScript 5.8 strict mode (`web/tsconfig.json`)
+- TypeScript 5.8 strict mode (`apps/web/tsconfig.json`)
 - ruff >=0.8.0 - Python linter + formatter (configured in `apps/api/pyproject.toml`)
 - mypy >=1.13.0 - Static type checking (strict mode)
 - pre-commit >=4.0.0 + detect-secrets >=1.5.0 - Pre-commit hooks + secret scanning
@@ -179,8 +179,8 @@ AI 기반 웹소설 집필 에이전트 플랫폼. 작가가 소설 프로젝트
 - Example: `apps/api/.env.example` and `apps/api/.env.prod.example`
 - Key required vars: `SECRET_KEY`, `JWT_SECRET_KEY`, `DATABASE_URL` or `POSTGRES_*`, `REDIS_URL` or `REDIS_*`, LLM API key for active provider
 - Vite `VITE_*` prefix convention for public env vars (no `.env` file detected at repo root)
-- `web/vite.config.ts` - Vite config with TanStack Router plugin, Tailwind, tsconfig paths
-- `web/tsconfig.json` - TypeScript strict, target ES2022, path alias `@/*` → `./src/*`
+- `apps/web/vite.config.ts` - Vite config with TanStack Router plugin, Tailwind, tsconfig paths
+- `apps/web/tsconfig.json` - TypeScript strict, target ES2022, path alias `@/*` → `./src/*`
 - `apps/api/pyproject.toml` - hatchling build backend, src layout (`src/` package root)
 - `apps/api/Dockerfile` - Multi-stage: builder (uv install + wheel build) → runtime (slim image, no dev tools)
 ## Platform Requirements
@@ -219,7 +219,7 @@ AI 기반 웹소설 집필 에이전트 플랫폼. 작가가 소설 프로젝트
 ### Pydantic Models
 - `from_attributes = True` for ORM-backed response models
 - Use `field_validator` (Pydantic v2); `mode="before"` for normalization
-## Web Frontend (`web/`)
+## Web Frontend (`apps/web/`)
 ### Toolchain
 - Biome: `indentStyle: "space"`, `indentWidth: 2`, `lineWidth: 100`, single quotes, trailing commas `es5`
 - TypeScript strict; path alias `@/*` → `./src/*`
@@ -240,7 +240,7 @@ AI 기반 웹소설 집필 에이전트 플랫폼. 작가가 소설 프로젝트
 <!-- GSD:architecture-start source:ARCHITECTURE.md -->
 ## Architecture
 
-**System:** Monorepo — `apps/api/` (FastAPI + DDD) and `web/` (React 19). Currently not connected: frontend uses mock auth.
+**System:** Monorepo — `apps/api/` (FastAPI + DDD) and `apps/web/` (React 19). Currently not connected: frontend uses mock auth.
 
 **Backend layers (per domain):**
 - Router → validates requests, calls service, serializes responses (`domains/*/router/`)
@@ -264,10 +264,10 @@ AI 기반 웹소설 집필 에이전트 플랫폼. 작가가 소설 프로젝트
 | AppError hierarchy + global handlers | `apps/api/src/core/exceptions.py` |
 | DDD base types (Entity, AggregateRoot) | `apps/api/src/domains/shared/` |
 | LLM provider adapter | `apps/api/src/infra/llm/provider_factory.py` |
-| React app entry | `web/src/main.tsx` |
-| Root route (AppProviders, Toaster) | `web/src/routes/__root.tsx` |
-| Auth feature (components, hooks, store) | `web/src/features/auth/` |
-| Global modal stack | `web/src/stores/modal-store.ts` |
+| React app entry | `apps/web/src/main.tsx` |
+| Root route (AppProviders, Toaster) | `apps/web/src/routes/__root.tsx` |
+| Auth feature (components, hooks, store) | `apps/web/src/features/auth/` |
+| Global modal stack | `apps/web/src/stores/modal-store.ts` |
 <!-- GSD:architecture-end -->
 
 <!-- GSD:skills-start source:skills/ -->

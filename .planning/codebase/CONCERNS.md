@@ -5,20 +5,20 @@
 ## Tech Debt
 
 **Web frontend uses mock API instead of real backend:**
-- Issue: The auth feature in `web/src/features/auth/lib/mock-auth-api.ts` uses a `mockLogin`/`mockSignup` stub with hardcoded test emails (`fail@example.com`, `taken@example.com`) instead of connecting to the FastAPI backend.
-- Files: `web/src/features/auth/lib/mock-auth-api.ts`, `web/src/features/auth/hooks/use-auth-mutation.ts`
+- Issue: The auth feature in `apps/web/src/features/auth/lib/mock-auth-api.ts` uses a `mockLogin`/`mockSignup` stub with hardcoded test emails (`fail@example.com`, `taken@example.com`) instead of connecting to the FastAPI backend.
+- Files: `apps/web/src/features/auth/lib/mock-auth-api.ts`, `apps/web/src/features/auth/hooks/use-auth-mutation.ts`
 - Impact: The entire login/signup flow in `/auth/login` and `/auth/signup` routes does not communicate with the real API. Auth state (`useAuthStore`) is never persisted — cleared on page refresh. No real JWT handling exists in the frontend.
 - Fix approach: Replace `mockLogin`/`mockSignup` with real `fetch`/`axios` calls to `POST /api/v1/auth/login` and `POST /api/v1/auth/signup`. Add JWT token persistence (e.g., Zustand `persist` middleware with `sessionStorage`). Implement token refresh logic.
 
 **Auth state not persisted across page refreshes:**
-- Issue: `useAuthStore` in `web/src/features/auth/store/auth.store.ts` uses bare `create()` with no persistence middleware. Login state is lost on every page refresh.
-- Files: `web/src/features/auth/store/auth.store.ts`
+- Issue: `useAuthStore` in `apps/web/src/features/auth/store/auth.store.ts` uses bare `create()` with no persistence middleware. Login state is lost on every page refresh.
+- Files: `apps/web/src/features/auth/store/auth.store.ts`
 - Impact: Users are effectively logged out on every page reload even when using mock auth.
 - Fix approach: Add `persist` middleware from `zustand/middleware` using `sessionStorage` or add token storage once real API is wired.
 
 **Test/debug routes included in production build:**
-- Issue: `web/src/routes/test/modal.tsx` registers a public `/test/modal` route in the production route tree (generated into `routeTree.gen.ts`). There is no auth gate on this route.
-- Files: `web/src/routes/test/modal.tsx`, `web/src/routeTree.gen.ts`
+- Issue: `apps/web/src/routes/test/modal.tsx` registers a public `/test/modal` route in the production route tree (generated into `routeTree.gen.ts`). There is no auth gate on this route.
+- Files: `apps/web/src/routes/test/modal.tsx`, `apps/web/src/routeTree.gen.ts`
 - Impact: The modal test page is accessible in production at `/test/modal`.
 - Fix approach: Move to a separate development-only entrypoint or guard with `import.meta.env.DEV`.
 
@@ -41,8 +41,8 @@
 - Fix approach: Have `Settings` embed a single `LLMSettings` instance directly, rather than re-declaring all fields.
 
 **`@faker-js/faker` in production `dependencies` instead of `devDependencies`:**
-- Issue: `@faker-js/faker` is listed under `dependencies` in `web/package.json` instead of `devDependencies`. It is only used by `web/src/sample/` data generators.
-- Files: `web/package.json:17`
+- Issue: `@faker-js/faker` is listed under `dependencies` in `apps/web/package.json` instead of `devDependencies`. It is only used by `apps/web/src/sample/` data generators.
+- Files: `apps/web/package.json:17`
 - Impact: Faker (a large package) is bundled into production builds or included in the production `node_modules` install.
 - Fix approach: Move `@faker-js/faker` to `devDependencies`.
 
@@ -169,18 +169,18 @@
 - Blocks: Any real user registration, login, or protected feature cannot be tested or used end-to-end.
 
 **No token refresh mechanism in the web frontend:**
-- Problem: There is no code in `web/src/features/auth/` to handle JWT refresh token rotation, expiry detection, or automatic re-authentication.
+- Problem: There is no code in `apps/web/src/features/auth/` to handle JWT refresh token rotation, expiry detection, or automatic re-authentication.
 - Blocks: Even after a real API is connected, sessions will silently expire after 15 minutes.
 
 **No environment variable configuration for API base URL in web:**
-- Problem: No `VITE_API_URL` or equivalent is used anywhere in `web/src/features/`. When the real API is wired, the base URL will be hardcoded or will need to be added.
+- Problem: No `VITE_API_URL` or equivalent is used anywhere in `apps/web/src/features/`. When the real API is wired, the base URL will be hardcoded or will need to be added.
 - Blocks: Multi-environment deployment (dev/staging/prod) requires this to be configurable.
 
 ## Test Coverage Gaps
 
 **Web `features/` directory has zero tests:**
-- What's not tested: `web/src/features/auth/hooks/use-auth-mutation.ts`, `web/src/features/auth/store/auth.store.ts`, `web/src/features/auth/components/login-form.tsx`, `web/src/features/auth/components/signup-form.tsx`
-- Files: All of `web/src/features/`
+- What's not tested: `apps/web/src/features/auth/hooks/use-auth-mutation.ts`, `apps/web/src/features/auth/store/auth.store.ts`, `apps/web/src/features/auth/components/login-form.tsx`, `apps/web/src/features/auth/components/signup-form.tsx`
+- Files: All of `apps/web/src/features/`
 - Risk: Login/signup mutations, auth store transitions, and form validation can break silently.
 - Priority: High — this is the core application code (as opposed to sample code which does have tests).
 

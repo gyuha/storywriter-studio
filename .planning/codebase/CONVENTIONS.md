@@ -4,7 +4,7 @@
 
 ## Overview
 
-This is a monorepo with two distinct codebases: a Python FastAPI backend (`apps/api/`) and a React TypeScript frontend (`web/`). Each has its own toolchain and conventions.
+This is a monorepo with two distinct codebases: a Python FastAPI backend (`apps/api/`) and a React TypeScript frontend (`apps/web/`). Each has its own toolchain and conventions.
 
 ---
 
@@ -160,17 +160,17 @@ Dependency functions are named `_get_<thing>` (private, underscore-prefixed).
 
 ---
 
-## Web Frontend (`web/`)
+## Web Frontend (`apps/web/`)
 
 ### Toolchain
 
-**Linter + Formatter:** Biome (`web/biome.json`)
+**Linter + Formatter:** Biome (`apps/web/biome.json`)
 - `indentStyle: "space"`, `indentWidth: 2`, `lineWidth: 100`
 - Quote style: `single`
 - Trailing commas: `es5`
 - Recommended rules enabled
 
-**Type Checker:** TypeScript 5.8 (strict mode via `web/tsconfig.json`)
+**Type Checker:** TypeScript 5.8 (strict mode via `apps/web/tsconfig.json`)
 - `strict: true`, `noUnusedLocals: true`, `noUnusedParameters: true`
 - Path alias: `@/*` maps to `./src/*`
 

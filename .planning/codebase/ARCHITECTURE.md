@@ -9,7 +9,7 @@ This is a monorepo with two independent applications: a Python FastAPI backend (
 
 ```text
 ┌─────────────────────────────────────────────────────────────────┐
-│                    web/  (React + Vite)                          │
+│                    apps/web/  (React + Vite)                          │
 │  Routes → Features → Stores (Zustand) + Queries (React Query)   │
 └──────────────────────────────┬──────────────────────────────────┘
                                │ (currently mocked — no real HTTP)
@@ -51,12 +51,12 @@ This is a monorepo with two independent applications: a Python FastAPI backend (
 | domains/chat/container | DI container: binds DefaultLLMClientFactory to interface | `apps/api/src/domains/chat/container.py` |
 | domains/chat/service | Chat business logic; depends only on AbstractLLMPort | `apps/api/src/domains/chat/service/chat_service.py` |
 | infra/llm/provider_factory | LangChain-LiteLLM adapter; only place that imports langchain_litellm | `apps/api/src/infra/llm/provider_factory.py` |
-| web/main.tsx | React app entry point — mounts RouterProvider | `web/src/main.tsx` |
-| web/routes/__root.tsx | Root route: wraps AppProviders, Toaster, Modals | `web/src/routes/__root.tsx` |
-| web/providers/app-providers.tsx | QueryClientProvider (React Query) | `web/src/providers/app-providers.tsx` |
-| web/features/auth | Auth feature: components, hooks (React Query mutations), Zustand store | `web/src/features/auth/` |
-| web/stores/modal-store.ts | Global Zustand modal stack with devtools | `web/src/stores/modal-store.ts` |
-| web/sample/ | Reference UI samples (dashboard, tasks, users, settings, chats) — not production code | `web/src/sample/` |
+| web/main.tsx | React app entry point — mounts RouterProvider | `apps/web/src/main.tsx` |
+| web/routes/__root.tsx | Root route: wraps AppProviders, Toaster, Modals | `apps/web/src/routes/__root.tsx` |
+| web/providers/app-providers.tsx | QueryClientProvider (React Query) | `apps/web/src/providers/app-providers.tsx` |
+| web/features/auth | Auth feature: components, hooks (React Query mutations), Zustand store | `apps/web/src/features/auth/` |
+| web/stores/modal-store.ts | Global Zustand modal stack with devtools | `apps/web/src/stores/modal-store.ts` |
+| web/sample/ | Reference UI samples (dashboard, tasks, users, settings, chats) — not production code | `apps/web/src/sample/` |
 
 ## Pattern Overview
 
@@ -69,7 +69,7 @@ This is a monorepo with two independent applications: a Python FastAPI backend (
 - Each backend domain follows a strict Router → Service → Repository layering; service has no HTTP imports.
 - The LLM infrastructure is isolated in `infra/llm/`; chat domain depends only on the Protocol/ABC defined in `domains/chat/ports.py`.
 - Frontend routing is file-based via TanStack Router; `routeTree.gen.ts` is auto-generated.
-- The `web/src/sample/` subtree is a UI reference/demo section, not production application code.
+- The `apps/web/src/sample/` subtree is a UI reference/demo section, not production application code.
 
 ## Layers
 
@@ -110,19 +110,19 @@ This is a monorepo with two independent applications: a Python FastAPI backend (
 
 **Routes (Frontend):**
 - Purpose: File-based page components; map URLs to UI
-- Location: `web/src/routes/`
+- Location: `apps/web/src/routes/`
 - Contains: TanStack Router route files (`createFileRoute`)
 - Depends on: Features, components, stores
 
 **Features (Frontend):**
 - Purpose: Encapsulated vertical slices (auth only so far)
-- Location: `web/src/features/`
+- Location: `apps/web/src/features/`
 - Contains: components, hooks (React Query), store (Zustand), types, schemas, lib
-- Depends on: `web/src/lib/`, `web/src/components/`
+- Depends on: `apps/web/src/lib/`, `apps/web/src/components/`
 
 **Shared Components (Frontend):**
 - Purpose: Reusable UI primitives
-- Location: `web/src/components/ui/` (shadcn/ui components), `web/src/components/layout/`
+- Location: `apps/web/src/components/ui/` (shadcn/ui components), `apps/web/src/components/layout/`
 - Depends on: Nothing domain-specific
 
 ## Data Flow
@@ -148,14 +148,14 @@ This is a monorepo with two independent applications: a Python FastAPI backend (
 
 ### Frontend: Auth Login Path
 
-1. User submits login form (`web/src/features/auth/components/login-form.tsx`)
-2. `useLoginMutation()` triggers React Query mutation (`web/src/features/auth/hooks/use-auth-mutation.ts`)
-3. `mockLogin()` is called — **currently uses mock, not real API** (`web/src/features/auth/lib/mock-auth-api.ts`)
+1. User submits login form (`apps/web/src/features/auth/components/login-form.tsx`)
+2. `useLoginMutation()` triggers React Query mutation (`apps/web/src/features/auth/hooks/use-auth-mutation.ts`)
+3. `mockLogin()` is called — **currently uses mock, not real API** (`apps/web/src/features/auth/lib/mock-auth-api.ts`)
 4. On success: `useAuthStore.setUser()` writes to Zustand store; TanStack Router navigates to `/`
 
 **State Management:**
 - Backend: Stateless per request. Redis holds JWT blacklist entries and OAuth CSRF state nonces.
-- Frontend: Zustand for auth user state (`web/src/features/auth/store/auth.store.ts`) and modal stack (`web/src/stores/modal-store.ts`). React Query for server-state caching.
+- Frontend: Zustand for auth user state (`apps/web/src/features/auth/store/auth.store.ts`) and modal stack (`apps/web/src/stores/modal-store.ts`). React Query for server-state caching.
 
 ## Key Abstractions
 
@@ -175,8 +175,8 @@ This is a monorepo with two independent applications: a Python FastAPI backend (
 - Pattern: `shared` may not import `auth` or `chat`; both may import `shared`
 
 **TanStack Router file-based routes (Frontend):**
-- Purpose: Each file in `web/src/routes/` becomes a route; tree is auto-generated
-- Examples: `web/src/routes/index.tsx`, `web/src/routes/auth/login.tsx`
+- Purpose: Each file in `apps/web/src/routes/` becomes a route; tree is auto-generated
+- Examples: `apps/web/src/routes/index.tsx`, `apps/web/src/routes/auth/login.tsx`
 - Pattern: `createFileRoute('/')({ component: ... })` — no manual route registration
 
 ## Entry Points
@@ -187,7 +187,7 @@ This is a monorepo with two independent applications: a Python FastAPI backend (
 - Responsibilities: Creates FastAPI app, registers middleware (CorrelationId, CORS, rate limiting), registers domain routers
 
 **Frontend:**
-- Location: `web/src/main.tsx`
+- Location: `apps/web/src/main.tsx`
 - Triggers: Vite dev server (`npm run dev`) or static build (`npm run build`)
 - Responsibilities: Mounts `<RouterProvider router={router} />` into `#root` DOM element
 
@@ -197,7 +197,7 @@ This is a monorepo with two independent applications: a Python FastAPI backend (
 - **Global state:** `app` module-level FastAPI instance in `apps/api/src/main.py`. `settings` singleton in `apps/api/src/core/config.py` (lru_cache). Zustand stores are module-level singletons in frontend.
 - **Domain isolation:** `domains/auth` and `domains/chat` must not import each other. Both import from `domains/shared` and `core`. Enforced by code convention, not tooling.
 - **LLM adapter isolation:** Only `apps/api/src/infra/llm/provider_factory.py` and `apps/api/src/domains/chat/llm_client.py` may import `langchain_litellm`. All other code goes through the Protocol/ABC in `ports.py`.
-- **Frontend mock:** `web/src/features/auth/lib/mock-auth-api.ts` is used instead of real API calls. This is a known gap — the real API backend is not yet wired to the frontend.
+- **Frontend mock:** `apps/web/src/features/auth/lib/mock-auth-api.ts` is used instead of real API calls. This is a known gap — the real API backend is not yet wired to the frontend.
 
 ## Anti-Patterns
 
@@ -233,7 +233,7 @@ This is a monorepo with two independent applications: a Python FastAPI backend (
 
 **Logging:** structlog with JSON or console format (configured by `LOG_FORMAT` env var). Correlation ID bound to context-var store per request by `CorrelationIdMiddleware`. All modules use `structlog.get_logger(__name__)`.
 
-**Validation:** Pydantic v2 on backend (request/response schemas in `domains/*/schemas/`). Zod on frontend (`web/src/features/auth/schema/`).
+**Validation:** Pydantic v2 on backend (request/response schemas in `domains/*/schemas/`). Zod on frontend (`apps/web/src/features/auth/schema/`).
 
 **Authentication:** Bearer JWT (access token 15 min, refresh token 7 days). Redis JTI blacklist for logout. RBAC via `require_permission(key)` FastAPI dependency factory in `apps/api/src/domains/auth/security.py`. OAuth2 supported for Google, Kakao, Naver.
 

@@ -64,7 +64,7 @@ pnpm add @tiptap/extension-typography \
 ### 사용 패턴 (기존 스택 통합)
 
 ```tsx
-// web/src/features/chapter/components/chapter-editor.tsx
+// apps/web/src/features/chapter/components/chapter-editor.tsx
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Typography from '@tiptap/extension-typography'

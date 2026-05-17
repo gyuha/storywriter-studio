@@ -4,7 +4,7 @@
 
 ## Overview
 
-Two separate test suites: Python pytest for the FastAPI backend (`apps/api/tests/`) and TypeScript script-style tests for the web frontend (`web/src/`). They are structurally and philosophically different.
+Two separate test suites: Python pytest for the FastAPI backend (`apps/api/tests/`) and TypeScript script-style tests for the web frontend (`apps/web/src/`). They are structurally and philosophically different.
 
 ---
 
@@ -274,11 +274,11 @@ This separates plain helper classes (importable by any module) from pytest fixtu
 
 ---
 
-## Web Frontend Tests (`web/`)
+## Web Frontend Tests (`apps/web/`)
 
 ### Framework
 
-The web test files (`*.test.ts`) are **not standard Jest/Vitest tests**. No test runner is configured in `web/package.json`. These files are TypeScript modules that execute assertions as top-level `throw new Error(...)` calls — they run as plain Node scripts or are executed by the TypeScript compiler via `ts-node`/`tsx`.
+The web test files (`*.test.ts`) are **not standard Jest/Vitest tests**. No test runner is configured in `apps/web/package.json`. These files are TypeScript modules that execute assertions as top-level `throw new Error(...)` calls — they run as plain Node scripts or are executed by the TypeScript compiler via `ts-node`/`tsx`.
 
 **No `describe()` blocks, no `it()` blocks, no `expect()` calls.** Assertions use `throw new Error(message)` directly.
 
@@ -320,7 +320,7 @@ const validSignInValues = {
 Co-located with the modules they test inside `src/sample/`:
 
 ```
-web/src/sample/
+apps/web/src/sample/
 ├── auth/
 │   ├── sign-in-page.test.ts          ← schema + AST contract tests
 │   ├── sign-up-page.test.ts
