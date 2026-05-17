@@ -6,9 +6,9 @@ build-backend = "hatchling.build"
 # Project metadata
 # ---------------------------------------------------------------------------
 [project]
-name = "fastapi-bootstrap"
+name = "storywriter-studio-api"
 version = "0.1.0"
-description = "Production-grade FastAPI backend with auth (JWT+OAuth+RBAC) and LLM chat proxy domains."
+description = "Production-grade FastAPI backend for StoryWriter Studio — AI-powered web novel writing platform."
 readme = "README.md"
 license = { text = "MIT" }
 authors = [
