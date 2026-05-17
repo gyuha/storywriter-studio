@@ -231,6 +231,15 @@ def _register_routers(application: FastAPI) -> None:
     except ImportError:
         logger.debug("auth_router_not_found", note="Will be added in later phase")
 
+    # Admin domain
+    try:
+        from domains.auth.router.admin_router import router as admin_router
+
+        application.include_router(admin_router, prefix="/api/v1")
+        logger.debug("router_registered", prefix="/api/v1/admin")
+    except ImportError:
+        logger.debug("admin_router_not_found")
+
     # Chat domain
     try:
         from domains.chat.router import router as chat_router
