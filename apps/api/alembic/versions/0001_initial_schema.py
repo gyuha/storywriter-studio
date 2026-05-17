@@ -28,6 +28,9 @@ depends_on: str | None = None
 def upgrade() -> None:
     """Create all tables from scratch."""
 
+    # alembic_version.version_num defaults to VARCHAR(32); our readable IDs exceed that
+    op.execute("ALTER TABLE alembic_version ALTER COLUMN version_num TYPE VARCHAR(64)")
+
     # ── permissions ──────────────────────────────────────────────────────────
     op.create_table(
         "permissions",

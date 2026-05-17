@@ -105,6 +105,7 @@ class AuthRepository:
         return result.scalar_one_or_none()
 
     async def assign_role_to_user(self, user: User, role: Role) -> None:
+        await self._session.refresh(user, attribute_names=["roles"])
         if role not in user.roles:
             user.roles.append(role)
             await self._session.flush()

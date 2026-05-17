@@ -25,7 +25,7 @@ def upgrade() -> None:
         sa.Column(
             "id",
             sa.UUID(),
-            server_default=sa.text("uuid_generate_v4()"),
+            server_default=sa.text("gen_random_uuid()"),
             nullable=False,
         ),
         sa.Column("user_id", sa.UUID(), nullable=False),
@@ -55,7 +55,7 @@ def upgrade() -> None:
         sa.Column(
             "id",
             sa.UUID(),
-            server_default=sa.text("uuid_generate_v4()"),
+            server_default=sa.text("gen_random_uuid()"),
             nullable=False,
         ),
         sa.Column("novel_id", sa.UUID(), nullable=False),
@@ -64,7 +64,7 @@ def upgrade() -> None:
         sa.Column("order_key", sa.Float(), nullable=False),
         sa.Column(
             "status",
-            sa.Enum("draft", "reviewing", "done", name="chapter_status_enum"),
+            postgresql.ENUM("draft", "reviewing", "done", name="chapter_status_enum", create_type=False),
             nullable=False,
             server_default="draft",
         ),

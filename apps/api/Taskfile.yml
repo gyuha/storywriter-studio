@@ -49,7 +49,7 @@ tasks:
           echo "📋  .env created from .env.example — edit SECRET_KEY and JWT_SECRET_KEY before production."
         fi
       - uv sync
-      - uv run pre-commit install
+      - uv run pre-commit install || echo "⚠️  pre-commit install skipped (core.hooksPath is set — run 'git config --unset-all core.hooksPath' to enable)"
       - echo "✅  Dependencies installed. Run 'task dev' to start the full stack."
 
   # ── Infrastructure ───────────────────────────────────────────────────────────

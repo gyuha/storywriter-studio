@@ -1,86 +1,86 @@
+import {
+  createChapterApiV1NovelsNovelIdChaptersPost,
+  deleteChapterApiV1NovelsNovelIdChaptersChapterIdDelete,
+  getChapterApiV1NovelsNovelIdChaptersChapterIdGet,
+  listChaptersApiV1NovelsNovelIdChaptersGet,
+  reorderChapterApiV1NovelsNovelIdChaptersChapterIdReorderPatch,
+  updateChapterApiV1NovelsNovelIdChaptersChapterIdPut,
+} from '@/generated/sdk.gen';
 import type { Chapter, ChapterStatus } from '../types/novel';
-
-const BASE = '/api/v1';
-
-function getAuthHeaders(): HeadersInit {
-  const token = localStorage.getItem('access_token') ?? '';
-  return {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${token}`,
-  };
-}
-
-async function handleResponse<T>(res: Response): Promise<T> {
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error((err as { detail?: string }).detail ?? '오류가 발생했습니다');
-  }
-  if (res.status === 204) return undefined as T;
-  return res.json() as Promise<T>;
-}
 
 export interface ChapterUpdateInput {
   title?: string;
-  content?: Record<string, unknown> | null; // D-28: JSONB — NOT string
+  content?: Record<string, unknown> | null;
   status?: ChapterStatus;
 }
 
+function throwOnError(error: unknown): never {
+  const detail = (error as { detail?: unknown }).detail;
+  if (typeof detail === 'string') throw new Error(detail);
+  if (Array.isArray(detail)) {
+    const msg = (detail[0] as { msg?: string } | undefined)?.msg;
+    throw new Error(msg ?? '오류가 발생했습니다');
+  }
+  throw new Error('오류가 발생했습니다');
+}
+
 export async function apiGetChapters(novelId: string): Promise<Chapter[]> {
-  const res = await fetch(`${BASE}/novels/${novelId}/chapters`, {
-    headers: getAuthHeaders(),
+  const { data, error } = await listChaptersApiV1NovelsNovelIdChaptersGet({
+    path: { novel_id: novelId },
   });
-  return handleResponse<Chapter[]>(res);
+  if (error) throwOnError(error);
+  return (data ?? []) as Chapter[];
 }
 
 export async function apiCreateChapter(
   novelId: string,
-  data: { title: string; content?: Record<string, unknown> | null }
+  body: { title: string; content?: Record<string, unknown> | null },
 ): Promise<Chapter> {
-  const res = await fetch(`${BASE}/novels/${novelId}/chapters`, {
-    method: 'POST',
-    headers: getAuthHeaders(),
-    body: JSON.stringify(data),
+  const { data, error } = await createChapterApiV1NovelsNovelIdChaptersPost({
+    path: { novel_id: novelId },
+    body,
   });
-  return handleResponse<Chapter>(res);
+  if (error) throwOnError(error);
+  return data as Chapter;
 }
 
 export async function apiGetChapter(novelId: string, chapterId: string): Promise<Chapter> {
-  const res = await fetch(`${BASE}/novels/${novelId}/chapters/${chapterId}`, {
-    headers: getAuthHeaders(),
+  const { data, error } = await getChapterApiV1NovelsNovelIdChaptersChapterIdGet({
+    path: { novel_id: novelId, chapter_id: chapterId },
   });
-  return handleResponse<Chapter>(res);
+  if (error) throwOnError(error);
+  return data as Chapter;
 }
 
 export async function apiUpdateChapter(
   novelId: string,
   chapterId: string,
-  data: ChapterUpdateInput
+  body: ChapterUpdateInput,
 ): Promise<Chapter> {
-  const res = await fetch(`${BASE}/novels/${novelId}/chapters/${chapterId}`, {
-    method: 'PATCH',
-    headers: getAuthHeaders(),
-    body: JSON.stringify(data),
+  const { data, error } = await updateChapterApiV1NovelsNovelIdChaptersChapterIdPut({
+    path: { novel_id: novelId, chapter_id: chapterId },
+    body,
   });
-  return handleResponse<Chapter>(res);
+  if (error) throwOnError(error);
+  return data as Chapter;
 }
 
 export async function apiReorderChapter(
   novelId: string,
   chapterId: string,
-  order_key: number
+  order_key: number,
 ): Promise<Chapter> {
-  const res = await fetch(`${BASE}/novels/${novelId}/chapters/${chapterId}/reorder`, {
-    method: 'PATCH',
-    headers: getAuthHeaders(),
-    body: JSON.stringify({ order_key }),
+  const { data, error } = await reorderChapterApiV1NovelsNovelIdChaptersChapterIdReorderPatch({
+    path: { novel_id: novelId, chapter_id: chapterId },
+    body: { order_key },
   });
-  return handleResponse<Chapter>(res);
+  if (error) throwOnError(error);
+  return data as Chapter;
 }
 
 export async function apiDeleteChapter(novelId: string, chapterId: string): Promise<void> {
-  const res = await fetch(`${BASE}/novels/${novelId}/chapters/${chapterId}`, {
-    method: 'DELETE',
-    headers: getAuthHeaders(),
+  const { error } = await deleteChapterApiV1NovelsNovelIdChaptersChapterIdDelete({
+    path: { novel_id: novelId, chapter_id: chapterId },
   });
-  return handleResponse<void>(res);
+  if (error) throwOnError(error);
 }

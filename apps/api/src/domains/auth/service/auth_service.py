@@ -27,6 +27,7 @@ import structlog
 from redis.asyncio import Redis
 from sqlalchemy.exc import IntegrityError
 
+from core.config import settings
 from core.exceptions import (
     ConflictError,
     NotFoundError,
@@ -157,10 +158,14 @@ class AuthService:
                 f"An account with email '{normalized_email}' already exists."
             ) from exc
 
-        # Issue verification token
-        raw_token = secrets.token_urlsafe(32)
-        expires_at = datetime.now(UTC) + timedelta(hours=EMAIL_VERIFY_EXPIRE_HOURS)
-        await self._repo.create_email_verification(user.id, raw_token, expires_at)
+        # In development, skip email verification entirely
+        if settings.is_development():
+            await self._repo.mark_user_verified(user.id)
+            raw_token = ""
+        else:
+            raw_token = secrets.token_urlsafe(32)
+            expires_at = datetime.now(UTC) + timedelta(hours=EMAIL_VERIFY_EXPIRE_HOURS)
+            await self._repo.create_email_verification(user.id, raw_token, expires_at)
 
         # Assign default "user" role if it exists
         default_role = await self._repo.get_role_by_name("user")
@@ -178,11 +183,11 @@ class AuthService:
     ) -> User:
         """Register a new user and send the verification email."""
         user, raw_token = await self.signup(email, password, display_name)
-        try:
-            await self._mail_service.send_verification_email(user.email, raw_token)
-        except Exception as exc:
-            logger.error("verification_email_failed", user_id=str(user.id), error=str(exc))
-            # Don't fail signup if email delivery fails — user can request resend
+        if raw_token:
+            try:
+                await self._mail_service.send_verification_email(user.email, raw_token)
+            except Exception as exc:
+                logger.error("verification_email_failed", user_id=str(user.id), error=str(exc))
         return user
 
     # ── Email verification ────────────────────────────────────────────────────

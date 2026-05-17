@@ -1,6 +1,7 @@
 import '@fontsource-variable/inter';
 import '@/styles/globals.css';
 import '@/sample/i18n';
+import '@/lib/api-client';
 
 import { router } from '@/lib/router';
 import { RouterProvider } from '@tanstack/react-router';

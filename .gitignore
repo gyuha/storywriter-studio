@@ -1,0 +1,44 @@
+# ── OS ────────────────────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+desktop.ini
+
+# ── Editors / IDEs ────────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ── Environment ───────────────────────────────────────────────────────────────
+# .env.example / .env.prod.example 은 추적 (템플릿, 실제 시크릿 없음)
+.env
+.env.prod
+.env.local
+.env.*.local
+.envrc
+
+# ── Node / pnpm (monorepo root) ───────────────────────────────────────────────
+node_modules/
+.pnp
+.pnp.*
+
+# ── Logs ─────────────────────────────────────────────────────────────────────
+*.log
+*.log.*
+logs/
+
+# ── Claude Code / AI 도구 ─────────────────────────────────────────────────────
+.claude/worktrees/
+.claude/memory/
+
+# ── 외부 도구 (로컬 전용) ──────────────────────────────────────────────────────
+.superpowers/
+.gstack/
+.ouroboros/
+.playwright-mcp/
+.playwright-cli/
