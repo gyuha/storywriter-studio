@@ -4,12 +4,12 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: Phase 1 context gathered
-last_updated: "2026-05-17T07:22:06.381Z"
-last_activity: 2026-05-17 -- Phase 1 planning complete
+last_updated: "2026-05-17T09:00:00.000Z"
+last_activity: 2026-05-17 -- Phase 2 planning complete
 progress:
   total_phases: 4
   completed_phases: 0
-  total_plans: 4
+  total_plans: 8
   completed_plans: 0
   percent: 0
 ---
@@ -21,12 +21,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-17)
 
 **Core value:** 작가가 챕터를 편집할 때 캐릭터·장소·설정이 자동으로 AI 컨텍스트에 포함되어, 세계관과 일관된 글을 AI가 생성한다
-**Current focus:** Phase 1 — 인증 연동
+**Current focus:** Phase 2 — 소설/챕터 관리
 
 ## Current Position
 
-Phase: 1 of 4 (인증 연동)
-Plan: 0 of TBD in current phase
+Phase: 2 of 4 (소설/챕터 관리)
+Plan: 0 of 4 in current phase
 Status: Ready to execute
 Last activity: 2026-05-17 -- Phase 1 planning complete
 
@@ -95,3 +95,4 @@ Resume file: .planning/phases/01-auth-integration/01-CONTEXT.md
 | ID | Description | Date | Commit | Dir |
 |----|-------------|------|--------|-----|
 | 260517-ncz | apps/web , apps/api의 프로젝트 명을 현재 프로젝트 명과 어울리게 변경 | 2026-05-17 | 16bc8ad | [260517-ncz-app-web-app-api](.planning/quick/260517-ncz-app-web-app-api/) |
+| 260517-pse | Taskfile.yml을 만들어서 프로젝트 실행을 좀 더 편하게 | 2026-05-17 | a42bb17 | [260517-pse-taskfile-yml](.planning/quick/260517-pse-taskfile-yml/) |
