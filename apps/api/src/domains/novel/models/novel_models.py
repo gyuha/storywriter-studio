@@ -51,7 +51,7 @@ class Chapter(Base):
     content: Mapped[dict | None] = mapped_column(JSONB, nullable=True)  # D-28: TipTap getJSON()
     order_key: Mapped[float] = mapped_column(Float, nullable=False)
     status: Mapped[ChapterStatus] = mapped_column(
-        SAEnum(ChapterStatus, name="chapter_status_enum"),
+        SAEnum(ChapterStatus, name="chapter_status_enum", values_callable=lambda obj: [e.value for e in obj]),
         nullable=False,
         default=ChapterStatus.DRAFT,
     )

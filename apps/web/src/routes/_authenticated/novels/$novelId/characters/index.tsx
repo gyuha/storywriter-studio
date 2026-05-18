@@ -1,13 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { Loader2 } from 'lucide-react';
-import { NovelSettingsPage } from '@/features/novel/components/novel-settings-page';
+import { CharactersPage } from '@/features/novel/components/characters-page';
 import { useNovel } from '@/features/novel/hooks/use-novel-queries';
 
-export const Route = createFileRoute('/_authenticated/novels/$novelId/')({
-  component: NovelDetailPage,
+export const Route = createFileRoute('/_authenticated/novels/$novelId/characters/')({
+  component: CharactersPageRoute,
 });
 
-function NovelDetailPage() {
+function CharactersPageRoute() {
   const { novelId } = Route.useParams();
   const { data: novel, isLoading, isError } = useNovel(novelId);
 
@@ -27,5 +27,5 @@ function NovelDetailPage() {
     );
   }
 
-  return <NovelSettingsPage novel={novel} />;
+  return <CharactersPage novel={novel} />;
 }

@@ -1,0 +1,66 @@
+/* Chapter editor — animation keyframes & scrollbar */
+
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-jp-dynamic-subset.css');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;700&family=Nanum+Myeongjo:wght@400;700&display=swap');
+
+@keyframes aiShimmer {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+
+@keyframes editorBlink {
+  50% { opacity: 0; }
+}
+
+@keyframes aiPulse {
+  0%   { box-shadow: 0 0 0 0   rgba(94, 227, 160, 0.7); }
+  70%  { box-shadow: 0 0 0 10px rgba(94, 227, 160, 0); }
+  100% { box-shadow: 0 0 0 0   rgba(94, 227, 160, 0); }
+}
+
+.sw-ai-streaming {
+  color: #2e3137;
+  background: linear-gradient(120deg, rgba(232,240,255,0.8) 0%, transparent 60%);
+  background-size: 200% 100%;
+  animation: aiShimmer 1.4s linear infinite;
+  border-radius: 4px;
+  padding: 1px 2px;
+}
+
+.sw-ai-streaming::after {
+  content: '▊';
+  color: #0066ff;
+  animation: editorBlink 1s steps(2) infinite;
+  margin-left: 2px;
+}
+
+.sw-ai-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #5ee3a0;
+  flex-shrink: 0;
+  animation: aiPulse 1.4s ease-out infinite;
+}
+
+/* TipTap prose styles inside editor */
+.sw-prose {
+  font-size: 16px;
+  line-height: 1.9;
+  letter-spacing: 0.006em;
+  outline: none;
+  min-height: 480px;
+}
+.sw-prose p          { margin: 0 0 1.2em; }
+.sw-prose p:last-child { margin-bottom: 0; }
+.sw-prose h2         { font-size: 22px; font-weight: 700; margin: 1.4em 0 0.6em; letter-spacing: -0.015em; }
+.sw-prose ul         { padding-left: 1.6em; margin: 0 0 1.2em; list-style: disc; }
+.sw-prose ol         { padding-left: 1.6em; margin: 0 0 1.2em; list-style: decimal; }
+.sw-prose blockquote { border-left: 3px solid #0066ff; margin: 1.2em 0; padding: 0.4em 0 0.4em 1.2em; color: #46474c; font-style: italic; }
+.sw-prose a          { color: #0066ff; text-decoration: underline; }
+.sw-prose strong     { font-weight: 700; }
+
+/* Scrollbar */
+.sw-scroll::-webkit-scrollbar        { width: 6px; }
+.sw-scroll::-webkit-scrollbar-thumb  { background: rgba(112,115,124,0.2); border-radius: 3px; }
+.sw-scroll::-webkit-scrollbar-thumb:hover { background: rgba(112,115,124,0.4); }

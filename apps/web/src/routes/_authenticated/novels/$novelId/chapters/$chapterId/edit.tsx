@@ -1,8 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { Loader2 } from 'lucide-react';
+import { EditorLayout } from '@/features/novel/components/editor-layout';
+import { useNovel } from '@/features/novel/hooks/use-novel-queries';
 import { useChapter } from '@/features/novel/hooks/use-chapter-queries';
-import { ChapterEditor } from '@/features/novel/components/chapter-editor';
-import { ChapterSidebar } from '@/features/novel/components/chapter-sidebar';
 
 export const Route = createFileRoute(
   '/_authenticated/novels/$novelId/chapters/$chapterId/edit'
@@ -12,9 +12,10 @@ export const Route = createFileRoute(
 
 function ChapterEditPage() {
   const { novelId, chapterId } = Route.useParams();
-  const { data: chapter, isLoading, isError } = useChapter(novelId, chapterId);
+  const { data: novel, isLoading: novelLoading } = useNovel(novelId);
+  const { data: chapter, isLoading: chapterLoading, isError } = useChapter(novelId, chapterId);
 
-  if (isLoading) {
+  if (novelLoading || chapterLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
         <Loader2 className="w-6 h-6 animate-spin" />
@@ -22,7 +23,7 @@ function ChapterEditPage() {
     );
   }
 
-  if (isError || !chapter) {
+  if (isError || !chapter || !novel) {
     return (
       <div className="flex h-screen items-center justify-center text-destructive">
         챕터를 불러올 수 없습니다
@@ -30,20 +31,5 @@ function ChapterEditPage() {
     );
   }
 
-  return (
-    <div className="flex h-screen">
-      <ChapterSidebar novelId={novelId} currentChapterId={chapterId} />
-      {/* Editor area */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <div className="px-6 py-3 border-b">
-          <h1 className="text-lg font-semibold">{chapter.title}</h1>
-        </div>
-        <ChapterEditor
-          novelId={novelId}
-          chapterId={chapterId}
-          initialContent={chapter.content}
-        />
-      </div>
-    </div>
-  );
+  return <EditorLayout novel={novel} chapter={chapter} novelId={novelId} chapterId={chapterId} />;
 }
