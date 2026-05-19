@@ -94,7 +94,7 @@ function NavRail({ novelId }: { novelId: string }) {
     { id: 'overview', label: '작품 설정', icon: BookOpen, href: `/novels/${novelId}` },
     { id: 'write', label: '글쓰기', icon: PenLine, active: true },
     { id: 'characters', label: '캐릭터', icon: Users, href: `/novels/${novelId}/characters` },
-    { id: 'lorebook', label: '로어북', icon: Globe, disabled: true },
+    { id: 'lorebook', label: '로어북', icon: Globe, href: `/novels/${novelId}/lorebook` },
     { id: 'storybible', label: '스토리바이블', icon: BookMarked, disabled: true },
   ];
 
