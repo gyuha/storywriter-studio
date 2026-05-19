@@ -98,3 +98,4 @@ Resume file: .planning/phases/03-world-database/03-01-PLAN.md
 | 260517-pse | Taskfile.yml을 만들어서 프로젝트 실행을 좀 더 편하게 | 2026-05-17 | a42bb17 | [260517-pse-taskfile-yml](.planning/quick/260517-pse-taskfile-yml/) |
 | 260517-q87 | apps/api Docker 파일 위치 검토 및 적절한 위치 추천 | 2026-05-17 | 21297b2 | [260517-q87-apps-api-docker](.planning/quick/260517-q87-apps-api-docker/) |
 | 260517-raw | apps/web에 HeyApi를 적용해서 API를 사용하도록 수정 | 2026-05-17 | e18b29c | [260517-raw-apps-web-heyapi-api](.planning/quick/260517-raw-apps-web-heyapi-api/) |
+| 260520-0e1 | NavRail 마지막 메뉴 스토리바이블→비주얼바이블, 아이콘 변경 | 2026-05-20 | e7bf284 | [260520-0e1](.planning/quick/260520-0e1/) |
