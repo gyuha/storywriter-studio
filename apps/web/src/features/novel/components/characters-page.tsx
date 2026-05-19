@@ -1,7 +1,7 @@
 import '@/styles/editor.css';
 import { useNavigate } from '@tanstack/react-router';
 import {
-  BookMarked,
+  Palette,
   BookOpen,
   BookText,
   Clock,
@@ -640,7 +640,7 @@ export function CharactersPage({ novel }: CharactersPageProps) {
     { id: 'write', label: '글쓰기', icon: PenLine, disabled: true },
     { id: 'characters', label: '캐릭터', icon: Users, active: true },
     { id: 'lorebook', label: '로어북', icon: Globe, onClick: () => navigate({ to: '/novels/$novelId/lorebook', params: { novelId: novel.id } }) },
-    { id: 'storybible', label: '스토리바이블', icon: BookMarked, disabled: true },
+    { id: 'storybible', label: '비주얼바이블', icon: Palette, disabled: true },
   ];
 
   return (

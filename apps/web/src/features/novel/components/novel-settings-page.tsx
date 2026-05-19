@@ -3,7 +3,7 @@ import { useNavigate } from '@tanstack/react-router';
 import {
   Archive,
   Bell,
-  BookMarked,
+  Palette,
   BookOpen,
   Check,
   CheckCircle,
@@ -581,7 +581,7 @@ export function NovelSettingsPage({ novel }: NovelSettingsPageProps) {
     { id: 'write', label: '글쓰기', icon: PenLine, onClick: goToEditor },
     { id: 'characters', label: '캐릭터', icon: Users, onClick: () => navigate({ to: '/novels/$novelId/characters', params: { novelId: novel.id } }) },
     { id: 'lorebook', label: '로어북', icon: Globe, onClick: () => navigate({ to: '/novels/$novelId/lorebook', params: { novelId: novel.id } }) },
-    { id: 'storybible', label: '스토리바이블', icon: BookMarked, disabled: true },
+    { id: 'storybible', label: '비주얼바이블', icon: Palette, disabled: true },
   ];
 
   return (

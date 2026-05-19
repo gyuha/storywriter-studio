@@ -2,7 +2,7 @@ import '@/styles/editor.css';
 import { useNavigate } from '@tanstack/react-router';
 import {
   Bell,
-  BookMarked,
+  Palette,
   BookOpen,
   ChevronDown,
   FileText,
@@ -95,7 +95,7 @@ function NavRail({ novelId }: { novelId: string }) {
     { id: 'write', label: '글쓰기', icon: PenLine, active: true },
     { id: 'characters', label: '캐릭터', icon: Users, href: `/novels/${novelId}/characters` },
     { id: 'lorebook', label: '로어북', icon: Globe, href: `/novels/${novelId}/lorebook` },
-    { id: 'storybible', label: '스토리바이블', icon: BookMarked, disabled: true },
+    { id: 'storybible', label: '비주얼바이블', icon: Palette, disabled: true },
   ];
 
   return (
