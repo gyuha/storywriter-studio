@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ActivateUserApiV1AdminUsersUserIdActivatePostData, ActivateUserApiV1AdminUsersUserIdActivatePostErrors, ActivateUserApiV1AdminUsersUserIdActivatePostResponses, ChatCompleteApiV1ChatCompletePostData, ChatCompleteApiV1ChatCompletePostErrors, ChatCompleteApiV1ChatCompletePostResponses, ChatStreamApiV1ChatStreamPostData, ChatStreamApiV1ChatStreamPostErrors, ChatStreamApiV1ChatStreamPostResponses, ConfirmPasswordResetApiV1AuthPasswordResetConfirmPostData, ConfirmPasswordResetApiV1AuthPasswordResetConfirmPostErrors, ConfirmPasswordResetApiV1AuthPasswordResetConfirmPostResponses, CreateChapterApiV1NovelsNovelIdChaptersPostData, CreateChapterApiV1NovelsNovelIdChaptersPostErrors, CreateChapterApiV1NovelsNovelIdChaptersPostResponses, CreateConversationApiV1ChatConversationsPostData, CreateConversationApiV1ChatConversationsPostErrors, CreateConversationApiV1ChatConversationsPostResponses, CreateNovelApiV1NovelsPostData, CreateNovelApiV1NovelsPostErrors, CreateNovelApiV1NovelsPostResponses, DeactivateUserApiV1AdminUsersUserIdDeactivatePostData, DeactivateUserApiV1AdminUsersUserIdDeactivatePostErrors, DeactivateUserApiV1AdminUsersUserIdDeactivatePostResponses, DeleteChapterApiV1NovelsNovelIdChaptersChapterIdDeleteData, DeleteChapterApiV1NovelsNovelIdChaptersChapterIdDeleteErrors, DeleteChapterApiV1NovelsNovelIdChaptersChapterIdDeleteResponses, DeleteNovelApiV1NovelsNovelIdDeleteData, DeleteNovelApiV1NovelsNovelIdDeleteErrors, DeleteNovelApiV1NovelsNovelIdDeleteResponses, GetChapterApiV1NovelsNovelIdChaptersChapterIdGetData, GetChapterApiV1NovelsNovelIdChaptersChapterIdGetErrors, GetChapterApiV1NovelsNovelIdChaptersChapterIdGetResponses, GetConversationApiV1ChatConversationsConversationIdGetData, GetConversationApiV1ChatConversationsConversationIdGetErrors, GetConversationApiV1ChatConversationsConversationIdGetResponses, GetMeApiV1AuthMeGetData, GetMeApiV1AuthMeGetResponses, GetNovelApiV1NovelsNovelIdGetData, GetNovelApiV1NovelsNovelIdGetErrors, GetNovelApiV1NovelsNovelIdGetResponses, GetProviderInfoApiV1ChatProviderGetData, GetProviderInfoApiV1ChatProviderGetResponses, HealthHealthGetData, HealthHealthGetResponses, ListChaptersApiV1NovelsNovelIdChaptersGetData, ListChaptersApiV1NovelsNovelIdChaptersGetErrors, ListChaptersApiV1NovelsNovelIdChaptersGetResponses, ListConversationsApiV1ChatConversationsGetData, ListConversationsApiV1ChatConversationsGetResponses, ListMessagesApiV1ChatConversationsConversationIdMessagesGetData, ListMessagesApiV1ChatConversationsConversationIdMessagesGetErrors, ListMessagesApiV1ChatConversationsConversationIdMessagesGetResponses, ListNovelsApiV1NovelsGetData, ListNovelsApiV1NovelsGetErrors, ListNovelsApiV1NovelsGetResponses, ListUsersApiV1AdminUsersGetData, ListUsersApiV1AdminUsersGetErrors, ListUsersApiV1AdminUsersGetResponses, LoginApiV1AuthLoginPostData, LoginApiV1AuthLoginPostErrors, LoginApiV1AuthLoginPostResponses, LogoutApiV1AuthLogoutPostData, LogoutApiV1AuthLogoutPostErrors, LogoutApiV1AuthLogoutPostResponses, OauthCallbackApiV1AuthOauthProviderCallbackGetData, OauthCallbackApiV1AuthOauthProviderCallbackGetErrors, OauthCallbackApiV1AuthOauthProviderCallbackGetResponses, OauthLoginApiV1AuthOauthProviderLoginGetData, OauthLoginApiV1AuthOauthProviderLoginGetErrors, OauthLoginApiV1AuthOauthProviderLoginGetResponses, ReadyReadyGetData, ReadyReadyGetResponses, RefreshApiV1AuthRefreshPostData, RefreshApiV1AuthRefreshPostErrors, RefreshApiV1AuthRefreshPostResponses, ReorderChapterApiV1NovelsNovelIdChaptersChapterIdReorderPatchData, ReorderChapterApiV1NovelsNovelIdChaptersChapterIdReorderPatchErrors, ReorderChapterApiV1NovelsNovelIdChaptersChapterIdReorderPatchResponses, RequestPasswordResetApiV1AuthPasswordResetPostData, RequestPasswordResetApiV1AuthPasswordResetPostErrors, RequestPasswordResetApiV1AuthPasswordResetPostResponses, SendMessageApiV1ChatConversationsConversationIdMessagesPostData, SendMessageApiV1ChatConversationsConversationIdMessagesPostErrors, SendMessageApiV1ChatConversationsConversationIdMessagesPostResponses, SignupApiV1AuthSignupPostData, SignupApiV1AuthSignupPostErrors, SignupApiV1AuthSignupPostResponses, UpdateChapterApiV1NovelsNovelIdChaptersChapterIdPutData, UpdateChapterApiV1NovelsNovelIdChaptersChapterIdPutErrors, UpdateChapterApiV1NovelsNovelIdChaptersChapterIdPutResponses, UpdateNovelApiV1NovelsNovelIdPutData, UpdateNovelApiV1NovelsNovelIdPutErrors, UpdateNovelApiV1NovelsNovelIdPutResponses, VerifyEmailApiV1AuthVerifyEmailTokenPostData, VerifyEmailApiV1AuthVerifyEmailTokenPostErrors, VerifyEmailApiV1AuthVerifyEmailTokenPostResponses } from './types.gen';
+import type { ActivateUserApiV1AdminUsersUserIdActivatePostData, ActivateUserApiV1AdminUsersUserIdActivatePostErrors, ActivateUserApiV1AdminUsersUserIdActivatePostResponses, ChatCompleteApiV1ChatCompletePostData, ChatCompleteApiV1ChatCompletePostErrors, ChatCompleteApiV1ChatCompletePostResponses, ChatStreamApiV1ChatStreamPostData, ChatStreamApiV1ChatStreamPostErrors, ChatStreamApiV1ChatStreamPostResponses, ConfirmPasswordResetApiV1AuthPasswordResetConfirmPostData, ConfirmPasswordResetApiV1AuthPasswordResetConfirmPostErrors, ConfirmPasswordResetApiV1AuthPasswordResetConfirmPostResponses, CreateChapterApiV1NovelsNovelIdChaptersPostData, CreateChapterApiV1NovelsNovelIdChaptersPostErrors, CreateChapterApiV1NovelsNovelIdChaptersPostResponses, CreateCharacterApiV1NovelsNovelIdCharactersPostData, CreateCharacterApiV1NovelsNovelIdCharactersPostErrors, CreateCharacterApiV1NovelsNovelIdCharactersPostResponses, CreateConversationApiV1ChatConversationsPostData, CreateConversationApiV1ChatConversationsPostErrors, CreateConversationApiV1ChatConversationsPostResponses, CreateLocationApiV1NovelsNovelIdLocationsPostData, CreateLocationApiV1NovelsNovelIdLocationsPostErrors, CreateLocationApiV1NovelsNovelIdLocationsPostResponses, CreateNovelApiV1NovelsPostData, CreateNovelApiV1NovelsPostErrors, CreateNovelApiV1NovelsPostResponses, CreateRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsPostData, CreateRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsPostErrors, CreateRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsPostResponses, CreateTimelineApiV1NovelsNovelIdTimelinesPostData, CreateTimelineApiV1NovelsNovelIdTimelinesPostErrors, CreateTimelineApiV1NovelsNovelIdTimelinesPostResponses, CreateWorldSettingApiV1NovelsNovelIdWorldSettingsPostData, CreateWorldSettingApiV1NovelsNovelIdWorldSettingsPostErrors, CreateWorldSettingApiV1NovelsNovelIdWorldSettingsPostResponses, DeactivateUserApiV1AdminUsersUserIdDeactivatePostData, DeactivateUserApiV1AdminUsersUserIdDeactivatePostErrors, DeactivateUserApiV1AdminUsersUserIdDeactivatePostResponses, DeleteChapterApiV1NovelsNovelIdChaptersChapterIdDeleteData, DeleteChapterApiV1NovelsNovelIdChaptersChapterIdDeleteErrors, DeleteChapterApiV1NovelsNovelIdChaptersChapterIdDeleteResponses, DeleteCharacterApiV1NovelsNovelIdCharactersCharacterIdDeleteData, DeleteCharacterApiV1NovelsNovelIdCharactersCharacterIdDeleteErrors, DeleteCharacterApiV1NovelsNovelIdCharactersCharacterIdDeleteResponses, DeleteLocationApiV1NovelsNovelIdLocationsLocationIdDeleteData, DeleteLocationApiV1NovelsNovelIdLocationsLocationIdDeleteErrors, DeleteLocationApiV1NovelsNovelIdLocationsLocationIdDeleteResponses, DeleteNovelApiV1NovelsNovelIdDeleteData, DeleteNovelApiV1NovelsNovelIdDeleteErrors, DeleteNovelApiV1NovelsNovelIdDeleteResponses, DeleteRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdDeleteData, DeleteRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdDeleteErrors, DeleteRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdDeleteResponses, DeleteTimelineApiV1NovelsNovelIdTimelinesTimelineIdDeleteData, DeleteTimelineApiV1NovelsNovelIdTimelinesTimelineIdDeleteErrors, DeleteTimelineApiV1NovelsNovelIdTimelinesTimelineIdDeleteResponses, DeleteWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdDeleteData, DeleteWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdDeleteErrors, DeleteWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdDeleteResponses, GenerateDraftApiV1NovelsNovelIdChaptersChapterIdDraftPostData, GenerateDraftApiV1NovelsNovelIdChaptersChapterIdDraftPostErrors, GenerateDraftApiV1NovelsNovelIdChaptersChapterIdDraftPostResponses, GetChapterApiV1NovelsNovelIdChaptersChapterIdGetData, GetChapterApiV1NovelsNovelIdChaptersChapterIdGetErrors, GetChapterApiV1NovelsNovelIdChaptersChapterIdGetResponses, GetCharacterApiV1NovelsNovelIdCharactersCharacterIdGetData, GetCharacterApiV1NovelsNovelIdCharactersCharacterIdGetErrors, GetCharacterApiV1NovelsNovelIdCharactersCharacterIdGetResponses, GetConversationApiV1ChatConversationsConversationIdGetData, GetConversationApiV1ChatConversationsConversationIdGetErrors, GetConversationApiV1ChatConversationsConversationIdGetResponses, GetLocationApiV1NovelsNovelIdLocationsLocationIdGetData, GetLocationApiV1NovelsNovelIdLocationsLocationIdGetErrors, GetLocationApiV1NovelsNovelIdLocationsLocationIdGetResponses, GetMeApiV1AuthMeGetData, GetMeApiV1AuthMeGetResponses, GetNovelApiV1NovelsNovelIdGetData, GetNovelApiV1NovelsNovelIdGetErrors, GetNovelApiV1NovelsNovelIdGetResponses, GetProviderInfoApiV1ChatProviderGetData, GetProviderInfoApiV1ChatProviderGetResponses, GetTimelineApiV1NovelsNovelIdTimelinesTimelineIdGetData, GetTimelineApiV1NovelsNovelIdTimelinesTimelineIdGetErrors, GetTimelineApiV1NovelsNovelIdTimelinesTimelineIdGetResponses, GetWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdGetData, GetWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdGetErrors, GetWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdGetResponses, HealthHealthGetData, HealthHealthGetResponses, ListChaptersApiV1NovelsNovelIdChaptersGetData, ListChaptersApiV1NovelsNovelIdChaptersGetErrors, ListChaptersApiV1NovelsNovelIdChaptersGetResponses, ListCharactersApiV1NovelsNovelIdCharactersGetData, ListCharactersApiV1NovelsNovelIdCharactersGetErrors, ListCharactersApiV1NovelsNovelIdCharactersGetResponses, ListConversationsApiV1ChatConversationsGetData, ListConversationsApiV1ChatConversationsGetResponses, ListLocationsApiV1NovelsNovelIdLocationsGetData, ListLocationsApiV1NovelsNovelIdLocationsGetErrors, ListLocationsApiV1NovelsNovelIdLocationsGetResponses, ListMessagesApiV1ChatConversationsConversationIdMessagesGetData, ListMessagesApiV1ChatConversationsConversationIdMessagesGetErrors, ListMessagesApiV1ChatConversationsConversationIdMessagesGetResponses, ListNovelsApiV1NovelsGetData, ListNovelsApiV1NovelsGetErrors, ListNovelsApiV1NovelsGetResponses, ListRelationshipsApiV1NovelsNovelIdCharactersCharacterIdRelationshipsGetData, ListRelationshipsApiV1NovelsNovelIdCharactersCharacterIdRelationshipsGetErrors, ListRelationshipsApiV1NovelsNovelIdCharactersCharacterIdRelationshipsGetResponses, ListTimelinesApiV1NovelsNovelIdTimelinesGetData, ListTimelinesApiV1NovelsNovelIdTimelinesGetErrors, ListTimelinesApiV1NovelsNovelIdTimelinesGetResponses, ListUsersApiV1AdminUsersGetData, ListUsersApiV1AdminUsersGetErrors, ListUsersApiV1AdminUsersGetResponses, ListWorldSettingsApiV1NovelsNovelIdWorldSettingsGetData, ListWorldSettingsApiV1NovelsNovelIdWorldSettingsGetErrors, ListWorldSettingsApiV1NovelsNovelIdWorldSettingsGetResponses, LoginApiV1AuthLoginPostData, LoginApiV1AuthLoginPostErrors, LoginApiV1AuthLoginPostResponses, LogoutApiV1AuthLogoutPostData, LogoutApiV1AuthLogoutPostErrors, LogoutApiV1AuthLogoutPostResponses, OauthCallbackApiV1AuthOauthProviderCallbackGetData, OauthCallbackApiV1AuthOauthProviderCallbackGetErrors, OauthCallbackApiV1AuthOauthProviderCallbackGetResponses, OauthLoginApiV1AuthOauthProviderLoginGetData, OauthLoginApiV1AuthOauthProviderLoginGetErrors, OauthLoginApiV1AuthOauthProviderLoginGetResponses, ReadyReadyGetData, ReadyReadyGetResponses, RefreshApiV1AuthRefreshPostData, RefreshApiV1AuthRefreshPostErrors, RefreshApiV1AuthRefreshPostResponses, ReorderChapterApiV1NovelsNovelIdChaptersChapterIdReorderPatchData, ReorderChapterApiV1NovelsNovelIdChaptersChapterIdReorderPatchErrors, ReorderChapterApiV1NovelsNovelIdChaptersChapterIdReorderPatchResponses, RequestPasswordResetApiV1AuthPasswordResetPostData, RequestPasswordResetApiV1AuthPasswordResetPostErrors, RequestPasswordResetApiV1AuthPasswordResetPostResponses, SendMessageApiV1ChatConversationsConversationIdMessagesPostData, SendMessageApiV1ChatConversationsConversationIdMessagesPostErrors, SendMessageApiV1ChatConversationsConversationIdMessagesPostResponses, SignupApiV1AuthSignupPostData, SignupApiV1AuthSignupPostErrors, SignupApiV1AuthSignupPostResponses, UpdateChapterApiV1NovelsNovelIdChaptersChapterIdPutData, UpdateChapterApiV1NovelsNovelIdChaptersChapterIdPutErrors, UpdateChapterApiV1NovelsNovelIdChaptersChapterIdPutResponses, UpdateCharacterApiV1NovelsNovelIdCharactersCharacterIdPutData, UpdateCharacterApiV1NovelsNovelIdCharactersCharacterIdPutErrors, UpdateCharacterApiV1NovelsNovelIdCharactersCharacterIdPutResponses, UpdateLocationApiV1NovelsNovelIdLocationsLocationIdPutData, UpdateLocationApiV1NovelsNovelIdLocationsLocationIdPutErrors, UpdateLocationApiV1NovelsNovelIdLocationsLocationIdPutResponses, UpdateNovelApiV1NovelsNovelIdPutData, UpdateNovelApiV1NovelsNovelIdPutErrors, UpdateNovelApiV1NovelsNovelIdPutResponses, UpdateRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdPutData, UpdateRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdPutErrors, UpdateRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdPutResponses, UpdateTimelineApiV1NovelsNovelIdTimelinesTimelineIdPutData, UpdateTimelineApiV1NovelsNovelIdTimelinesTimelineIdPutErrors, UpdateTimelineApiV1NovelsNovelIdTimelinesTimelineIdPutResponses, UpdateWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdPutData, UpdateWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdPutErrors, UpdateWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdPutResponses, VerifyEmailApiV1AuthVerifyEmailTokenPostData, VerifyEmailApiV1AuthVerifyEmailTokenPostErrors, VerifyEmailApiV1AuthVerifyEmailTokenPostResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -230,6 +230,19 @@ export const deactivateUserApiV1AdminUsersUserIdDeactivatePost = <ThrowOnError e
 });
 
 /**
+ * Generate Draft
+ */
+export const generateDraftApiV1NovelsNovelIdChaptersChapterIdDraftPost = <ThrowOnError extends boolean = false>(options: Options<GenerateDraftApiV1NovelsNovelIdChaptersChapterIdDraftPostData, ThrowOnError>) => (options.client ?? client).post<GenerateDraftApiV1NovelsNovelIdChaptersChapterIdDraftPostResponses, GenerateDraftApiV1NovelsNovelIdChaptersChapterIdDraftPostErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/novels/{novel_id}/chapters/{chapter_id}/draft',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
  * List Novels
  */
 export const listNovelsApiV1NovelsGet = <ThrowOnError extends boolean = false>(options?: Options<ListNovelsApiV1NovelsGetData, ThrowOnError>) => (options?.client ?? client).get<ListNovelsApiV1NovelsGetResponses, ListNovelsApiV1NovelsGetErrors, ThrowOnError>({
@@ -341,6 +354,262 @@ export const updateChapterApiV1NovelsNovelIdChaptersChapterIdPut = <ThrowOnError
 export const reorderChapterApiV1NovelsNovelIdChaptersChapterIdReorderPatch = <ThrowOnError extends boolean = false>(options: Options<ReorderChapterApiV1NovelsNovelIdChaptersChapterIdReorderPatchData, ThrowOnError>) => (options.client ?? client).patch<ReorderChapterApiV1NovelsNovelIdChaptersChapterIdReorderPatchResponses, ReorderChapterApiV1NovelsNovelIdChaptersChapterIdReorderPatchErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/v1/novels/{novel_id}/chapters/{chapter_id}/reorder',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * List Characters
+ */
+export const listCharactersApiV1NovelsNovelIdCharactersGet = <ThrowOnError extends boolean = false>(options: Options<ListCharactersApiV1NovelsNovelIdCharactersGetData, ThrowOnError>) => (options.client ?? client).get<ListCharactersApiV1NovelsNovelIdCharactersGetResponses, ListCharactersApiV1NovelsNovelIdCharactersGetErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/novels/{novel_id}/characters',
+    ...options
+});
+
+/**
+ * Create Character
+ */
+export const createCharacterApiV1NovelsNovelIdCharactersPost = <ThrowOnError extends boolean = false>(options: Options<CreateCharacterApiV1NovelsNovelIdCharactersPostData, ThrowOnError>) => (options.client ?? client).post<CreateCharacterApiV1NovelsNovelIdCharactersPostResponses, CreateCharacterApiV1NovelsNovelIdCharactersPostErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/novels/{novel_id}/characters',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Delete Character
+ */
+export const deleteCharacterApiV1NovelsNovelIdCharactersCharacterIdDelete = <ThrowOnError extends boolean = false>(options: Options<DeleteCharacterApiV1NovelsNovelIdCharactersCharacterIdDeleteData, ThrowOnError>) => (options.client ?? client).delete<DeleteCharacterApiV1NovelsNovelIdCharactersCharacterIdDeleteResponses, DeleteCharacterApiV1NovelsNovelIdCharactersCharacterIdDeleteErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/novels/{novel_id}/characters/{character_id}',
+    ...options
+});
+
+/**
+ * Get Character
+ */
+export const getCharacterApiV1NovelsNovelIdCharactersCharacterIdGet = <ThrowOnError extends boolean = false>(options: Options<GetCharacterApiV1NovelsNovelIdCharactersCharacterIdGetData, ThrowOnError>) => (options.client ?? client).get<GetCharacterApiV1NovelsNovelIdCharactersCharacterIdGetResponses, GetCharacterApiV1NovelsNovelIdCharactersCharacterIdGetErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/novels/{novel_id}/characters/{character_id}',
+    ...options
+});
+
+/**
+ * Update Character
+ */
+export const updateCharacterApiV1NovelsNovelIdCharactersCharacterIdPut = <ThrowOnError extends boolean = false>(options: Options<UpdateCharacterApiV1NovelsNovelIdCharactersCharacterIdPutData, ThrowOnError>) => (options.client ?? client).put<UpdateCharacterApiV1NovelsNovelIdCharactersCharacterIdPutResponses, UpdateCharacterApiV1NovelsNovelIdCharactersCharacterIdPutErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/novels/{novel_id}/characters/{character_id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * List Locations
+ */
+export const listLocationsApiV1NovelsNovelIdLocationsGet = <ThrowOnError extends boolean = false>(options: Options<ListLocationsApiV1NovelsNovelIdLocationsGetData, ThrowOnError>) => (options.client ?? client).get<ListLocationsApiV1NovelsNovelIdLocationsGetResponses, ListLocationsApiV1NovelsNovelIdLocationsGetErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/novels/{novel_id}/locations',
+    ...options
+});
+
+/**
+ * Create Location
+ */
+export const createLocationApiV1NovelsNovelIdLocationsPost = <ThrowOnError extends boolean = false>(options: Options<CreateLocationApiV1NovelsNovelIdLocationsPostData, ThrowOnError>) => (options.client ?? client).post<CreateLocationApiV1NovelsNovelIdLocationsPostResponses, CreateLocationApiV1NovelsNovelIdLocationsPostErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/novels/{novel_id}/locations',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Delete Location
+ */
+export const deleteLocationApiV1NovelsNovelIdLocationsLocationIdDelete = <ThrowOnError extends boolean = false>(options: Options<DeleteLocationApiV1NovelsNovelIdLocationsLocationIdDeleteData, ThrowOnError>) => (options.client ?? client).delete<DeleteLocationApiV1NovelsNovelIdLocationsLocationIdDeleteResponses, DeleteLocationApiV1NovelsNovelIdLocationsLocationIdDeleteErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/novels/{novel_id}/locations/{location_id}',
+    ...options
+});
+
+/**
+ * Get Location
+ */
+export const getLocationApiV1NovelsNovelIdLocationsLocationIdGet = <ThrowOnError extends boolean = false>(options: Options<GetLocationApiV1NovelsNovelIdLocationsLocationIdGetData, ThrowOnError>) => (options.client ?? client).get<GetLocationApiV1NovelsNovelIdLocationsLocationIdGetResponses, GetLocationApiV1NovelsNovelIdLocationsLocationIdGetErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/novels/{novel_id}/locations/{location_id}',
+    ...options
+});
+
+/**
+ * Update Location
+ */
+export const updateLocationApiV1NovelsNovelIdLocationsLocationIdPut = <ThrowOnError extends boolean = false>(options: Options<UpdateLocationApiV1NovelsNovelIdLocationsLocationIdPutData, ThrowOnError>) => (options.client ?? client).put<UpdateLocationApiV1NovelsNovelIdLocationsLocationIdPutResponses, UpdateLocationApiV1NovelsNovelIdLocationsLocationIdPutErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/novels/{novel_id}/locations/{location_id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * List World Settings
+ */
+export const listWorldSettingsApiV1NovelsNovelIdWorldSettingsGet = <ThrowOnError extends boolean = false>(options: Options<ListWorldSettingsApiV1NovelsNovelIdWorldSettingsGetData, ThrowOnError>) => (options.client ?? client).get<ListWorldSettingsApiV1NovelsNovelIdWorldSettingsGetResponses, ListWorldSettingsApiV1NovelsNovelIdWorldSettingsGetErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/novels/{novel_id}/world-settings',
+    ...options
+});
+
+/**
+ * Create World Setting
+ */
+export const createWorldSettingApiV1NovelsNovelIdWorldSettingsPost = <ThrowOnError extends boolean = false>(options: Options<CreateWorldSettingApiV1NovelsNovelIdWorldSettingsPostData, ThrowOnError>) => (options.client ?? client).post<CreateWorldSettingApiV1NovelsNovelIdWorldSettingsPostResponses, CreateWorldSettingApiV1NovelsNovelIdWorldSettingsPostErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/novels/{novel_id}/world-settings',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Delete World Setting
+ */
+export const deleteWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdDelete = <ThrowOnError extends boolean = false>(options: Options<DeleteWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdDeleteData, ThrowOnError>) => (options.client ?? client).delete<DeleteWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdDeleteResponses, DeleteWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdDeleteErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/novels/{novel_id}/world-settings/{world_setting_id}',
+    ...options
+});
+
+/**
+ * Get World Setting
+ */
+export const getWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdGet = <ThrowOnError extends boolean = false>(options: Options<GetWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdGetData, ThrowOnError>) => (options.client ?? client).get<GetWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdGetResponses, GetWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdGetErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/novels/{novel_id}/world-settings/{world_setting_id}',
+    ...options
+});
+
+/**
+ * Update World Setting
+ */
+export const updateWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdPut = <ThrowOnError extends boolean = false>(options: Options<UpdateWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdPutData, ThrowOnError>) => (options.client ?? client).put<UpdateWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdPutResponses, UpdateWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdPutErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/novels/{novel_id}/world-settings/{world_setting_id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * List Timelines
+ */
+export const listTimelinesApiV1NovelsNovelIdTimelinesGet = <ThrowOnError extends boolean = false>(options: Options<ListTimelinesApiV1NovelsNovelIdTimelinesGetData, ThrowOnError>) => (options.client ?? client).get<ListTimelinesApiV1NovelsNovelIdTimelinesGetResponses, ListTimelinesApiV1NovelsNovelIdTimelinesGetErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/novels/{novel_id}/timelines',
+    ...options
+});
+
+/**
+ * Create Timeline
+ */
+export const createTimelineApiV1NovelsNovelIdTimelinesPost = <ThrowOnError extends boolean = false>(options: Options<CreateTimelineApiV1NovelsNovelIdTimelinesPostData, ThrowOnError>) => (options.client ?? client).post<CreateTimelineApiV1NovelsNovelIdTimelinesPostResponses, CreateTimelineApiV1NovelsNovelIdTimelinesPostErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/novels/{novel_id}/timelines',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Delete Timeline
+ */
+export const deleteTimelineApiV1NovelsNovelIdTimelinesTimelineIdDelete = <ThrowOnError extends boolean = false>(options: Options<DeleteTimelineApiV1NovelsNovelIdTimelinesTimelineIdDeleteData, ThrowOnError>) => (options.client ?? client).delete<DeleteTimelineApiV1NovelsNovelIdTimelinesTimelineIdDeleteResponses, DeleteTimelineApiV1NovelsNovelIdTimelinesTimelineIdDeleteErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/novels/{novel_id}/timelines/{timeline_id}',
+    ...options
+});
+
+/**
+ * Get Timeline
+ */
+export const getTimelineApiV1NovelsNovelIdTimelinesTimelineIdGet = <ThrowOnError extends boolean = false>(options: Options<GetTimelineApiV1NovelsNovelIdTimelinesTimelineIdGetData, ThrowOnError>) => (options.client ?? client).get<GetTimelineApiV1NovelsNovelIdTimelinesTimelineIdGetResponses, GetTimelineApiV1NovelsNovelIdTimelinesTimelineIdGetErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/novels/{novel_id}/timelines/{timeline_id}',
+    ...options
+});
+
+/**
+ * Update Timeline
+ */
+export const updateTimelineApiV1NovelsNovelIdTimelinesTimelineIdPut = <ThrowOnError extends boolean = false>(options: Options<UpdateTimelineApiV1NovelsNovelIdTimelinesTimelineIdPutData, ThrowOnError>) => (options.client ?? client).put<UpdateTimelineApiV1NovelsNovelIdTimelinesTimelineIdPutResponses, UpdateTimelineApiV1NovelsNovelIdTimelinesTimelineIdPutErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/novels/{novel_id}/timelines/{timeline_id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * List Relationships
+ */
+export const listRelationshipsApiV1NovelsNovelIdCharactersCharacterIdRelationshipsGet = <ThrowOnError extends boolean = false>(options: Options<ListRelationshipsApiV1NovelsNovelIdCharactersCharacterIdRelationshipsGetData, ThrowOnError>) => (options.client ?? client).get<ListRelationshipsApiV1NovelsNovelIdCharactersCharacterIdRelationshipsGetResponses, ListRelationshipsApiV1NovelsNovelIdCharactersCharacterIdRelationshipsGetErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/novels/{novel_id}/characters/{character_id}/relationships',
+    ...options
+});
+
+/**
+ * Create Relationship
+ */
+export const createRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsPost = <ThrowOnError extends boolean = false>(options: Options<CreateRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsPostData, ThrowOnError>) => (options.client ?? client).post<CreateRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsPostResponses, CreateRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsPostErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/novels/{novel_id}/characters/{character_id}/relationships',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Delete Relationship
+ */
+export const deleteRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdDelete = <ThrowOnError extends boolean = false>(options: Options<DeleteRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdDeleteData, ThrowOnError>) => (options.client ?? client).delete<DeleteRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdDeleteResponses, DeleteRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdDeleteErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/novels/{novel_id}/characters/{character_id}/relationships/{rel_id}',
+    ...options
+});
+
+/**
+ * Update Relationship
+ */
+export const updateRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdPut = <ThrowOnError extends boolean = false>(options: Options<UpdateRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdPutData, ThrowOnError>) => (options.client ?? client).put<UpdateRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdPutResponses, UpdateRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdPutErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/novels/{novel_id}/characters/{character_id}/relationships/{rel_id}',
     ...options,
     headers: {
         'Content-Type': 'application/json',

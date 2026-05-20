@@ -1,4 +1,4 @@
-import { EditorContent, useEditor } from '@tiptap/react';
+import { type Editor, EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import CharacterCount from '@tiptap/extension-character-count';
 import Link from '@tiptap/extension-link';
@@ -14,11 +14,13 @@ interface ChapterEditorProps {
   initialContent: Record<string, unknown> | null; // D-28: JSON object
   onCharCountChange?: (count: number) => void;
   onSaveStatusChange?: (status: SaveStatus) => void;
+  readOnly?: boolean;
+  editorRef?: React.RefObject<Editor | null>;
 }
 
 const CHAR_TARGET = 5000;
 
-export function ChapterEditor({ novelId, chapterId, initialContent, onCharCountChange, onSaveStatusChange }: ChapterEditorProps) {
+export function ChapterEditor({ novelId, chapterId, initialContent, onCharCountChange, onSaveStatusChange, readOnly, editorRef }: ChapterEditorProps) {
   const [content, setContent] = useState<Record<string, unknown> | null>(null);
 
   const editor = useEditor({
@@ -28,11 +30,24 @@ export function ChapterEditor({ novelId, chapterId, initialContent, onCharCountC
       Link.configure({ openOnClick: false }),
     ],
     content: null,
+    editable: !readOnly,
     immediatelyRender: false, // MANDATORY — React 19 hydration
     onUpdate: ({ editor }) => {
       setContent(editor.getJSON()); // D-28: getJSON() not getHTML()
     },
   });
+
+  useEffect(() => {
+    if (editor) {
+      editor.setEditable(!readOnly);
+    }
+  }, [editor, readOnly]);
+
+  useEffect(() => {
+    if (editorRef) {
+      editorRef.current = editor ?? null;
+    }
+  }, [editor, editorRef]);
 
   // Initialize content after editor mounts
   useEffect(() => {
