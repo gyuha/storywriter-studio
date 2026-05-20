@@ -1,17 +1,19 @@
 import { useState } from 'react';
 import { NovelShell } from '@/features/novel/components/novel-shell';
+import { StoryBeatList } from '@/features/novel/components/story-beat-list';
 import { CharacterList } from './character-list';
 import { LocationList } from './location-list';
 import { TimelineList } from './timeline-list';
 import { WorldSettingList } from './world-setting-list';
 
-type TabId = 'characters' | 'locations' | 'world-settings' | 'timelines';
+type TabId = 'characters' | 'locations' | 'world-settings' | 'timelines' | 'story-beats';
 
 const TABS: { id: TabId; label: string }[] = [
   { id: 'characters', label: '캐릭터' },
   { id: 'locations', label: '장소' },
   { id: 'world-settings', label: '세계관 설정' },
   { id: 'timelines', label: '시간표' },
+  { id: 'story-beats', label: '스토리 비트' },
 ];
 
 interface WorldPageProps {
@@ -72,6 +74,7 @@ export function WorldPage({ novelId }: WorldPageProps) {
         {activeTab === 'locations' && <LocationList novelId={novelId} />}
         {activeTab === 'world-settings' && <WorldSettingList novelId={novelId} />}
         {activeTab === 'timelines' && <TimelineList novelId={novelId} />}
+        {activeTab === 'story-beats' && <StoryBeatList novelId={novelId} />}
       </div>
     </NovelShell>
   );

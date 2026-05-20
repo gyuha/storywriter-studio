@@ -65,3 +65,38 @@ class Chapter(Base):
     )
 
     novel: Mapped[Novel] = relationship("Novel", back_populates="chapters")
+
+
+class StoryBeatType(enum.StrEnum):
+    SETUP = "setup"
+    RISING = "rising"
+    CLIMAX = "climax"
+    FALLING = "falling"
+    RESOLUTION = "resolution"
+    OTHER = "other"
+
+
+class StoryBeat(Base):
+    __tablename__ = "story_beats"
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, server_default=func.gen_random_uuid())
+    novel_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("novels.id", ondelete="CASCADE"))
+    chapter_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("chapters.id", ondelete="SET NULL"), nullable=True
+    )
+    title: Mapped[str] = mapped_column(String(255))
+    content: Mapped[str | None] = mapped_column(Text, nullable=True)
+    beat_type: Mapped[StoryBeatType] = mapped_column(
+        SAEnum(StoryBeatType, name="story_beat_type_enum", values_callable=lambda obj: [e.value for e in obj]),
+        nullable=False,
+        default=StoryBeatType.OTHER,
+    )
+    order_key: Mapped[float] = mapped_column(Float, nullable=False, default=1.0)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=lambda: datetime.now(timezone.utc),
+    )

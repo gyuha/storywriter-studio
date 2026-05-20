@@ -50,9 +50,11 @@ from domains.novel.service.chapter_service import ChapterService
 from domains.novel.service.novel_service import NovelService
 
 from domains.novel.router.draft_router import _extract_text, router as draft_router
+from domains.novel.router.story_beat_router import router as story_beat_router
 
 router = APIRouter(prefix="/novels", tags=["novels"])
 router.include_router(draft_router)
+router.include_router(story_beat_router)
 
 
 # ---------------------------------------------------------------------------
