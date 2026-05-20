@@ -735,6 +735,82 @@ export type RefreshRequest = {
 };
 
 /**
+ * RelationshipCreate
+ */
+export type RelationshipCreate = {
+    /**
+     * Character Id B
+     */
+    character_id_b: string;
+    type: RelationshipType;
+    /**
+     * Description
+     */
+    description?: string | null;
+};
+
+/**
+ * RelationshipResponse
+ *
+ * direction과 other_character_id는 서비스에서 수동 계산하여 채운다.
+ */
+export type RelationshipResponse = {
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Novel Id
+     */
+    novel_id: string;
+    /**
+     * Character Id A
+     */
+    character_id_a: string;
+    /**
+     * Character Id B
+     */
+    character_id_b: string;
+    type: RelationshipType;
+    /**
+     * Description
+     */
+    description: string | null;
+    /**
+     * Direction
+     */
+    direction: 'source' | 'target';
+    /**
+     * Other Character Id
+     */
+    other_character_id: string;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Updated At
+     */
+    updated_at: string;
+};
+
+/**
+ * RelationshipType
+ */
+export type RelationshipType = 'lover' | 'enemy' | 'ally' | 'family';
+
+/**
+ * RelationshipUpdate
+ */
+export type RelationshipUpdate = {
+    type?: RelationshipType | null;
+    /**
+     * Description
+     */
+    description?: string | null;
+};
+
+/**
  * SendMessageRequest
  *
  * Request body for POST /chat/conversations/{id}/messages.
@@ -783,6 +859,100 @@ export type SignupResponse = {
      * Message
      */
     message?: string;
+};
+
+/**
+ * TimelineCreate
+ */
+export type TimelineCreate = {
+    /**
+     * Event Name
+     */
+    event_name: string;
+    /**
+     * Event Date
+     */
+    event_date?: string | null;
+    /**
+     * Description
+     */
+    description?: string | null;
+    /**
+     * Summary
+     */
+    summary?: string | null;
+    /**
+     * Chapter Id
+     */
+    chapter_id?: string | null;
+};
+
+/**
+ * TimelineResponse
+ */
+export type TimelineResponse = {
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Novel Id
+     */
+    novel_id: string;
+    /**
+     * Event Name
+     */
+    event_name: string;
+    /**
+     * Event Date
+     */
+    event_date: string | null;
+    /**
+     * Description
+     */
+    description: string | null;
+    /**
+     * Summary
+     */
+    summary: string | null;
+    /**
+     * Chapter Id
+     */
+    chapter_id: string | null;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Updated At
+     */
+    updated_at: string;
+};
+
+/**
+ * TimelineUpdate
+ */
+export type TimelineUpdate = {
+    /**
+     * Event Name
+     */
+    event_name?: string | null;
+    /**
+     * Event Date
+     */
+    event_date?: string | null;
+    /**
+     * Description
+     */
+    description?: string | null;
+    /**
+     * Summary
+     */
+    summary?: string | null;
+    /**
+     * Chapter Id
+     */
+    chapter_id?: string | null;
 };
 
 /**
@@ -2228,6 +2398,316 @@ export type UpdateWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdPutRe
 };
 
 export type UpdateWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdPutResponse = UpdateWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdPutResponses[keyof UpdateWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdPutResponses];
+
+export type ListTimelinesApiV1NovelsNovelIdTimelinesGetData = {
+    body?: never;
+    path: {
+        /**
+         * Novel Id
+         */
+        novel_id: string;
+    };
+    query?: never;
+    url: '/api/v1/novels/{novel_id}/timelines';
+};
+
+export type ListTimelinesApiV1NovelsNovelIdTimelinesGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ListTimelinesApiV1NovelsNovelIdTimelinesGetError = ListTimelinesApiV1NovelsNovelIdTimelinesGetErrors[keyof ListTimelinesApiV1NovelsNovelIdTimelinesGetErrors];
+
+export type ListTimelinesApiV1NovelsNovelIdTimelinesGetResponses = {
+    /**
+     * Response List Timelines Api V1 Novels  Novel Id  Timelines Get
+     *
+     * Successful Response
+     */
+    200: Array<TimelineResponse>;
+};
+
+export type ListTimelinesApiV1NovelsNovelIdTimelinesGetResponse = ListTimelinesApiV1NovelsNovelIdTimelinesGetResponses[keyof ListTimelinesApiV1NovelsNovelIdTimelinesGetResponses];
+
+export type CreateTimelineApiV1NovelsNovelIdTimelinesPostData = {
+    body: TimelineCreate;
+    path: {
+        /**
+         * Novel Id
+         */
+        novel_id: string;
+    };
+    query?: never;
+    url: '/api/v1/novels/{novel_id}/timelines';
+};
+
+export type CreateTimelineApiV1NovelsNovelIdTimelinesPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CreateTimelineApiV1NovelsNovelIdTimelinesPostError = CreateTimelineApiV1NovelsNovelIdTimelinesPostErrors[keyof CreateTimelineApiV1NovelsNovelIdTimelinesPostErrors];
+
+export type CreateTimelineApiV1NovelsNovelIdTimelinesPostResponses = {
+    /**
+     * Successful Response
+     */
+    201: TimelineResponse;
+};
+
+export type CreateTimelineApiV1NovelsNovelIdTimelinesPostResponse = CreateTimelineApiV1NovelsNovelIdTimelinesPostResponses[keyof CreateTimelineApiV1NovelsNovelIdTimelinesPostResponses];
+
+export type DeleteTimelineApiV1NovelsNovelIdTimelinesTimelineIdDeleteData = {
+    body?: never;
+    path: {
+        /**
+         * Novel Id
+         */
+        novel_id: string;
+        /**
+         * Timeline Id
+         */
+        timeline_id: string;
+    };
+    query?: never;
+    url: '/api/v1/novels/{novel_id}/timelines/{timeline_id}';
+};
+
+export type DeleteTimelineApiV1NovelsNovelIdTimelinesTimelineIdDeleteErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DeleteTimelineApiV1NovelsNovelIdTimelinesTimelineIdDeleteError = DeleteTimelineApiV1NovelsNovelIdTimelinesTimelineIdDeleteErrors[keyof DeleteTimelineApiV1NovelsNovelIdTimelinesTimelineIdDeleteErrors];
+
+export type DeleteTimelineApiV1NovelsNovelIdTimelinesTimelineIdDeleteResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type DeleteTimelineApiV1NovelsNovelIdTimelinesTimelineIdDeleteResponse = DeleteTimelineApiV1NovelsNovelIdTimelinesTimelineIdDeleteResponses[keyof DeleteTimelineApiV1NovelsNovelIdTimelinesTimelineIdDeleteResponses];
+
+export type GetTimelineApiV1NovelsNovelIdTimelinesTimelineIdGetData = {
+    body?: never;
+    path: {
+        /**
+         * Novel Id
+         */
+        novel_id: string;
+        /**
+         * Timeline Id
+         */
+        timeline_id: string;
+    };
+    query?: never;
+    url: '/api/v1/novels/{novel_id}/timelines/{timeline_id}';
+};
+
+export type GetTimelineApiV1NovelsNovelIdTimelinesTimelineIdGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetTimelineApiV1NovelsNovelIdTimelinesTimelineIdGetError = GetTimelineApiV1NovelsNovelIdTimelinesTimelineIdGetErrors[keyof GetTimelineApiV1NovelsNovelIdTimelinesTimelineIdGetErrors];
+
+export type GetTimelineApiV1NovelsNovelIdTimelinesTimelineIdGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: TimelineResponse;
+};
+
+export type GetTimelineApiV1NovelsNovelIdTimelinesTimelineIdGetResponse = GetTimelineApiV1NovelsNovelIdTimelinesTimelineIdGetResponses[keyof GetTimelineApiV1NovelsNovelIdTimelinesTimelineIdGetResponses];
+
+export type UpdateTimelineApiV1NovelsNovelIdTimelinesTimelineIdPutData = {
+    body: TimelineUpdate;
+    path: {
+        /**
+         * Novel Id
+         */
+        novel_id: string;
+        /**
+         * Timeline Id
+         */
+        timeline_id: string;
+    };
+    query?: never;
+    url: '/api/v1/novels/{novel_id}/timelines/{timeline_id}';
+};
+
+export type UpdateTimelineApiV1NovelsNovelIdTimelinesTimelineIdPutErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UpdateTimelineApiV1NovelsNovelIdTimelinesTimelineIdPutError = UpdateTimelineApiV1NovelsNovelIdTimelinesTimelineIdPutErrors[keyof UpdateTimelineApiV1NovelsNovelIdTimelinesTimelineIdPutErrors];
+
+export type UpdateTimelineApiV1NovelsNovelIdTimelinesTimelineIdPutResponses = {
+    /**
+     * Successful Response
+     */
+    200: TimelineResponse;
+};
+
+export type UpdateTimelineApiV1NovelsNovelIdTimelinesTimelineIdPutResponse = UpdateTimelineApiV1NovelsNovelIdTimelinesTimelineIdPutResponses[keyof UpdateTimelineApiV1NovelsNovelIdTimelinesTimelineIdPutResponses];
+
+export type ListRelationshipsApiV1NovelsNovelIdCharactersCharacterIdRelationshipsGetData = {
+    body?: never;
+    path: {
+        /**
+         * Novel Id
+         */
+        novel_id: string;
+        /**
+         * Character Id
+         */
+        character_id: string;
+    };
+    query?: never;
+    url: '/api/v1/novels/{novel_id}/characters/{character_id}/relationships';
+};
+
+export type ListRelationshipsApiV1NovelsNovelIdCharactersCharacterIdRelationshipsGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ListRelationshipsApiV1NovelsNovelIdCharactersCharacterIdRelationshipsGetError = ListRelationshipsApiV1NovelsNovelIdCharactersCharacterIdRelationshipsGetErrors[keyof ListRelationshipsApiV1NovelsNovelIdCharactersCharacterIdRelationshipsGetErrors];
+
+export type ListRelationshipsApiV1NovelsNovelIdCharactersCharacterIdRelationshipsGetResponses = {
+    /**
+     * Response List Relationships Api V1 Novels  Novel Id  Characters  Character Id  Relationships Get
+     *
+     * Successful Response
+     */
+    200: Array<RelationshipResponse>;
+};
+
+export type ListRelationshipsApiV1NovelsNovelIdCharactersCharacterIdRelationshipsGetResponse = ListRelationshipsApiV1NovelsNovelIdCharactersCharacterIdRelationshipsGetResponses[keyof ListRelationshipsApiV1NovelsNovelIdCharactersCharacterIdRelationshipsGetResponses];
+
+export type CreateRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsPostData = {
+    body: RelationshipCreate;
+    path: {
+        /**
+         * Novel Id
+         */
+        novel_id: string;
+        /**
+         * Character Id
+         */
+        character_id: string;
+    };
+    query?: never;
+    url: '/api/v1/novels/{novel_id}/characters/{character_id}/relationships';
+};
+
+export type CreateRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CreateRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsPostError = CreateRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsPostErrors[keyof CreateRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsPostErrors];
+
+export type CreateRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsPostResponses = {
+    /**
+     * Successful Response
+     */
+    201: RelationshipResponse;
+};
+
+export type CreateRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsPostResponse = CreateRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsPostResponses[keyof CreateRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsPostResponses];
+
+export type DeleteRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdDeleteData = {
+    body?: never;
+    path: {
+        /**
+         * Novel Id
+         */
+        novel_id: string;
+        /**
+         * Character Id
+         */
+        character_id: string;
+        /**
+         * Rel Id
+         */
+        rel_id: string;
+    };
+    query?: never;
+    url: '/api/v1/novels/{novel_id}/characters/{character_id}/relationships/{rel_id}';
+};
+
+export type DeleteRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdDeleteErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DeleteRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdDeleteError = DeleteRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdDeleteErrors[keyof DeleteRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdDeleteErrors];
+
+export type DeleteRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdDeleteResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type DeleteRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdDeleteResponse = DeleteRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdDeleteResponses[keyof DeleteRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdDeleteResponses];
+
+export type UpdateRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdPutData = {
+    body: RelationshipUpdate;
+    path: {
+        /**
+         * Novel Id
+         */
+        novel_id: string;
+        /**
+         * Character Id
+         */
+        character_id: string;
+        /**
+         * Rel Id
+         */
+        rel_id: string;
+    };
+    query?: never;
+    url: '/api/v1/novels/{novel_id}/characters/{character_id}/relationships/{rel_id}';
+};
+
+export type UpdateRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdPutErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UpdateRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdPutError = UpdateRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdPutErrors[keyof UpdateRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdPutErrors];
+
+export type UpdateRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdPutResponses = {
+    /**
+     * Successful Response
+     */
+    200: RelationshipResponse;
+};
+
+export type UpdateRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdPutResponse = UpdateRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdPutResponses[keyof UpdateRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdPutResponses];
 
 export type ChatCompleteApiV1ChatCompletePostData = {
     body: ChatRequest;

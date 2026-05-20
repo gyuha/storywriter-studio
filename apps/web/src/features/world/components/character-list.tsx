@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Loader2, Pencil, Plus, Trash2 } from 'lucide-react';
+import { Loader2, Pencil, Plus, Trash2, Users } from 'lucide-react';
 import { useDeleteCharacterMutation } from '../hooks/use-world-mutations';
 import { useCharacters } from '../hooks/use-world-queries';
 import type { Character } from '../types/world';
 import { CharacterFormModal } from './character-form-modal';
+import { RelationshipList } from './relationship-list';
 
 interface CharacterListProps {
   novelId: string;
@@ -14,6 +15,7 @@ export function CharacterList({ novelId }: CharacterListProps) {
   const [debouncedName, setDebouncedName] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<Character | undefined>(undefined);
+  const [selectedCharacterId, setSelectedCharacterId] = useState<string | null>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedName(searchInput), 300);
@@ -95,6 +97,17 @@ export function CharacterList({ novelId }: CharacterListProps) {
                 <td className="py-2">
                   <div className="flex gap-1 justify-end">
                     <button
+                      onClick={() =>
+                        setSelectedCharacterId(
+                          selectedCharacterId === c.id ? null : c.id
+                        )
+                      }
+                      className={`p-1 rounded hover:bg-muted ${selectedCharacterId === c.id ? 'text-primary' : ''}`}
+                      title="관계 보기"
+                    >
+                      <Users className="w-3.5 h-3.5" />
+                    </button>
+                    <button
                       onClick={() => handleEdit(c)}
                       className="p-1 rounded hover:bg-muted"
                       title="수정"
@@ -114,6 +127,10 @@ export function CharacterList({ novelId }: CharacterListProps) {
             ))}
           </tbody>
         </table>
+      )}
+
+      {selectedCharacterId && (
+        <RelationshipList novelId={novelId} characterId={selectedCharacterId} />
       )}
 
       <CharacterFormModal

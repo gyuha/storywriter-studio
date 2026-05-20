@@ -54,6 +54,60 @@ export interface LocationUpdateInput {
   summary?: string;
 }
 
+export interface Timeline {
+  id: string;
+  novel_id: string;
+  event_name: string;
+  event_date: string | null;
+  description: string | null;
+  chapter_id: string | null;
+  summary: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TimelineCreateInput {
+  event_name: string;
+  event_date?: string;
+  description?: string;
+  chapter_id?: string;
+  summary?: string;
+}
+
+export interface TimelineUpdateInput {
+  event_name?: string;
+  event_date?: string;
+  description?: string;
+  chapter_id?: string;
+  summary?: string;
+}
+
+export type RelationshipType = 'lover' | 'enemy' | 'ally' | 'family';
+
+export interface Relationship {
+  id: string;
+  novel_id: string;
+  character_id_a: string;
+  character_id_b: string;
+  type: RelationshipType;
+  description: string | null;
+  direction: 'source' | 'target';
+  other_character_id: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface RelationshipCreateInput {
+  character_id_b: string;
+  type: RelationshipType;
+  description?: string;
+}
+
+export interface RelationshipUpdateInput {
+  type?: RelationshipType;
+  description?: string;
+}
+
 export type WorldSettingType = 'magic_system' | 'nation_faction' | 'history' | 'rule';
 
 export interface WorldSetting {

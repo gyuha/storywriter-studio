@@ -1,18 +1,26 @@
 import {
   createCharacterApiV1NovelsNovelIdCharactersPost,
   createLocationApiV1NovelsNovelIdLocationsPost,
+  createRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsPost,
+  createTimelineApiV1NovelsNovelIdTimelinesPost,
   createWorldSettingApiV1NovelsNovelIdWorldSettingsPost,
   deleteCharacterApiV1NovelsNovelIdCharactersCharacterIdDelete,
   deleteLocationApiV1NovelsNovelIdLocationsLocationIdDelete,
+  deleteRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdDelete,
+  deleteTimelineApiV1NovelsNovelIdTimelinesTimelineIdDelete,
   deleteWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdDelete,
   getCharacterApiV1NovelsNovelIdCharactersCharacterIdGet,
   getLocationApiV1NovelsNovelIdLocationsLocationIdGet,
   getWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdGet,
   listCharactersApiV1NovelsNovelIdCharactersGet,
   listLocationsApiV1NovelsNovelIdLocationsGet,
+  listRelationshipsApiV1NovelsNovelIdCharactersCharacterIdRelationshipsGet,
+  listTimelinesApiV1NovelsNovelIdTimelinesGet,
   listWorldSettingsApiV1NovelsNovelIdWorldSettingsGet,
   updateCharacterApiV1NovelsNovelIdCharactersCharacterIdPut,
   updateLocationApiV1NovelsNovelIdLocationsLocationIdPut,
+  updateRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdPut,
+  updateTimelineApiV1NovelsNovelIdTimelinesTimelineIdPut,
   updateWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdPut,
 } from '@/generated/sdk.gen';
 import type {
@@ -22,6 +30,12 @@ import type {
   Location,
   LocationCreateInput,
   LocationUpdateInput,
+  Relationship,
+  RelationshipCreateInput,
+  RelationshipUpdateInput,
+  Timeline,
+  TimelineCreateInput,
+  TimelineUpdateInput,
   WorldSetting,
   WorldSettingCreateInput,
   WorldSettingType,
@@ -198,5 +212,102 @@ export async function apiDeleteWorldSetting(
   const { error } = await deleteWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdDelete({
     path: { novel_id: novelId, world_setting_id: worldSettingId },
   });
+  if (error) throwOnError(error);
+}
+
+// ── Timeline ──────────────────────────────────────────────────────────────────
+
+export async function apiGetTimelines(novelId: string): Promise<Timeline[]> {
+  const { data, error } = await listTimelinesApiV1NovelsNovelIdTimelinesGet({
+    path: { novel_id: novelId },
+  });
+  if (error) throwOnError(error);
+  return data as Timeline[];
+}
+
+export async function apiCreateTimeline(
+  novelId: string,
+  body: TimelineCreateInput
+): Promise<Timeline> {
+  const { data, error } = await createTimelineApiV1NovelsNovelIdTimelinesPost({
+    path: { novel_id: novelId },
+    body,
+  });
+  if (error) throwOnError(error);
+  return data as Timeline;
+}
+
+export async function apiUpdateTimeline(
+  novelId: string,
+  timelineId: string,
+  body: TimelineUpdateInput
+): Promise<Timeline> {
+  const { data, error } = await updateTimelineApiV1NovelsNovelIdTimelinesTimelineIdPut({
+    path: { novel_id: novelId, timeline_id: timelineId },
+    body,
+  });
+  if (error) throwOnError(error);
+  return data as Timeline;
+}
+
+export async function apiDeleteTimeline(novelId: string, timelineId: string): Promise<void> {
+  const { error } = await deleteTimelineApiV1NovelsNovelIdTimelinesTimelineIdDelete({
+    path: { novel_id: novelId, timeline_id: timelineId },
+  });
+  if (error) throwOnError(error);
+}
+
+// ── Relationship ──────────────────────────────────────────────────────────────
+
+export async function apiGetRelationships(
+  novelId: string,
+  characterId: string
+): Promise<Relationship[]> {
+  const { data, error } =
+    await listRelationshipsApiV1NovelsNovelIdCharactersCharacterIdRelationshipsGet({
+      path: { novel_id: novelId, character_id: characterId },
+    });
+  if (error) throwOnError(error);
+  return data as Relationship[];
+}
+
+export async function apiCreateRelationship(
+  novelId: string,
+  characterId: string,
+  body: RelationshipCreateInput
+): Promise<Relationship> {
+  const { data, error } =
+    await createRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsPost({
+      path: { novel_id: novelId, character_id: characterId },
+      body,
+    });
+  if (error) throwOnError(error);
+  return data as Relationship;
+}
+
+export async function apiUpdateRelationship(
+  novelId: string,
+  characterId: string,
+  relId: string,
+  body: RelationshipUpdateInput
+): Promise<Relationship> {
+  const { data, error } =
+    await updateRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdPut({
+      path: { novel_id: novelId, character_id: characterId, rel_id: relId },
+      body,
+    });
+  if (error) throwOnError(error);
+  return data as Relationship;
+}
+
+export async function apiDeleteRelationship(
+  novelId: string,
+  characterId: string,
+  relId: string
+): Promise<void> {
+  const { error } =
+    await deleteRelationshipApiV1NovelsNovelIdCharactersCharacterIdRelationshipsRelIdDelete({
+      path: { novel_id: novelId, character_id: characterId, rel_id: relId },
+    });
   if (error) throwOnError(error);
 }

@@ -1,5 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
-import { apiGetCharacters, apiGetLocations, apiGetWorldSettings } from '../lib/world-api';
+import {
+  apiGetCharacters,
+  apiGetLocations,
+  apiGetRelationships,
+  apiGetTimelines,
+  apiGetWorldSettings,
+} from '../lib/world-api';
 import type { WorldSettingType } from '../types/world';
 
 export function useCharacters(novelId: string, name?: string) {
@@ -23,5 +29,21 @@ export function useWorldSettings(novelId: string, name?: string, type?: WorldSet
     queryKey: ['worlds', novelId, 'world-settings', { name, type }],
     queryFn: () => apiGetWorldSettings(novelId, name, type),
     enabled: !!novelId,
+  });
+}
+
+export function useTimelines(novelId: string) {
+  return useQuery({
+    queryKey: ['worlds', novelId, 'timelines'],
+    queryFn: () => apiGetTimelines(novelId),
+    enabled: !!novelId,
+  });
+}
+
+export function useRelationships(novelId: string, characterId: string) {
+  return useQuery({
+    queryKey: ['worlds', novelId, 'relationships', characterId],
+    queryFn: () => apiGetRelationships(novelId, characterId),
+    enabled: !!novelId && !!characterId,
   });
 }
