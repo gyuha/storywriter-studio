@@ -1,6 +1,7 @@
 import { useNavigate } from '@tanstack/react-router';
 import {
   Archive,
+  BarChart2,
   Bell,
   BookOpen,
   Check,
@@ -17,6 +18,7 @@ import {
 import { useEffect, useRef, useState } from 'react';
 import { useChapters } from '../hooks/use-chapter-queries';
 import { useDeleteNovelMutation, useUpdateNovelMutation } from '../hooks/use-novel-mutations';
+import { useNovelStats } from '../hooks/use-novel-queries';
 import type { Novel } from '../types/novel';
 import { NovelShell } from './novel-shell';
 
@@ -26,6 +28,7 @@ const SECTIONS = [
   { id: 'basic', label: '기본 정보', icon: FileText },
   { id: 'cover', label: '커버 & 표지', icon: Image },
   { id: 'publish', label: '연재 정보', icon: BookOpen },
+  { id: 'stats', label: '집필 통계', icon: BarChart2 },
   { id: 'ai', label: 'AI 어시스턴트', icon: Sparkles },
   { id: 'writing', label: '집필 환경', icon: PenLine },
   { id: 'backup', label: '백업 & 내보내기', icon: Save },
@@ -320,6 +323,59 @@ function SectionPublish({ chapterCount }: { chapterCount: number }) {
   );
 }
 
+function SectionStats({ novelId }: { novelId: string }) {
+  const { data: stats, isLoading } = useNovelStats(novelId);
+
+  const totalChars = stats?.total_chars ?? 0;
+  const chapterCount = stats?.chapter_count ?? 0;
+
+  return (
+    <section id="stats" style={{ background: 'var(--sw-bg-surface)', borderRadius: 16, border: '1px solid var(--sw-line-default)', padding: '28px 32px', scrollMarginTop: 24 }}>
+      <SectionHead icon={BarChart2} title="집필 통계" desc="현재까지 작성한 글자 수와 챕터별 현황입니다." />
+      {isLoading ? (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '16px 0', color: 'var(--sw-text-assistive)' }}>
+          <Loader2 size={14} className="animate-spin" /> 통계 불러오는 중…
+        </div>
+      ) : (
+        <>
+          <div style={{ display: 'flex', gap: 16, marginBottom: 24 }}>
+            {[
+              { label: '총 글자 수', value: totalChars.toLocaleString('ko-KR'), unit: '자' },
+              { label: '챕터 수', value: chapterCount.toLocaleString('ko-KR'), unit: '화' },
+            ].map(({ label, value, unit }) => (
+              <div key={label} style={{ flex: 1, padding: '16px 20px', background: 'var(--sw-bg-subtle)', borderRadius: 12 }}>
+                <div style={{ fontSize: 12, color: 'var(--sw-text-assistive)', fontWeight: 600, marginBottom: 6 }}>{label}</div>
+                <div style={{ fontSize: 24, fontWeight: 700, letterSpacing: '-0.02em', fontVariantNumeric: 'tabular-nums', color: 'var(--sw-text-primary)' }}>
+                  {value}<span style={{ fontSize: 14, fontWeight: 600, color: 'var(--sw-text-assistive)', marginLeft: 4 }}>{unit}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+          {stats && stats.chapters.length > 0 && (
+            <Row label="챕터별 글자 수">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                {stats.chapters.map((ch, i) => {
+                  const pct = totalChars > 0 ? Math.round((ch.char_count / totalChars) * 100) : 0;
+                  return (
+                    <div key={ch.id} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <span style={{ fontSize: 12, color: 'var(--sw-text-assistive)', minWidth: 24, fontVariantNumeric: 'tabular-nums' }}>{i + 1}</span>
+                      <span style={{ flex: 1, fontSize: 13, fontWeight: 500, color: 'var(--sw-text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{ch.title}</span>
+                      <div style={{ width: 80, height: 4, background: 'var(--sw-bg-muted)', borderRadius: 999, flexShrink: 0 }}>
+                        <div style={{ width: `${pct}%`, height: '100%', background: 'var(--sw-primary)', borderRadius: 999 }} />
+                      </div>
+                      <span style={{ fontSize: 12, color: 'var(--sw-text-assistive)', minWidth: 52, textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{ch.char_count.toLocaleString('ko-KR')}자</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </Row>
+          )}
+        </>
+      )}
+    </section>
+  );
+}
+
 function SectionAI() {
   const [model, setModel] = useState('claude');
   const [styleGuide, setStyleGuide] = useState('1인칭 현재형. 감각적 묘사(시각·후각·청각)를 풍부하게 사용. 대화체는 자연스러운 한국어 구어를 따른다.');
@@ -607,6 +663,7 @@ export function NovelSettingsPage({ novel }: NovelSettingsPageProps) {
                 <SectionBasic title={draft.title} genre={draft.genre} description={draft.description} onChange={handleChange} />
                 <SectionCover />
                 <SectionPublish chapterCount={novel.chapter_count} />
+                <SectionStats novelId={novel.id} />
                 <SectionAI />
                 <SectionWriting />
                 <SectionBackup novelId={novel.id} novelTitle={draft.title} />

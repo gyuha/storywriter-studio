@@ -177,6 +177,34 @@ async def delete_novel(
         raise _app_error_to_http(e) from e
 
 
+@router.get("/{novel_id}/stats")
+async def get_novel_stats(
+    novel_id: uuid.UUID,
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_async_session),
+) -> dict:
+    chapter_svc = ChapterService(NovelRepository(session), ChapterRepository(session))
+    try:
+        chapters = await chapter_svc.list_chapters(novel_id, current_user.id)
+    except AppError as e:
+        raise _app_error_to_http(e) from e
+
+    chapter_stats = [
+        {
+            "id": str(ch.id),
+            "title": ch.title,
+            "char_count": len(_extract_text(ch.content)) if ch.content else 0,
+            "updated_at": ch.updated_at.isoformat() if ch.updated_at else None,
+        }
+        for ch in chapters
+    ]
+    return {
+        "total_chars": sum(c["char_count"] for c in chapter_stats),
+        "chapter_count": len(chapters),
+        "chapters": chapter_stats,
+    }
+
+
 @router.get("/{novel_id}/export")
 async def export_novel(
     novel_id: uuid.UUID,

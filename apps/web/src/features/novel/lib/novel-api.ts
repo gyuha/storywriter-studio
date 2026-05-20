@@ -48,3 +48,25 @@ export async function apiDeleteNovel(id: string): Promise<void> {
   const { error } = await deleteNovelApiV1NovelsNovelIdDelete({ path: { novel_id: id } });
   if (error) throwOnError(error);
 }
+
+export interface ChapterStat {
+  id: string;
+  title: string;
+  char_count: number;
+  updated_at: string | null;
+}
+
+export interface NovelStats {
+  total_chars: number;
+  chapter_count: number;
+  chapters: ChapterStat[];
+}
+
+export async function apiGetNovelStats(novelId: string): Promise<NovelStats> {
+  const token = localStorage.getItem('access_token');
+  const res = await fetch(`/api/v1/novels/${novelId}/stats`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) throw new Error('통계를 불러올 수 없습니다');
+  return res.json() as Promise<NovelStats>;
+}

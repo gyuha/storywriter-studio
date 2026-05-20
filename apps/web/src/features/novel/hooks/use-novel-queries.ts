@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { apiGetNovel, apiGetNovels } from '../lib/novel-api';
+import { apiGetNovel, apiGetNovels, apiGetNovelStats } from '../lib/novel-api';
 
 export function useNovels(offset = 0, limit = 20) {
   return useQuery({
@@ -12,6 +12,14 @@ export function useNovel(id: string) {
   return useQuery({
     queryKey: ['novels', id],
     queryFn: () => apiGetNovel(id),
+    enabled: !!id,
+  });
+}
+
+export function useNovelStats(id: string) {
+  return useQuery({
+    queryKey: ['novels', id, 'stats'],
+    queryFn: () => apiGetNovelStats(id),
     enabled: !!id,
   });
 }
