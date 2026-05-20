@@ -402,8 +402,31 @@ function SectionWriting() {
   );
 }
 
-function SectionBackup() {
+function SectionBackup({ novelId, novelTitle }: { novelId: string; novelTitle: string }) {
   const [backupFreq, setBackupFreq] = useState('daily');
+  const [exporting, setExporting] = useState<string | null>(null);
+
+  const handleExport = async (scope: 'full' | 'zip') => {
+    const token = localStorage.getItem('access_token');
+    if (!token) return;
+    setExporting(scope);
+    try {
+      const res = await fetch(`/api/v1/novels/${novelId}/export?scope=${scope}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) return;
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = scope === 'zip' ? `${novelTitle}_chapters.zip` : `${novelTitle}.txt`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } finally {
+      setExporting(null);
+    }
+  };
+
   return (
     <section id="backup" style={{ background: 'var(--sw-bg-surface)', borderRadius: 16, border: '1px solid var(--sw-line-default)', padding: '28px 32px', scrollMarginTop: 24 }}>
       <SectionHead icon={Save} title="백업 & 내보내기" desc="작품 데이터를 안전하게 보관하고 다른 형식으로 내보냅니다." />
@@ -416,11 +439,12 @@ function SectionBackup() {
       </Row>
       <Row label="내보내기" hint="모든 회차와 설정을 하나의 파일로">
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          {['TXT (회차별)', 'TXT (전체)', 'EPUB', 'JSON (백업용)'].map((label) => (
-            <button type="button" key={label} style={{ display: 'flex', alignItems: 'center', gap: 6, height: 34, padding: '0 14px', borderRadius: 8, border: '1px solid var(--sw-line-default)', background: 'var(--sw-bg-surface)', fontSize: 13, fontWeight: 600, cursor: 'pointer', color: 'var(--sw-text-primary)' }}>
-              <FileText size={13} /> {label}
-            </button>
-          ))}
+          <button type="button" onClick={() => handleExport('zip')} disabled={exporting !== null} style={{ display: 'flex', alignItems: 'center', gap: 6, height: 34, padding: '0 14px', borderRadius: 8, border: '1px solid var(--sw-line-default)', background: 'var(--sw-bg-surface)', fontSize: 13, fontWeight: 600, cursor: 'pointer', color: 'var(--sw-text-primary)', opacity: exporting !== null ? 0.5 : 1 }}>
+            {exporting === 'zip' ? <Loader2 size={13} className="animate-spin" /> : <FileText size={13} />} TXT (회차별)
+          </button>
+          <button type="button" onClick={() => handleExport('full')} disabled={exporting !== null} style={{ display: 'flex', alignItems: 'center', gap: 6, height: 34, padding: '0 14px', borderRadius: 8, border: '1px solid var(--sw-line-default)', background: 'var(--sw-bg-surface)', fontSize: 13, fontWeight: 600, cursor: 'pointer', color: 'var(--sw-text-primary)', opacity: exporting !== null ? 0.5 : 1 }}>
+            {exporting === 'full' ? <Loader2 size={13} className="animate-spin" /> : <FileText size={13} />} TXT (전체)
+          </button>
         </div>
       </Row>
       <Row label="마지막 백업">
@@ -585,7 +609,7 @@ export function NovelSettingsPage({ novel }: NovelSettingsPageProps) {
                 <SectionPublish chapterCount={novel.chapter_count} />
                 <SectionAI />
                 <SectionWriting />
-                <SectionBackup />
+                <SectionBackup novelId={novel.id} novelTitle={draft.title} />
                 <SectionDanger novelId={novel.id} />
               </div>
             </div>
