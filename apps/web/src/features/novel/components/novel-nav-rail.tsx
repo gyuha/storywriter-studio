@@ -25,6 +25,7 @@ export function NavRail({ novelId, activeId, chapterId }: NavRailProps) {
   const goToCharacters = () =>
     navigate({ to: '/novels/$novelId/characters', params: { novelId } });
   const goToLorebook = () => navigate({ to: '/novels/$novelId/lorebook', params: { novelId } });
+  const goToWorld = () => navigate({ to: '/novels/$novelId/world', params: { novelId } });
   const goToEditor = () => {
     if (chapterId) {
       navigate({
@@ -45,7 +46,7 @@ export function NavRail({ novelId, activeId, chapterId }: NavRailProps) {
     },
     { id: 'characters', label: '캐릭터', icon: Users, onClick: goToCharacters },
     { id: 'lorebook', label: '로어북', icon: Globe, onClick: goToLorebook },
-    { id: 'storybible', label: '비주얼바이블', icon: Palette, disabled: true },
+    { id: 'storybible', label: '비주얼바이블', icon: Palette, onClick: goToWorld },
   ];
 
   return (
