@@ -120,6 +120,112 @@ export type ChapterUpdate = {
 };
 
 /**
+ * CharacterCreate
+ */
+export type CharacterCreate = {
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Appearance
+     */
+    appearance?: string | null;
+    /**
+     * Personality
+     */
+    personality?: string | null;
+    /**
+     * Background
+     */
+    background?: string | null;
+    /**
+     * Role
+     */
+    role?: string | null;
+    /**
+     * Summary
+     */
+    summary?: string | null;
+};
+
+/**
+ * CharacterResponse
+ */
+export type CharacterResponse = {
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Novel Id
+     */
+    novel_id: string;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Appearance
+     */
+    appearance: string | null;
+    /**
+     * Personality
+     */
+    personality: string | null;
+    /**
+     * Background
+     */
+    background: string | null;
+    /**
+     * Role
+     */
+    role: string | null;
+    /**
+     * Summary
+     */
+    summary: string | null;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Updated At
+     */
+    updated_at: string;
+};
+
+/**
+ * CharacterUpdate
+ */
+export type CharacterUpdate = {
+    /**
+     * Name
+     */
+    name?: string | null;
+    /**
+     * Appearance
+     */
+    appearance?: string | null;
+    /**
+     * Personality
+     */
+    personality?: string | null;
+    /**
+     * Background
+     */
+    background?: string | null;
+    /**
+     * Role
+     */
+    role?: string | null;
+    /**
+     * Summary
+     */
+    summary?: string | null;
+};
+
+/**
  * ChatMessage
  *
  * A single message in a conversation turn.
@@ -249,6 +355,88 @@ export type HttpValidationError = {
      * Detail
      */
     detail?: Array<ValidationError>;
+};
+
+/**
+ * LocationCreate
+ */
+export type LocationCreate = {
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Description
+     */
+    description?: string | null;
+    /**
+     * Location Relation
+     */
+    location_relation?: string | null;
+    /**
+     * Summary
+     */
+    summary?: string | null;
+};
+
+/**
+ * LocationResponse
+ */
+export type LocationResponse = {
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Novel Id
+     */
+    novel_id: string;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Description
+     */
+    description: string | null;
+    /**
+     * Location Relation
+     */
+    location_relation: string | null;
+    /**
+     * Summary
+     */
+    summary: string | null;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Updated At
+     */
+    updated_at: string;
+};
+
+/**
+ * LocationUpdate
+ */
+export type LocationUpdate = {
+    /**
+     * Name
+     */
+    name?: string | null;
+    /**
+     * Description
+     */
+    description?: string | null;
+    /**
+     * Location Relation
+     */
+    location_relation?: string | null;
+    /**
+     * Summary
+     */
+    summary?: string | null;
 };
 
 /**
@@ -694,6 +882,90 @@ export type VerifyEmailResponse = {
      */
     message?: string;
     user: UserResponse;
+};
+
+/**
+ * WorldSettingCreate
+ */
+export type WorldSettingCreate = {
+    /**
+     * Name
+     */
+    name: string;
+    type: WorldSettingType;
+    /**
+     * Content
+     */
+    content?: {
+        [key: string]: unknown;
+    };
+    /**
+     * Summary
+     */
+    summary?: string | null;
+};
+
+/**
+ * WorldSettingResponse
+ */
+export type WorldSettingResponse = {
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Novel Id
+     */
+    novel_id: string;
+    /**
+     * Name
+     */
+    name: string;
+    type: WorldSettingType;
+    /**
+     * Content
+     */
+    content: {
+        [key: string]: unknown;
+    };
+    /**
+     * Summary
+     */
+    summary: string | null;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Updated At
+     */
+    updated_at: string;
+};
+
+/**
+ * WorldSettingType
+ */
+export type WorldSettingType = 'magic_system' | 'nation_faction' | 'history' | 'rule';
+
+/**
+ * WorldSettingUpdate
+ */
+export type WorldSettingUpdate = {
+    /**
+     * Name
+     */
+    name?: string | null;
+    type?: WorldSettingType | null;
+    /**
+     * Content
+     */
+    content?: {
+        [key: string]: unknown;
+    } | null;
+    /**
+     * Summary
+     */
+    summary?: string | null;
 };
 
 export type HealthHealthGetData = {
@@ -1445,6 +1717,517 @@ export type ReorderChapterApiV1NovelsNovelIdChaptersChapterIdReorderPatchRespons
 };
 
 export type ReorderChapterApiV1NovelsNovelIdChaptersChapterIdReorderPatchResponse = ReorderChapterApiV1NovelsNovelIdChaptersChapterIdReorderPatchResponses[keyof ReorderChapterApiV1NovelsNovelIdChaptersChapterIdReorderPatchResponses];
+
+export type ListCharactersApiV1NovelsNovelIdCharactersGetData = {
+    body?: never;
+    path: {
+        /**
+         * Novel Id
+         */
+        novel_id: string;
+    };
+    query?: {
+        /**
+         * Name
+         */
+        name?: string | null;
+    };
+    url: '/api/v1/novels/{novel_id}/characters';
+};
+
+export type ListCharactersApiV1NovelsNovelIdCharactersGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ListCharactersApiV1NovelsNovelIdCharactersGetError = ListCharactersApiV1NovelsNovelIdCharactersGetErrors[keyof ListCharactersApiV1NovelsNovelIdCharactersGetErrors];
+
+export type ListCharactersApiV1NovelsNovelIdCharactersGetResponses = {
+    /**
+     * Response List Characters Api V1 Novels  Novel Id  Characters Get
+     *
+     * Successful Response
+     */
+    200: Array<CharacterResponse>;
+};
+
+export type ListCharactersApiV1NovelsNovelIdCharactersGetResponse = ListCharactersApiV1NovelsNovelIdCharactersGetResponses[keyof ListCharactersApiV1NovelsNovelIdCharactersGetResponses];
+
+export type CreateCharacterApiV1NovelsNovelIdCharactersPostData = {
+    body: CharacterCreate;
+    path: {
+        /**
+         * Novel Id
+         */
+        novel_id: string;
+    };
+    query?: never;
+    url: '/api/v1/novels/{novel_id}/characters';
+};
+
+export type CreateCharacterApiV1NovelsNovelIdCharactersPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CreateCharacterApiV1NovelsNovelIdCharactersPostError = CreateCharacterApiV1NovelsNovelIdCharactersPostErrors[keyof CreateCharacterApiV1NovelsNovelIdCharactersPostErrors];
+
+export type CreateCharacterApiV1NovelsNovelIdCharactersPostResponses = {
+    /**
+     * Successful Response
+     */
+    201: CharacterResponse;
+};
+
+export type CreateCharacterApiV1NovelsNovelIdCharactersPostResponse = CreateCharacterApiV1NovelsNovelIdCharactersPostResponses[keyof CreateCharacterApiV1NovelsNovelIdCharactersPostResponses];
+
+export type DeleteCharacterApiV1NovelsNovelIdCharactersCharacterIdDeleteData = {
+    body?: never;
+    path: {
+        /**
+         * Novel Id
+         */
+        novel_id: string;
+        /**
+         * Character Id
+         */
+        character_id: string;
+    };
+    query?: never;
+    url: '/api/v1/novels/{novel_id}/characters/{character_id}';
+};
+
+export type DeleteCharacterApiV1NovelsNovelIdCharactersCharacterIdDeleteErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DeleteCharacterApiV1NovelsNovelIdCharactersCharacterIdDeleteError = DeleteCharacterApiV1NovelsNovelIdCharactersCharacterIdDeleteErrors[keyof DeleteCharacterApiV1NovelsNovelIdCharactersCharacterIdDeleteErrors];
+
+export type DeleteCharacterApiV1NovelsNovelIdCharactersCharacterIdDeleteResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type DeleteCharacterApiV1NovelsNovelIdCharactersCharacterIdDeleteResponse = DeleteCharacterApiV1NovelsNovelIdCharactersCharacterIdDeleteResponses[keyof DeleteCharacterApiV1NovelsNovelIdCharactersCharacterIdDeleteResponses];
+
+export type GetCharacterApiV1NovelsNovelIdCharactersCharacterIdGetData = {
+    body?: never;
+    path: {
+        /**
+         * Novel Id
+         */
+        novel_id: string;
+        /**
+         * Character Id
+         */
+        character_id: string;
+    };
+    query?: never;
+    url: '/api/v1/novels/{novel_id}/characters/{character_id}';
+};
+
+export type GetCharacterApiV1NovelsNovelIdCharactersCharacterIdGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetCharacterApiV1NovelsNovelIdCharactersCharacterIdGetError = GetCharacterApiV1NovelsNovelIdCharactersCharacterIdGetErrors[keyof GetCharacterApiV1NovelsNovelIdCharactersCharacterIdGetErrors];
+
+export type GetCharacterApiV1NovelsNovelIdCharactersCharacterIdGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: CharacterResponse;
+};
+
+export type GetCharacterApiV1NovelsNovelIdCharactersCharacterIdGetResponse = GetCharacterApiV1NovelsNovelIdCharactersCharacterIdGetResponses[keyof GetCharacterApiV1NovelsNovelIdCharactersCharacterIdGetResponses];
+
+export type UpdateCharacterApiV1NovelsNovelIdCharactersCharacterIdPutData = {
+    body: CharacterUpdate;
+    path: {
+        /**
+         * Novel Id
+         */
+        novel_id: string;
+        /**
+         * Character Id
+         */
+        character_id: string;
+    };
+    query?: never;
+    url: '/api/v1/novels/{novel_id}/characters/{character_id}';
+};
+
+export type UpdateCharacterApiV1NovelsNovelIdCharactersCharacterIdPutErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UpdateCharacterApiV1NovelsNovelIdCharactersCharacterIdPutError = UpdateCharacterApiV1NovelsNovelIdCharactersCharacterIdPutErrors[keyof UpdateCharacterApiV1NovelsNovelIdCharactersCharacterIdPutErrors];
+
+export type UpdateCharacterApiV1NovelsNovelIdCharactersCharacterIdPutResponses = {
+    /**
+     * Successful Response
+     */
+    200: CharacterResponse;
+};
+
+export type UpdateCharacterApiV1NovelsNovelIdCharactersCharacterIdPutResponse = UpdateCharacterApiV1NovelsNovelIdCharactersCharacterIdPutResponses[keyof UpdateCharacterApiV1NovelsNovelIdCharactersCharacterIdPutResponses];
+
+export type ListLocationsApiV1NovelsNovelIdLocationsGetData = {
+    body?: never;
+    path: {
+        /**
+         * Novel Id
+         */
+        novel_id: string;
+    };
+    query?: {
+        /**
+         * Name
+         */
+        name?: string | null;
+    };
+    url: '/api/v1/novels/{novel_id}/locations';
+};
+
+export type ListLocationsApiV1NovelsNovelIdLocationsGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ListLocationsApiV1NovelsNovelIdLocationsGetError = ListLocationsApiV1NovelsNovelIdLocationsGetErrors[keyof ListLocationsApiV1NovelsNovelIdLocationsGetErrors];
+
+export type ListLocationsApiV1NovelsNovelIdLocationsGetResponses = {
+    /**
+     * Response List Locations Api V1 Novels  Novel Id  Locations Get
+     *
+     * Successful Response
+     */
+    200: Array<LocationResponse>;
+};
+
+export type ListLocationsApiV1NovelsNovelIdLocationsGetResponse = ListLocationsApiV1NovelsNovelIdLocationsGetResponses[keyof ListLocationsApiV1NovelsNovelIdLocationsGetResponses];
+
+export type CreateLocationApiV1NovelsNovelIdLocationsPostData = {
+    body: LocationCreate;
+    path: {
+        /**
+         * Novel Id
+         */
+        novel_id: string;
+    };
+    query?: never;
+    url: '/api/v1/novels/{novel_id}/locations';
+};
+
+export type CreateLocationApiV1NovelsNovelIdLocationsPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CreateLocationApiV1NovelsNovelIdLocationsPostError = CreateLocationApiV1NovelsNovelIdLocationsPostErrors[keyof CreateLocationApiV1NovelsNovelIdLocationsPostErrors];
+
+export type CreateLocationApiV1NovelsNovelIdLocationsPostResponses = {
+    /**
+     * Successful Response
+     */
+    201: LocationResponse;
+};
+
+export type CreateLocationApiV1NovelsNovelIdLocationsPostResponse = CreateLocationApiV1NovelsNovelIdLocationsPostResponses[keyof CreateLocationApiV1NovelsNovelIdLocationsPostResponses];
+
+export type DeleteLocationApiV1NovelsNovelIdLocationsLocationIdDeleteData = {
+    body?: never;
+    path: {
+        /**
+         * Novel Id
+         */
+        novel_id: string;
+        /**
+         * Location Id
+         */
+        location_id: string;
+    };
+    query?: never;
+    url: '/api/v1/novels/{novel_id}/locations/{location_id}';
+};
+
+export type DeleteLocationApiV1NovelsNovelIdLocationsLocationIdDeleteErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DeleteLocationApiV1NovelsNovelIdLocationsLocationIdDeleteError = DeleteLocationApiV1NovelsNovelIdLocationsLocationIdDeleteErrors[keyof DeleteLocationApiV1NovelsNovelIdLocationsLocationIdDeleteErrors];
+
+export type DeleteLocationApiV1NovelsNovelIdLocationsLocationIdDeleteResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type DeleteLocationApiV1NovelsNovelIdLocationsLocationIdDeleteResponse = DeleteLocationApiV1NovelsNovelIdLocationsLocationIdDeleteResponses[keyof DeleteLocationApiV1NovelsNovelIdLocationsLocationIdDeleteResponses];
+
+export type GetLocationApiV1NovelsNovelIdLocationsLocationIdGetData = {
+    body?: never;
+    path: {
+        /**
+         * Novel Id
+         */
+        novel_id: string;
+        /**
+         * Location Id
+         */
+        location_id: string;
+    };
+    query?: never;
+    url: '/api/v1/novels/{novel_id}/locations/{location_id}';
+};
+
+export type GetLocationApiV1NovelsNovelIdLocationsLocationIdGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetLocationApiV1NovelsNovelIdLocationsLocationIdGetError = GetLocationApiV1NovelsNovelIdLocationsLocationIdGetErrors[keyof GetLocationApiV1NovelsNovelIdLocationsLocationIdGetErrors];
+
+export type GetLocationApiV1NovelsNovelIdLocationsLocationIdGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: LocationResponse;
+};
+
+export type GetLocationApiV1NovelsNovelIdLocationsLocationIdGetResponse = GetLocationApiV1NovelsNovelIdLocationsLocationIdGetResponses[keyof GetLocationApiV1NovelsNovelIdLocationsLocationIdGetResponses];
+
+export type UpdateLocationApiV1NovelsNovelIdLocationsLocationIdPutData = {
+    body: LocationUpdate;
+    path: {
+        /**
+         * Novel Id
+         */
+        novel_id: string;
+        /**
+         * Location Id
+         */
+        location_id: string;
+    };
+    query?: never;
+    url: '/api/v1/novels/{novel_id}/locations/{location_id}';
+};
+
+export type UpdateLocationApiV1NovelsNovelIdLocationsLocationIdPutErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UpdateLocationApiV1NovelsNovelIdLocationsLocationIdPutError = UpdateLocationApiV1NovelsNovelIdLocationsLocationIdPutErrors[keyof UpdateLocationApiV1NovelsNovelIdLocationsLocationIdPutErrors];
+
+export type UpdateLocationApiV1NovelsNovelIdLocationsLocationIdPutResponses = {
+    /**
+     * Successful Response
+     */
+    200: LocationResponse;
+};
+
+export type UpdateLocationApiV1NovelsNovelIdLocationsLocationIdPutResponse = UpdateLocationApiV1NovelsNovelIdLocationsLocationIdPutResponses[keyof UpdateLocationApiV1NovelsNovelIdLocationsLocationIdPutResponses];
+
+export type ListWorldSettingsApiV1NovelsNovelIdWorldSettingsGetData = {
+    body?: never;
+    path: {
+        /**
+         * Novel Id
+         */
+        novel_id: string;
+    };
+    query?: {
+        /**
+         * Name
+         */
+        name?: string | null;
+        /**
+         * Type
+         */
+        type?: WorldSettingType | null;
+    };
+    url: '/api/v1/novels/{novel_id}/world-settings';
+};
+
+export type ListWorldSettingsApiV1NovelsNovelIdWorldSettingsGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ListWorldSettingsApiV1NovelsNovelIdWorldSettingsGetError = ListWorldSettingsApiV1NovelsNovelIdWorldSettingsGetErrors[keyof ListWorldSettingsApiV1NovelsNovelIdWorldSettingsGetErrors];
+
+export type ListWorldSettingsApiV1NovelsNovelIdWorldSettingsGetResponses = {
+    /**
+     * Response List World Settings Api V1 Novels  Novel Id  World Settings Get
+     *
+     * Successful Response
+     */
+    200: Array<WorldSettingResponse>;
+};
+
+export type ListWorldSettingsApiV1NovelsNovelIdWorldSettingsGetResponse = ListWorldSettingsApiV1NovelsNovelIdWorldSettingsGetResponses[keyof ListWorldSettingsApiV1NovelsNovelIdWorldSettingsGetResponses];
+
+export type CreateWorldSettingApiV1NovelsNovelIdWorldSettingsPostData = {
+    body: WorldSettingCreate;
+    path: {
+        /**
+         * Novel Id
+         */
+        novel_id: string;
+    };
+    query?: never;
+    url: '/api/v1/novels/{novel_id}/world-settings';
+};
+
+export type CreateWorldSettingApiV1NovelsNovelIdWorldSettingsPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CreateWorldSettingApiV1NovelsNovelIdWorldSettingsPostError = CreateWorldSettingApiV1NovelsNovelIdWorldSettingsPostErrors[keyof CreateWorldSettingApiV1NovelsNovelIdWorldSettingsPostErrors];
+
+export type CreateWorldSettingApiV1NovelsNovelIdWorldSettingsPostResponses = {
+    /**
+     * Successful Response
+     */
+    201: WorldSettingResponse;
+};
+
+export type CreateWorldSettingApiV1NovelsNovelIdWorldSettingsPostResponse = CreateWorldSettingApiV1NovelsNovelIdWorldSettingsPostResponses[keyof CreateWorldSettingApiV1NovelsNovelIdWorldSettingsPostResponses];
+
+export type DeleteWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdDeleteData = {
+    body?: never;
+    path: {
+        /**
+         * Novel Id
+         */
+        novel_id: string;
+        /**
+         * World Setting Id
+         */
+        world_setting_id: string;
+    };
+    query?: never;
+    url: '/api/v1/novels/{novel_id}/world-settings/{world_setting_id}';
+};
+
+export type DeleteWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdDeleteErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DeleteWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdDeleteError = DeleteWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdDeleteErrors[keyof DeleteWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdDeleteErrors];
+
+export type DeleteWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdDeleteResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type DeleteWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdDeleteResponse = DeleteWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdDeleteResponses[keyof DeleteWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdDeleteResponses];
+
+export type GetWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdGetData = {
+    body?: never;
+    path: {
+        /**
+         * Novel Id
+         */
+        novel_id: string;
+        /**
+         * World Setting Id
+         */
+        world_setting_id: string;
+    };
+    query?: never;
+    url: '/api/v1/novels/{novel_id}/world-settings/{world_setting_id}';
+};
+
+export type GetWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdGetError = GetWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdGetErrors[keyof GetWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdGetErrors];
+
+export type GetWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: WorldSettingResponse;
+};
+
+export type GetWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdGetResponse = GetWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdGetResponses[keyof GetWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdGetResponses];
+
+export type UpdateWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdPutData = {
+    body: WorldSettingUpdate;
+    path: {
+        /**
+         * Novel Id
+         */
+        novel_id: string;
+        /**
+         * World Setting Id
+         */
+        world_setting_id: string;
+    };
+    query?: never;
+    url: '/api/v1/novels/{novel_id}/world-settings/{world_setting_id}';
+};
+
+export type UpdateWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdPutErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UpdateWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdPutError = UpdateWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdPutErrors[keyof UpdateWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdPutErrors];
+
+export type UpdateWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdPutResponses = {
+    /**
+     * Successful Response
+     */
+    200: WorldSettingResponse;
+};
+
+export type UpdateWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdPutResponse = UpdateWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdPutResponses[keyof UpdateWorldSettingApiV1NovelsNovelIdWorldSettingsWorldSettingIdPutResponses];
 
 export type ChatCompleteApiV1ChatCompletePostData = {
     body: ChatRequest;
