@@ -16,17 +16,19 @@ import {
   Sparkles,
   Sun,
 } from 'lucide-react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import type { Editor } from '@tiptap/react';
+import { useCallback, useRef, useState } from 'react';
 import {
   useCreateChapterMutation,
   useReorderChapterMutation,
   useUpdateChapterMutation,
 } from '../hooks/use-chapter-mutations';
 import { useChapters } from '../hooks/use-chapter-queries';
+import { useAiDraft } from '../hooks/use-ai-draft';
 import type { Chapter, ChapterStatus, Novel } from '../types/novel';
 import { ChapterEditor } from './chapter-editor';
 import { ChapterSortableList } from './chapter-sortable-list';
-import { EditorRightPanel } from './editor-right-panel';
+import { type ContextItem, EditorRightPanel } from './editor-right-panel';
 import { NavRail } from './novel-nav-rail';
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
@@ -68,18 +70,6 @@ const DARK_TOKENS = {
   '--sw-status-negative': '#FF3B3B',
   '--sw-status-cautionary': '#FF9200',
 } as React.CSSProperties;
-
-// ─── AI sample draft ──────────────────────────────────────────────────────────
-
-const AI_DRAFT = `달빛이 흙길을 은빛으로 적셨다. 유하린은 자신도 모르게 무릎을 굽혔다. 발 아래 풀잎은 살아있는 듯 가볍게 떨렸고, 손끝에 닿는 흙은 따스했다. 마치 누군가 갓 데워둔 것처럼.
-
-저 멀리, 안개 너머로 푸르스름한 빛이 떠올랐다. 도시도 아니고 마을도 아닌, 그저 빛 자체로 존재하는 무언가. 그것은 숨을 쉬듯 천천히 부풀어 올랐다 가라앉기를 반복하고 있었다.
-
-"이건…"
-
-그녀의 목소리는 자신의 귀에도 낯설게 들렸다. 마치 다른 사람이 그녀의 입을 빌려 말하는 듯한.
-
-문이 등 뒤에서 천천히 닫혔다. 돌아갈 길은 사라졌다. 그러나 이상하게도 유하린은 두렵지 않았다.`;
 
 // ─── Chapter panel ────────────────────────────────────────────────────────────
 
@@ -921,36 +911,36 @@ export function EditorLayout({ novel, chapter, novelId, chapterId }: EditorLayou
     'background'
   );
   const [model, setModel] = useState('claude');
-  const [aiGenerating, setAiGenerating] = useState(false);
   const [charCount, setCharCount] = useState(0);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const [selectedContext, setSelectedContext] = useState<Record<string, ContextItem['type']>>({});
 
-  const aiTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const editorRef = useRef<Editor | null>(null);
 
-  const startAI = useCallback(() => {
-    if (aiGenerating) return;
-    setAiGenerating(true);
-    let i = 0;
-    aiTimerRef.current = setInterval(() => {
-      i += Math.ceil(Math.random() * 4);
-      if (i >= AI_DRAFT.length) {
-        if (aiTimerRef.current) clearInterval(aiTimerRef.current);
-        setTimeout(() => setAiGenerating(false), 400);
+  const { generate, cancel: cancelAI, isGenerating: aiGenerating } = useAiDraft({
+    novelId,
+    chapterId,
+    editorRef,
+  });
+
+  const handleContextToggle = useCallback((id: string, type: ContextItem['type']) => {
+    setSelectedContext((prev) => {
+      if (prev[id]) {
+        const { [id]: _, ...rest } = prev;
+        return rest;
       }
-    }, 30);
-  }, [aiGenerating]);
-
-  const cancelAI = useCallback(() => {
-    if (aiTimerRef.current) clearInterval(aiTimerRef.current);
-    setAiGenerating(false);
+      return { ...prev, [id]: type };
+    });
   }, []);
 
-  useEffect(
-    () => () => {
-      if (aiTimerRef.current) clearInterval(aiTimerRef.current);
-    },
-    []
+  const contextItemsBool: Record<string, boolean> = Object.fromEntries(
+    Object.keys(selectedContext).map((id) => [id, true])
   );
+
+  const startAI = useCallback(() => {
+    const selected: ContextItem[] = Object.entries(selectedContext).map(([id, type]) => ({ id, type }));
+    void generate(selected);
+  }, [selectedContext, generate]);
 
   const tokens = theme === 'dark' ? DARK_TOKENS : LIGHT_TOKENS;
 
@@ -1033,6 +1023,8 @@ export function EditorLayout({ novel, chapter, novelId, chapterId }: EditorLayou
                     initialContent={chapter.content}
                     onCharCountChange={setCharCount}
                     onSaveStatusChange={setSaveStatus}
+                    readOnly={aiGenerating}
+                    editorRef={editorRef}
                   />
                 </div>
               </div>
@@ -1049,7 +1041,15 @@ export function EditorLayout({ novel, chapter, novelId, chapterId }: EditorLayou
         </main>
 
         {/* Right panel */}
-        {!focusMode && <EditorRightPanel activeTab={rightTab} onTabChange={setRightTab} />}
+        {!focusMode && (
+          <EditorRightPanel
+            novelId={novelId}
+            activeTab={rightTab}
+            onTabChange={setRightTab}
+            contextItems={contextItemsBool}
+            onContextToggle={handleContextToggle}
+          />
+        )}
       </div>
 
       {/* Focus mode exit button */}

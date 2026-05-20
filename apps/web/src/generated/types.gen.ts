@@ -298,6 +298,20 @@ export type ChatResponse = {
 };
 
 /**
+ * ContextItem
+ */
+export type ContextItem = {
+    /**
+     * Type
+     */
+    type: 'character' | 'location' | 'world_setting';
+    /**
+     * Id
+     */
+    id: string;
+};
+
+/**
  * ConversationCreate
  *
  * Request body for POST /chat/conversations.
@@ -345,6 +359,20 @@ export type ConversationResponse = {
      * Updated At
      */
     updated_at: string;
+};
+
+/**
+ * DraftRequest
+ */
+export type DraftRequest = {
+    /**
+     * Context Items
+     */
+    context_items?: Array<ContextItem>;
+    /**
+     * Include Prev Summary
+     */
+    include_prev_summary?: boolean;
 };
 
 /**
@@ -1540,6 +1568,38 @@ export type DeactivateUserApiV1AdminUsersUserIdDeactivatePostResponses = {
 };
 
 export type DeactivateUserApiV1AdminUsersUserIdDeactivatePostResponse = DeactivateUserApiV1AdminUsersUserIdDeactivatePostResponses[keyof DeactivateUserApiV1AdminUsersUserIdDeactivatePostResponses];
+
+export type GenerateDraftApiV1NovelsNovelIdChaptersChapterIdDraftPostData = {
+    body: DraftRequest;
+    path: {
+        /**
+         * Novel Id
+         */
+        novel_id: string;
+        /**
+         * Chapter Id
+         */
+        chapter_id: string;
+    };
+    query?: never;
+    url: '/api/v1/novels/{novel_id}/chapters/{chapter_id}/draft';
+};
+
+export type GenerateDraftApiV1NovelsNovelIdChaptersChapterIdDraftPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GenerateDraftApiV1NovelsNovelIdChaptersChapterIdDraftPostError = GenerateDraftApiV1NovelsNovelIdChaptersChapterIdDraftPostErrors[keyof GenerateDraftApiV1NovelsNovelIdChaptersChapterIdDraftPostErrors];
+
+export type GenerateDraftApiV1NovelsNovelIdChaptersChapterIdDraftPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
 
 export type ListNovelsApiV1NovelsGetData = {
     body?: never;

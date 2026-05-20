@@ -42,7 +42,10 @@ from domains.novel.schemas.novel_schemas import (
 from domains.novel.service.chapter_service import ChapterService
 from domains.novel.service.novel_service import NovelService
 
+from domains.novel.router.draft_router import router as draft_router
+
 router = APIRouter(prefix="/novels", tags=["novels"])
+router.include_router(draft_router)
 
 
 # ---------------------------------------------------------------------------
