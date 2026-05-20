@@ -25,6 +25,14 @@ class RelationshipRepository:
         )
         return result.scalar_one_or_none()
 
+    async def list_by_novel(self, novel_id: uuid.UUID) -> list[CharacterRelationship]:
+        result = await self.session.execute(
+            select(CharacterRelationship)
+            .where(CharacterRelationship.novel_id == novel_id)
+            .order_by(CharacterRelationship.created_at.asc())
+        )
+        return list(result.scalars().all())
+
     async def list_by_character(
         self, novel_id: uuid.UUID, character_id: uuid.UUID
     ) -> list[CharacterRelationship]:

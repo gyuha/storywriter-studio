@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Loader2, Pencil, Plus, Trash2, Users } from 'lucide-react';
+import { GitFork, Loader2, List, Pencil, Plus, Trash2, Users } from 'lucide-react';
 import { useDeleteCharacterMutation } from '../hooks/use-world-mutations';
 import { useCharacters } from '../hooks/use-world-queries';
+import { useCharacterGraph } from '../hooks/use-character-graph';
 import type { Character } from '../types/world';
 import { CharacterFormModal } from './character-form-modal';
+import { CharacterGraph } from './character-graph';
 import { RelationshipList } from './relationship-list';
 
 interface CharacterListProps {
@@ -16,6 +18,8 @@ export function CharacterList({ novelId }: CharacterListProps) {
   const [modalOpen, setModalOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<Character | undefined>(undefined);
   const [selectedCharacterId, setSelectedCharacterId] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<'list' | 'graph'>('list');
+  const { data: graphData } = useCharacterGraph(novelId);
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedName(searchInput), 300);
@@ -44,12 +48,33 @@ export function CharacterList({ novelId }: CharacterListProps) {
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <input
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-          placeholder="이름으로 검색..."
-          className="px-3 py-2 border rounded-md text-sm w-64"
-        />
+        <div className="flex items-center gap-2">
+          <input
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            placeholder="이름으로 검색..."
+            className="px-3 py-2 border rounded-md text-sm w-64"
+            disabled={viewMode === 'graph'}
+          />
+          <div className="flex border rounded-md overflow-hidden">
+            <button
+              type="button"
+              onClick={() => setViewMode('list')}
+              className={`flex items-center gap-1 px-3 py-2 text-sm ${viewMode === 'list' ? 'bg-primary text-primary-foreground' : 'hover:bg-muted'}`}
+              title="목록 보기"
+            >
+              <List className="w-4 h-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode('graph')}
+              className={`flex items-center gap-1 px-3 py-2 text-sm ${viewMode === 'graph' ? 'bg-primary text-primary-foreground' : 'hover:bg-muted'}`}
+              title="관계 그래프"
+            >
+              <GitFork className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
         <button
           onClick={handleAdd}
           className="flex items-center gap-1 px-3 py-2 text-sm bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
@@ -59,17 +84,24 @@ export function CharacterList({ novelId }: CharacterListProps) {
         </button>
       </div>
 
-      {isLoading && (
+      {viewMode === 'graph' && (
+        <CharacterGraph
+          nodes={graphData?.nodes ?? []}
+          edges={graphData?.edges ?? []}
+        />
+      )}
+
+      {viewMode === 'list' && isLoading && (
         <div className="flex justify-center py-8">
           <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
         </div>
       )}
 
-      {isError && (
+      {viewMode === 'list' && isError && (
         <p className="text-sm text-destructive py-4">캐릭터 목록을 불러올 수 없습니다.</p>
       )}
 
-      {!isLoading && !isError && characters && (
+      {viewMode === 'list' && !isLoading && !isError && characters && (
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b text-left text-muted-foreground">
