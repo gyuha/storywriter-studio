@@ -9,3 +9,4 @@
 | 2026-05-21T13:40:56Z | 03-world-database | superpowers | review | - |
 | 2026-05-21T13:52:54Z | 03-world-database | superpowers | sg-retro | - |
 | 2026-05-21T14:07:20Z | 03-world-database | sg-retro | ship | - |
+| 2026-05-21T14:34:47Z | 04-ai | ship | gsd-plan | - |
