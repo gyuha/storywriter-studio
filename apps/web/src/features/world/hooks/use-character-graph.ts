@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import type { RelationshipType } from '../types/world';
 
 export interface GraphNode {
   id: string;
@@ -10,7 +11,7 @@ export interface GraphEdge {
   id: string;
   source: string;
   target: string;
-  type: 'lover' | 'enemy' | 'ally' | 'family';
+  type: RelationshipType;
   description: string | null;
 }
 
