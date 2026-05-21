@@ -258,6 +258,15 @@ def _register_routers(application: FastAPI) -> None:
     except ImportError:
         logger.debug("world_router_not_found")
 
+    # Draft domain (AI 초안 생성)
+    try:
+        from domains.novel.router.draft_router import router as draft_router
+
+        application.include_router(draft_router, prefix="/api/v1/novels")
+        logger.debug("router_registered", prefix="/api/v1/novels/{novel_id}/chapters")
+    except ImportError:
+        logger.debug("draft_router_not_found")
+
     # Chat domain
     try:
         from domains.chat.router import router as chat_router
