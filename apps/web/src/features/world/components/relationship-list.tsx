@@ -1,16 +1,10 @@
-import { useState } from 'react';
 import { Loader2, Pencil, Plus, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 import { useDeleteRelationshipMutation } from '../hooks/use-world-mutations';
 import { useCharacters, useRelationships } from '../hooks/use-world-queries';
-import type { Relationship, RelationshipType } from '../types/world';
+import { RELATIONSHIP_TYPE_LABELS } from '../types/world';
+import type { Relationship } from '../types/world';
 import { RelationshipFormModal } from './relationship-form-modal';
-
-const RELATIONSHIP_TYPE_LABELS: Record<RelationshipType, string> = {
-  lover: '연인',
-  enemy: '적대',
-  ally: '동료',
-  family: '가족',
-};
 
 interface RelationshipListProps {
   novelId: string;
@@ -63,9 +57,7 @@ export function RelationshipList({ novelId, characterId }: RelationshipListProps
         </div>
       )}
 
-      {isError && (
-        <p className="text-xs text-destructive py-2">관계 목록을 불러올 수 없습니다.</p>
-      )}
+      {isError && <p className="text-xs text-destructive py-2">관계 목록을 불러올 수 없습니다.</p>}
 
       {!isLoading && !isError && relationships && (
         <table className="w-full text-sm">

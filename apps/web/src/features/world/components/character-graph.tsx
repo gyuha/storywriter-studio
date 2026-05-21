@@ -1,18 +1,12 @@
 import { useState } from 'react';
 import type { GraphEdge, GraphNode } from '../hooks/use-character-graph';
+import { RELATIONSHIP_TYPE_LABELS } from '../types/world';
 
 const EDGE_COLORS: Record<string, string> = {
   lover: '#e05a9a',
   enemy: '#e05555',
   ally: '#4a90d9',
   family: '#5db85d',
-};
-
-const EDGE_LABELS: Record<string, string> = {
-  lover: '연인',
-  enemy: '적대',
-  ally: '동료',
-  family: '가족',
 };
 
 interface CharacterGraphProps {
@@ -25,7 +19,14 @@ export function CharacterGraph({ nodes, edges }: CharacterGraphProps) {
 
   if (nodes.length === 0) {
     return (
-      <div style={{ padding: '48px 0', textAlign: 'center', color: 'var(--sw-text-assistive)', fontSize: 14 }}>
+      <div
+        style={{
+          padding: '48px 0',
+          textAlign: 'center',
+          color: 'var(--sw-text-assistive)',
+          fontSize: 14,
+        }}
+      >
         캐릭터를 추가하면 관계 그래프가 표시됩니다.
       </div>
     );
@@ -48,12 +49,44 @@ export function CharacterGraph({ nodes, edges }: CharacterGraphProps) {
   const nodeRadius = 26;
 
   return (
-    <div style={{ border: '1px solid var(--sw-line-default)', borderRadius: 12, overflow: 'hidden', background: 'var(--sw-bg-subtle)' }}>
+    <div
+      style={{
+        border: '1px solid var(--sw-line-default)',
+        borderRadius: 12,
+        overflow: 'hidden',
+        background: 'var(--sw-bg-subtle)',
+      }}
+    >
       {/* Legend */}
-      <div style={{ display: 'flex', gap: 16, padding: '10px 16px', borderBottom: '1px solid var(--sw-line-default)', background: 'var(--sw-bg-surface)' }}>
-        {Object.entries(EDGE_LABELS).map(([type, label]) => (
-          <span key={type} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, color: 'var(--sw-text-secondary)' }}>
-            <span style={{ width: 20, height: 2, background: EDGE_COLORS[type], display: 'inline-block', borderRadius: 1 }} />
+      <div
+        style={{
+          display: 'flex',
+          gap: 16,
+          padding: '10px 16px',
+          borderBottom: '1px solid var(--sw-line-default)',
+          background: 'var(--sw-bg-surface)',
+        }}
+      >
+        {Object.entries(RELATIONSHIP_TYPE_LABELS).map(([type, label]) => (
+          <span
+            key={type}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 5,
+              fontSize: 12,
+              color: 'var(--sw-text-secondary)',
+            }}
+          >
+            <span
+              style={{
+                width: 20,
+                height: 2,
+                background: EDGE_COLORS[type],
+                display: 'inline-block',
+                borderRadius: 1,
+              }}
+            />
             {label}
           </span>
         ))}
@@ -70,8 +103,8 @@ export function CharacterGraph({ nodes, edges }: CharacterGraphProps) {
           const dx = tgt.x - src.x;
           const dy = tgt.y - src.y;
           const len = Math.sqrt(dx * dx + dy * dy) || 1;
-          const ox = -dy / len * 24;
-          const oy = dx / len * 24;
+          const ox = (-dy / len) * 24;
+          const oy = (dx / len) * 24;
           const cpx = mx + ox;
           const cpy = my + oy;
           const color = EDGE_COLORS[edge.type] ?? '#888';
@@ -95,7 +128,7 @@ export function CharacterGraph({ nodes, edges }: CharacterGraphProps) {
                 fill={color}
                 fontWeight={600}
               >
-                {EDGE_LABELS[edge.type]}
+                {RELATIONSHIP_TYPE_LABELS[edge.type]}
               </text>
             </g>
           );
@@ -105,8 +138,14 @@ export function CharacterGraph({ nodes, edges }: CharacterGraphProps) {
         {nodes.map((node) => {
           const pos = nodePos[node.id];
           if (!pos) return null;
-          const isHighlighted = hoveredNode === null || hoveredNode === node.id ||
-            edges.some((e) => (e.source === hoveredNode && e.target === node.id) || (e.target === hoveredNode && e.source === node.id));
+          const isHighlighted =
+            hoveredNode === null ||
+            hoveredNode === node.id ||
+            edges.some(
+              (e) =>
+                (e.source === hoveredNode && e.target === node.id) ||
+                (e.target === hoveredNode && e.source === node.id)
+            );
           return (
             <g
               key={node.id}
@@ -146,26 +185,44 @@ export function CharacterGraph({ nodes, edges }: CharacterGraphProps) {
           );
         })}
       </svg>
-      {hoveredNode && (() => {
-        const node = nodes.find((n) => n.id === hoveredNode);
-        const nodeEdges = edges.filter((e) => e.source === hoveredNode || e.target === hoveredNode);
-        if (!node) return null;
-        return (
-          <div style={{ padding: '10px 16px', borderTop: '1px solid var(--sw-line-default)', background: 'var(--sw-bg-surface)', fontSize: 13 }}>
-            <span style={{ fontWeight: 700, color: 'var(--sw-text-primary)' }}>{node.name}</span>
-            {node.role && <span style={{ color: 'var(--sw-text-assistive)', marginLeft: 8 }}>{node.role}</span>}
-            {nodeEdges.length > 0 && (
-              <span style={{ color: 'var(--sw-text-assistive)', marginLeft: 12 }}>
-                관계: {nodeEdges.map((e) => {
-                  const otherId = e.source === hoveredNode ? e.target : e.source;
-                  const other = nodes.find((n) => n.id === otherId);
-                  return other ? `${other.name}(${EDGE_LABELS[e.type]})` : '';
-                }).filter(Boolean).join(' · ')}
-              </span>
-            )}
-          </div>
-        );
-      })()}
+      {hoveredNode &&
+        (() => {
+          const node = nodes.find((n) => n.id === hoveredNode);
+          const nodeEdges = edges.filter(
+            (e) => e.source === hoveredNode || e.target === hoveredNode
+          );
+          if (!node) return null;
+          return (
+            <div
+              style={{
+                padding: '10px 16px',
+                borderTop: '1px solid var(--sw-line-default)',
+                background: 'var(--sw-bg-surface)',
+                fontSize: 13,
+              }}
+            >
+              <span style={{ fontWeight: 700, color: 'var(--sw-text-primary)' }}>{node.name}</span>
+              {node.role && (
+                <span style={{ color: 'var(--sw-text-assistive)', marginLeft: 8 }}>
+                  {node.role}
+                </span>
+              )}
+              {nodeEdges.length > 0 && (
+                <span style={{ color: 'var(--sw-text-assistive)', marginLeft: 12 }}>
+                  관계:{' '}
+                  {nodeEdges
+                    .map((e) => {
+                      const otherId = e.source === hoveredNode ? e.target : e.source;
+                      const other = nodes.find((n) => n.id === otherId);
+                      return other ? `${other.name}(${RELATIONSHIP_TYPE_LABELS[e.type]})` : '';
+                    })
+                    .filter(Boolean)
+                    .join(' · ')}
+                </span>
+              )}
+            </div>
+          );
+        })()}
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { useNavigate } from '@tanstack/react-router';
+import { toast } from 'sonner';
 import {
   Archive,
   BarChart2,
@@ -107,7 +108,7 @@ function WsSelect({ value, onChange, options }: {
 
 function WsTags({ value, onChange }: { value: string[]; onChange: (v: string[]) => void }) {
   const [input, setInput] = useState('');
-  const remove = (i: number) => onChange(value.filter((_, idx) => idx !== i));
+  const remove = (t: string) => onChange(value.filter((v) => v !== t));
   const add = () => {
     const v = input.trim();
     if (v && !value.includes(v)) onChange([...value, v]);
@@ -115,10 +116,10 @@ function WsTags({ value, onChange }: { value: string[]; onChange: (v: string[]) 
   };
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, padding: 8, background: 'var(--sw-bg-subtle)', borderRadius: 10, border: '1px solid transparent', minHeight: 40, alignItems: 'center' }}>
-      {value.map((t, i) => (
-        <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, height: 26, padding: '0 4px 0 10px', borderRadius: 8, background: 'var(--sw-bg-surface)', border: '1px solid var(--sw-line-default)', fontSize: 12, fontWeight: 700, color: 'var(--sw-text-secondary)' }}>
+      {value.map((t) => (
+        <span key={t} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, height: 26, padding: '0 4px 0 10px', borderRadius: 8, background: 'var(--sw-bg-surface)', border: '1px solid var(--sw-line-default)', fontSize: 12, fontWeight: 700, color: 'var(--sw-text-secondary)' }}>
           {t}
-          <button type="button" onClick={() => remove(i)} style={{ display: 'grid', placeItems: 'center', width: 18, height: 18, borderRadius: 6, color: 'var(--sw-text-assistive)' }}>×</button>
+          <button type="button" onClick={() => remove(t)} style={{ display: 'grid', placeItems: 'center', width: 18, height: 18, borderRadius: 6, color: 'var(--sw-text-assistive)' }}>×</button>
         </span>
       ))}
       <input
@@ -126,7 +127,7 @@ function WsTags({ value, onChange }: { value: string[]; onChange: (v: string[]) 
         onChange={(e) => setInput(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); add(); }
-          if (e.key === 'Backspace' && !input && value.length) remove(value.length - 1);
+          if (e.key === 'Backspace' && !input && value.length) remove(value[value.length - 1]);
         }}
         placeholder={value.length ? '태그 추가…' : '쉼표 또는 엔터로 추가'}
         style={{ flex: 1, minWidth: 100, height: 26, background: 'none', border: 0, outline: 'none', fontSize: 13 }}
@@ -470,7 +471,7 @@ function SectionBackup({ novelId, novelTitle }: { novelId: string; novelTitle: s
       const res = await fetch(`/api/v1/novels/${novelId}/export?scope=${scope}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (!res.ok) return;
+      if (!res.ok) { toast.error('내보내기에 실패했습니다'); return; }
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -504,7 +505,7 @@ function SectionBackup({ novelId, novelTitle }: { novelId: string; novelTitle: s
         </div>
       </Row>
       <Row label="마지막 백업">
-        <span style={{ fontSize: 13, color: 'var(--sw-text-secondary)', fontVariantNumeric: 'tabular-nums' }}>2026-05-17 오전 03:00 — 자동 (12.4 MB)</span>
+        <span style={{ fontSize: 13, color: 'var(--sw-text-secondary)', fontVariantNumeric: 'tabular-nums' }}>--</span>
       </Row>
     </section>
   );
@@ -588,7 +589,12 @@ export function NovelSettingsPage({ novel }: NovelSettingsPageProps) {
     setActiveId(id);
     const el = document.getElementById(id);
     if (el && contentRef.current) {
-      contentRef.current.scrollTo({ top: el.offsetTop - 24, behavior: 'smooth' });
+      const scrollerRect = contentRef.current.getBoundingClientRect();
+      const elRect = el.getBoundingClientRect();
+      contentRef.current.scrollTo({
+        top: contentRef.current.scrollTop + elRect.top - scrollerRect.top - 24,
+        behavior: 'smooth',
+      });
     }
   };
 
@@ -596,10 +602,14 @@ export function NovelSettingsPage({ novel }: NovelSettingsPageProps) {
     const scroller = contentRef.current;
     if (!scroller) return;
     const onScroll = () => {
+      const scrollerRect = scroller.getBoundingClientRect();
       let curr = ALL_SECTIONS[0].id;
       for (const s of ALL_SECTIONS) {
         const el = document.getElementById(s.id);
-        if (el && el.offsetTop - 100 <= scroller.scrollTop) curr = s.id;
+        if (el) {
+          const elRect = el.getBoundingClientRect();
+          if (elRect.top - scrollerRect.top - 100 <= 0) curr = s.id;
+        }
       }
       setActiveId(curr);
     };

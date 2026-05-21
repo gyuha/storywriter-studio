@@ -84,6 +84,13 @@ export interface TimelineUpdateInput {
 
 export type RelationshipType = 'lover' | 'enemy' | 'ally' | 'family';
 
+export const RELATIONSHIP_TYPE_LABELS: Record<RelationshipType, string> = {
+  lover: '연인',
+  enemy: '적대',
+  ally: '동료',
+  family: '가족',
+};
+
 export interface Relationship {
   id: string;
   novel_id: string;

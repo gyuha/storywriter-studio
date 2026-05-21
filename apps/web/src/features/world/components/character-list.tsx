@@ -19,7 +19,7 @@ export function CharacterList({ novelId }: CharacterListProps) {
   const [editTarget, setEditTarget] = useState<Character | undefined>(undefined);
   const [selectedCharacterId, setSelectedCharacterId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'list' | 'graph'>('list');
-  const { data: graphData } = useCharacterGraph(novelId);
+  const { data: graphData } = useCharacterGraph(novelId, viewMode === 'graph');
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedName(searchInput), 300);

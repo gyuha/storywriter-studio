@@ -19,6 +19,7 @@ export interface CharacterGraph {
   edges: GraphEdge[];
 }
 
+// TODO: migrate to generated SDK once /novels/:id/graph endpoint is added to openapi.json
 async function fetchCharacterGraph(novelId: string): Promise<CharacterGraph> {
   const token = localStorage.getItem('access_token');
   const res = await fetch(`/api/v1/novels/${novelId}/graph`, {
@@ -28,10 +29,10 @@ async function fetchCharacterGraph(novelId: string): Promise<CharacterGraph> {
   return res.json() as Promise<CharacterGraph>;
 }
 
-export function useCharacterGraph(novelId: string) {
+export function useCharacterGraph(novelId: string, enabled = true) {
   return useQuery({
     queryKey: ['novels', novelId, 'graph'],
     queryFn: () => fetchCharacterGraph(novelId),
-    enabled: !!novelId,
+    enabled: !!novelId && enabled,
   });
 }

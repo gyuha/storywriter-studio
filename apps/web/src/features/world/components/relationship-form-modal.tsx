@@ -7,14 +7,8 @@ import {
   useCreateRelationshipMutation,
   useUpdateRelationshipMutation,
 } from '../hooks/use-world-mutations';
+import { RELATIONSHIP_TYPE_LABELS } from '../types/world';
 import type { Relationship, RelationshipType } from '../types/world';
-
-const RELATIONSHIP_TYPE_LABELS: Record<RelationshipType, string> = {
-  lover: '연인',
-  enemy: '적대',
-  ally: '동료',
-  family: '가족',
-};
 
 const schema = z.object({
   character_id_b: z.string().min(1, '상대 캐릭터를 선택해주세요'),

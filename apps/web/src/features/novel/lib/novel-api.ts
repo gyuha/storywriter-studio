@@ -62,6 +62,7 @@ export interface NovelStats {
   chapters: ChapterStat[];
 }
 
+// TODO: migrate to generated SDK once /novels/:id/stats endpoint is added to openapi.json
 export async function apiGetNovelStats(novelId: string): Promise<NovelStats> {
   const token = localStorage.getItem('access_token');
   const res = await fetch(`/api/v1/novels/${novelId}/stats`, {
