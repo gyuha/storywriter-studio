@@ -14,25 +14,32 @@ interface UseAiDraftOptions {
 
 export function useAiDraft({ novelId, chapterId, editorRef }: UseAiDraftOptions) {
   const [isGenerating, setIsGenerating] = useState(false);
+  const isGeneratingRef = useRef(false);
   const abortRef = useRef<AbortController | null>(null);
 
   const generate = useCallback(
     async (contextItems: ContextItem[], includePrevSummary = true) => {
-      if (isGenerating) return;
+      if (isGeneratingRef.current) return;
+      isGeneratingRef.current = true;
 
       const token = localStorage.getItem('access_token');
-      if (!token) return;
+      if (!token) {
+        isGeneratingRef.current = false;
+        return;
+      }
 
       const editor = editorRef.current;
-      if (!editor) return;
+      if (!editor) {
+        isGeneratingRef.current = false;
+        return;
+      }
 
       setIsGenerating(true);
       const abort = new AbortController();
       abortRef.current = abort;
 
-      // Move cursor to end and insert a newline separator before draft
-      editor.commands.focus('end');
-      editor.commands.insertContent('\n\n');
+      // Move cursor to end and insert a paragraph separator before draft
+      editor.chain().focus('end').createParagraphNear().run();
 
       try {
         const response = await fetch(
@@ -81,7 +88,7 @@ export function useAiDraft({ novelId, chapterId, editorRef }: UseAiDraftOptions)
             const data = line.slice(6);
             if (data === '[DONE]') break outer;
             if (data && !isErrorEvent) {
-              editor.commands.insertContent(data);
+              editor.commands.insertContent({ type: 'text', text: data });
             }
           }
         }
@@ -90,11 +97,12 @@ export function useAiDraft({ novelId, chapterId, editorRef }: UseAiDraftOptions)
           console.error('AI draft error:', err);
         }
       } finally {
+        isGeneratingRef.current = false;
         setIsGenerating(false);
         abortRef.current = null;
       }
     },
-    [isGenerating, novelId, chapterId, editorRef]
+    [novelId, chapterId, editorRef]
   );
 
   const cancel = useCallback(() => {

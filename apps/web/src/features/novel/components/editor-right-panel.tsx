@@ -6,9 +6,7 @@ import {
   Sparkles,
   Users,
 } from 'lucide-react';
-import { useCharacters } from '@/features/world/hooks/use-world-queries';
-import { useLocations } from '@/features/world/hooks/use-world-queries';
-import { useWorldSettings } from '@/features/world/hooks/use-world-queries';
+import { useCharacters, useLocations, useWorldSettings } from '@/features/world/hooks/use-world-queries';
 
 export type RightTab = 'chat' | 'proofread' | 'character' | 'background';
 
