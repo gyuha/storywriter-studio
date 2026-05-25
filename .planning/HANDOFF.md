@@ -12,3 +12,7 @@
 | 2026-05-21T14:34:47Z | 04-ai | ship | gsd-plan | - |
 | 2026-05-21T14:55:51Z | 04-ai | gsd-plan | superpowers | 0172430 |
 | 2026-05-22T13:52:52Z | 04-ai | superpowers | review | - |
+| 2026-05-24T12:11:42Z | 04-ai | review | sg-retro | - |
+| 2026-05-24T23:39:07Z | 04-ai | review | sg-retro | - |
+| 2026-05-25T12:14:19Z | 04-ai | sg-retro | sg-next | - |
+| 2026-05-25T12:14:30Z | 04-ai | sg-next | ship | - |

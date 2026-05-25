@@ -37,6 +37,8 @@ src/features/<domain>/
   schema/       # Zod 스키마 (폼 검증용)
 ```
 
+현재 피처: `auth`, `novel`, `world`, `admin`
+
 ### API 클라이언트
 
 `src/generated/`는 HeyAPI가 `openapi.json`으로부터 자동 생성. 절대 직접 편집 금지. Backend OpenAPI 스펙이 바뀌면 `pnpm generate:api`로 재생성한다.

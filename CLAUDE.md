@@ -41,10 +41,6 @@ cd apps/web && pnpm lint:fix     # biome check --write
 
 ## Critical Architecture Notes
 
-### Frontend auth is currently mocked
-
-`apps/web/src/features/auth/lib/mock-auth-api.ts` is used instead of real API calls. The actual FastAPI backend is not yet wired to the frontend. This is the primary gap for Phase 1.
-
 ### Adding a new backend domain
 
 Follow `domains/auth/` exactly:
@@ -56,11 +52,11 @@ domains/<name>/
   models/<name>_models.py   # SQLAlchemy ORM models
   schemas/<name>_schemas.py # Pydantic request/response models
 ```
-Register the router in `apps/api/src/main.py`. Domain rules: `auth` and `chat` must not import each other; both may import `shared` and `core`.
+Register the router in `apps/api/src/main.py`. Domain rules: `auth`, `chat`, `novel`, `world` must not import each other; all may import `shared` and `core`.
 
 ### LLM provider isolation
 
-Only `apps/api/src/infra/llm/provider_factory.py` imports `langchain_litellm`. All other code depends on the Protocol/ABC in `apps/api/src/domains/chat/ports.py`. Switching LLM providers requires only changing the `LLM_PROVIDER` env var.
+Only `apps/api/src/infra/llm/provider_factory.py` imports `langchain_litellm`. `langchain_core.messages` is used in `chat/llm_client.py` and `novel/router/draft_router.py` for message construction — this is intentional. All other code depends on the Protocol/ABC in `apps/api/src/domains/chat/ports.py`. Switching LLM providers requires only changing the `LLM_PROVIDER` env var.
 
 ### Error handling pattern
 
@@ -240,7 +236,7 @@ AI 기반 웹소설 집필 에이전트 플랫폼. 작가가 소설 프로젝트
 <!-- GSD:architecture-start source:ARCHITECTURE.md -->
 ## Architecture
 
-**System:** Monorepo — `apps/api/` (FastAPI + DDD) and `apps/web/` (React 19). Currently not connected: frontend uses mock auth.
+**System:** Monorepo — `apps/api/` (FastAPI + DDD) and `apps/web/` (React 19). Frontend uses HeyAPI-generated SDK (`src/generated/`) to call the backend.
 
 **Backend layers (per domain):**
 - Router → validates requests, calls service, serializes responses (`domains/*/router/`)
