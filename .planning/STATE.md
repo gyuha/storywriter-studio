@@ -75,6 +75,19 @@ None yet.
 
 ## Deferred Items
 
+Items acknowledged and deferred at milestone close on 2026-05-26:
+
+| Category | Item | Status |
+|----------|------|--------|
+| quick_task | 260517-ncz-app-web-app-api | missing (completed, dir cleaned) |
+| quick_task | 260517-pse-taskfile-yml | missing (completed, dir cleaned) |
+| quick_task | 260517-q87-apps-api-docker | missing (completed, dir cleaned) |
+| quick_task | 260517-raw-apps-web-heyapi-api | missing (completed, dir cleaned) |
+| quick_task | 260520-0e1 | missing (completed, dir cleaned) |
+| quick_task | 260520-0kt-layout | missing (completed, dir cleaned) |
+
+Known deferred items at close: 6 (see above — all completed tasks with cleaned-up dirs)
+
 | Category | Item | Status | Deferred At |
 |----------|------|--------|-------------|
 | v2 | 맞춤법 검사기 통합 (QUAL-01) | Deferred | 초기화 |
