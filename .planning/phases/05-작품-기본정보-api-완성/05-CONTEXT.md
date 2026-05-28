@@ -53,12 +53,10 @@ Novel 모델에 `tagline`/`tags` 필드를 추가하고, 작품 설정 페이지
 ### SDK 재생성
 - **D-10:** 백엔드 스키마 변경 후 `cd apps/web && pnpm generate:api` 실행. 백엔드 서버가 실행 중이어야 함.
 
-### Plan 구조
-- **D-11:** 단일 plan으로 백엔드(마이그레이션 + 스키마) → SDK 재생성 → 프론트엔드 연결을 순서대로 처리.
-
 ### Claude's Discretion
 - `tags` 최대 개수 제한 (현재 프론트 `v.slice(0, 10)` 유지).
 - `tagline` 최대 80자 제한 (현재 프론트 `maxLength={80}` 유지).
+- **D-11:** 단일 plan으로 백엔드(마이그레이션 + 스키마) → SDK 재생성 → 프론트엔드 연결을 순서대로 처리 (plan 구조 결정, 구현 추적 불필요).
 
 </decisions>
 

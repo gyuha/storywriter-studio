@@ -18,3 +18,4 @@
 | 2026-05-25T12:14:30Z | 04-ai | sg-next | ship | - |
 | 2026-05-26T11:53:16Z | 04-ai | ship | complete | - |
 | 2026-05-28T12:54:09Z | 04-ai | ship | complete | - |
+| 2026-05-28T13:17:33Z | 05-작품-기본정보-api-완성 | complete | gsd-plan | - |
