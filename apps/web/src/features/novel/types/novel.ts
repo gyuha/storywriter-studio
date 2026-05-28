@@ -5,6 +5,8 @@ export interface Novel {
   genre: string | null;
   description: string | null;
   cover_image_url: string | null;
+  tagline: string | null;
+  tags: string[];
   created_at: string;
   updated_at: string;
   chapter_count: number;
@@ -35,6 +37,8 @@ export interface NovelUpdateInput {
   genre?: string;
   description?: string;
   cover_image_url?: string;
+  tagline?: string;
+  tags?: string[];
 }
 
 export interface NovelListResponse {

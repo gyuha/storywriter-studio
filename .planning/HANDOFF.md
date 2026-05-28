@@ -16,3 +16,13 @@
 | 2026-05-24T23:39:07Z | 04-ai | review | sg-retro | - |
 | 2026-05-25T12:14:19Z | 04-ai | sg-retro | sg-next | - |
 | 2026-05-25T12:14:30Z | 04-ai | sg-next | ship | - |
+| 2026-05-26T11:53:16Z | 04-ai | ship | complete | - |
+| 2026-05-28T12:54:09Z | 04-ai | ship | complete | - |
+| 2026-05-28T13:17:33Z | 05-작품-기본정보-api-완성 | complete | gsd-plan | - |
+| 2026-05-28T13:43:31Z | 05-작품-기본정보-api-완성 | gsd-plan | superpowers | 7512a9c |
+| 2026-05-28T14:12:28Z | 05-작품-기본정보-api-완성 | superpowers | sg-next | - | gyuha |
+| 2026-05-28T14:12:57Z | 05-작품-기본정보-api-완성 | sg-next | review | - | gyuha |
+| 2026-05-28T14:29:24Z | 05-작품-기본정보-api-완성 | review | sg-next | - | gyuha |
+| 2026-05-28T14:38:54Z | 05-작품-기본정보-api-완성 | sg-next | sg-retro | - | gyuha |
+| 2026-05-28T14:44:58Z | 05-작품-기본정보-api-완성 | sg-retro | sg-next | - | gyuha |
+| 2026-05-28T14:45:08Z | 05-작품-기본정보-api-완성 | sg-next | ship | - | gyuha |

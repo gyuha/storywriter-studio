@@ -6,7 +6,7 @@ AI 기반 웹소설 집필 에이전트 플랫폼. 작가가 소설 프로젝트
 
 ## Current State
 
-**Shipped:** v1.0 MVP (2026-05-26)
+**Shipped:** v1.1 작품 기본정보 완성 (2026-05-28)
 
 - FastAPI DDD 백엔드: `domains/auth`, `domains/novel`, `domains/world`, `domains/chat` 완성
 - React 19 프론트엔드: `features/auth`, `features/novel`, `features/world`, `features/admin` 완성
@@ -14,7 +14,8 @@ AI 기반 웹소설 집필 에이전트 플랫폼. 작가가 소설 프로젝트
 - TipTap 에디터 + 자동저장 + fractional indexing 챕터 순서
 - 캐릭터/장소/세계관/시간표/관계 데이터베이스 완성
 - AI 초안 생성: 사이드패널 컨텍스트 선택 + SSE 스트리밍 완성
-- Python 10,128 LOC + TypeScript 31,251 LOC
+- Novel tagline/tags 전체 스택 연결 (v1.1)
+- Python ~10K LOC + TypeScript ~31K LOC
 
 ## Core Value
 
@@ -40,6 +41,11 @@ AI 기반 웹소설 집필 에이전트 플랫폼. 작가가 소설 프로젝트
 - ✓ AI 초안 생성 (SSE 스트리밍, read-only 전환, 취소) — v1.0
 - ✓ 집필 통계 (총 글자수, 챕터별 현황) — v1.0
 - ✓ 관리자 사용자 관리 UI — v1.0
+
+### Validated (v1.1 추가)
+
+- ✓ Novel tagline (한 줄 소개) DB 저장 및 작품 설정 페이지 연결 — v1.1
+- ✓ Novel tags (태그 배열) DB 저장 및 작품 설정 페이지 연결 — v1.1
 
 ### Active
 
@@ -92,6 +98,8 @@ AI 기반 웹소설 집필 에이전트 플랫폼. 작가가 소설 프로젝트
 | AI 컨텍스트: Structured Prompt Injection | MVP — 항목 200개 미만에서 최적 | ✓ 사이드패널 토글 → 시스템 프롬프트 자동 주입 |
 | draft_router: langchain_core 직접 사용 | chat 도메인 의존성 없이 novel에서 AI 구현 | ⚠ LLM 격리 원칙 일부 완화 — v2에서 chat 도메인 재사용 검토 |
 | AI-04/05 v2 이연 | MVP 핵심 가치 우선 (컨텍스트 주입 + SSE 스트리밍) | ✓ 핵심 기능 안정 출시 |
+| JSONB server_default=sa.text("'[]'::jsonb") | PostgreSQL JSONB 타입 안전 기본값 | ✓ tags 컬럼 NOT NULL 기본값 패턴 확립 |
+| SectionBasic 상태 리프팅 | draft 단일 저장 버튼으로 6개 필드 처리 | ✓ useState 격리 패턴 제거, 일관성 확보 |
 
 ## Evolution
 
@@ -109,4 +117,4 @@ AI 기반 웹소설 집필 에이전트 플랫폼. 작가가 소설 프로젝트
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-26 after v1.0 milestone*
+*Last updated: 2026-05-28 after v1.1 milestone*

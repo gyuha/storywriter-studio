@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import sqlalchemy as sa
 from alembic import op
+from sqlalchemy.dialects.postgresql import ENUM as PgEnum
 
 revision = "0006_story_beats"
 down_revision = "0005_world_domain"
@@ -18,7 +19,12 @@ depends_on = None
 
 def upgrade() -> None:
     op.execute(
-        "CREATE TYPE story_beat_type_enum AS ENUM ('setup', 'rising', 'climax', 'falling', 'resolution', 'other')"
+        """
+        DO $$ BEGIN
+            CREATE TYPE story_beat_type_enum AS ENUM ('setup', 'rising', 'climax', 'falling', 'resolution', 'other');
+        EXCEPTION WHEN duplicate_object THEN null;
+        END $$;
+        """
     )
     op.create_table(
         "story_beats",
@@ -29,9 +35,10 @@ def upgrade() -> None:
         sa.Column("content", sa.Text(), nullable=True),
         sa.Column(
             "beat_type",
-            sa.Enum(
+            PgEnum(
                 "setup", "rising", "climax", "falling", "resolution", "other",
                 name="story_beat_type_enum",
+                create_type=False,
             ),
             nullable=False,
             server_default="other",

@@ -1,16 +1,15 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: Phase 4 shipped — pushed to origin/main (ada2d82)
-stopped_at: Phase 4 complete
-last_updated: "2026-05-26T00:00:00.000Z"
-last_activity: 2026-05-26 -- Phase 4 에디터 사이드패널 + AI 초안 생성 ship 완료
+milestone: v1.1
+milestone_name: 작품 기본정보 완성
+status: v1.1 complete — all phases shipped
+last_updated: "2026-05-28T15:30:00.000Z"
+last_activity: 2026-05-28 -- v1.1 milestone complete
 progress:
-  total_phases: 4
-  completed_phases: 4
-  total_plans: 11
-  completed_plans: 11
+  total_phases: 1
+  completed_phases: 1
+  total_plans: 1
+  completed_plans: 1
   percent: 100
 ---
 
@@ -18,19 +17,19 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-05-17)
+See: .planning/PROJECT.md (updated 2026-05-28)
 
 **Core value:** 작가가 챕터를 편집할 때 캐릭터·장소·설정이 자동으로 AI 컨텍스트에 포함되어, 세계관과 일관된 글을 AI가 생성한다
-**Current focus:** Phase 4 — 에디터 사이드패널 + AI 초안 생성
+**Current focus:** Phase 5 — 작품 기본정보 API 완성
 
 ## Current Position
 
-Phase: 4 of 4 (에디터 사이드패널 + AI 초안 생성)
-Plan: 0 of 1 in current phase
-Status: Phase 4 planned — executing (36c5d3d)
-Last activity: 2026-05-21 -- Phase 4 AI 초안 생성 계획 수립
+Phase: 5 of 1 (작품 기본정보 API 완성)
+Plan: —
+Status: Ready to execute
+Last activity: 2026-05-28 -- Phase 5 planning complete
 
-Progress: [███████░░░] 75%
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
@@ -99,9 +98,9 @@ Known deferred items at close: 6 (see above — all completed tasks with cleaned
 
 ## Session Continuity
 
-Last session: 2026-05-21T14:34:14.942Z
-Stopped at: Phase 4 context gathered
-Resume file: .planning/phases/04-ai/04-CONTEXT.md
+Last session: 2026-05-28T00:00:00.000Z
+Stopped at: Phase 5 roadmap created
+Resume file: .planning/ROADMAP.md
 
 ### Quick Tasks Completed
 
