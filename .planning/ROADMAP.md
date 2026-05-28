@@ -31,8 +31,9 @@
   1. Novel API 응답에 tagline, tags 필드가 포함된다
   2. 작품 설정 기본 정보 섹션에서 한 줄 소개와 태그를 입력하고 저장하면 페이지 새로고침 후에도 값이 유지된다
   3. 기존 title/genre/description 저장 기능이 정상 작동한다 (회귀 없음)
-**Plans**: TBD
-**UI hint**: yes
+**Plans**: 1 plan
+Plans:
+- [ ] 05-01-PLAN.md — 백엔드 마이그레이션/스키마/라우터 + SDK 재생성 + 프론트엔드 상태 연결
 
 ## Progress
 
