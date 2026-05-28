@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: 작품 기본정보 완성
-status: Phase 5 shipped — PR #1
-last_updated: "2026-05-28T15:00:00.000Z"
-last_activity: 2026-05-28 -- Phase 5 shipped — PR #1
+status: v1.1 complete — all phases shipped
+last_updated: "2026-05-28T15:30:00.000Z"
+last_activity: 2026-05-28 -- v1.1 milestone complete
 progress:
   total_phases: 1
   completed_phases: 1
