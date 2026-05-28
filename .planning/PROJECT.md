@@ -4,6 +4,15 @@
 
 AI 기반 웹소설 집필 에이전트 플랫폼. 작가가 소설 프로젝트를 생성하고, 캐릭터·장소·세계관 설정을 구조화된 데이터베이스로 관리하며, 챕터 에디터에서 AI가 해당 설정들을 컨텍스트로 참조하여 초안을 자동 생성하거나 집필을 보조한다. 일반 웹소설 작가가 주 대상이며, LiteLLM을 통한 다중 AI 모델을 지원한다.
 
+## Current Milestone: v1.1 작품 기본정보 완성
+
+**Goal:** 작품 설정 페이지의 기본 정보 섹션 모든 필드(한 줄 소개, 태그 포함)가 백엔드 DB와 완전히 동기화된다
+
+**Target features:**
+- Novel 모델에 `tagline`, `tags` 필드 추가 (백엔드 + Alembic 마이그레이션)
+- NovelUpdate/NovelResponse 스키마 업데이트 + HeyAPI SDK 재생성
+- 프론트엔드 기본 정보 섹션에서 tagline/tags를 draft 상태로 이동 → 저장 시 API 전송
+
 ## Current State
 
 **Shipped:** v1.0 MVP (2026-05-26)
@@ -109,4 +118,4 @@ AI 기반 웹소설 집필 에이전트 플랫폼. 작가가 소설 프로젝트
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-26 after v1.0 milestone*
+*Last updated: 2026-05-28 — v1.1 milestone started*
