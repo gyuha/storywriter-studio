@@ -12,7 +12,7 @@
 ### Locked Decisions
 
 - **D-01:** `Novel` 모델에 `tagline: Mapped[str | None] = mapped_column(String(255), nullable=True)` 추가.
-- **D-02:** `Novel` 모델에 `tags: Mapped[list[str]] = mapped_column(JSONB, server_default="'[]'", nullable=False)` 추가. `server_default` 로 빈 배열 보장 — NULL 없음.
+- **D-02:** `Novel` 모델에 `tags: Mapped[list[str]] = mapped_column(JSONB, server_default=sa.text("'[]'::jsonb"), nullable=False)` 추가. `server_default` 로 빈 배열 보장 — NULL 없음. `sa.text("'[]'::jsonb")` 형식 필수.
 - **D-03:** Alembic 마이그레이션 파일명: `0007_novel_tagline_tags.py`. `op.add_column` 두 번 호출.
 - **D-04:** `NovelCreate`에 `tagline: str | None = None`, `tags: list[str] = []` 추가.
 - **D-05:** `NovelUpdate`에 `tagline: str | None = None`, `tags: list[str] | None = None` 추가.
@@ -45,7 +45,7 @@
 | ID | Description | Research Support |
 |----|-------------|------------------|
 | NOVEL-01 | `tagline` (String(200), nullable) 필드가 Novel 모델과 DB에 추가된다 | D-01: `String(255)` 사용 — CONTEXT.md 결정 따름. 마이그레이션 `op.add_column` 패턴 확인 |
-| NOVEL-02 | `tags` (JSONB 배열, nullable, default=[]) 필드가 Novel 모델과 DB에 추가된다 | D-02: JSONB + `server_default="'[]'"` 패턴. PostgreSQL JSONB 타입 코드베이스에서 이미 사용 중 (`Chapter.content`) |
+| NOVEL-02 | `tags` (JSONB 배열, nullable, default=[]) 필드가 Novel 모델과 DB에 추가된다 | D-02: JSONB + `server_default=sa.text("'[]'::jsonb")` 패턴. PostgreSQL JSONB 타입 코드베이스에서 이미 사용 중 (`Chapter.content`) |
 | NOVEL-03 | `NovelUpdate` 스키마가 `tagline`, `tags`를 optional 필드로 받는다 | D-05: `tagline: str \| None = None`, `tags: list[str] \| None = None`. `model_dump(exclude_unset=True)` 패턴으로 미전송 시 DB 덮어쓰기 없음 |
 | NOVEL-04 | `NovelResponse` 스키마가 `tagline`, `tags`를 반환한다 | D-06 + 라우터에서 `NovelResponse(...)` 직접 생성 패턴 — 새 필드를 명시적으로 전달해야 함 |
 | NOVEL-05 | 페이지 로드 시 `tagline`과 `tags`가 API 응답 데이터로 초기화된다 | `draft` 초기값이 `novel` prop에서 읽어야 함 — 현재 `tagline`/`tags` 없음. `Novel` 타입 확장 필요 |
@@ -229,7 +229,7 @@ function SectionBasic({ title, genre, description, tagline, tags, onChange }: {
 ### Pitfall 2: `server_default` JSONB 캐스트 누락
 **What goes wrong:** `server_default="'[]'"` (문자열)로 작성하면 PostgreSQL이 JSONB 타입과 text 타입 불일치로 오류를 낸다.
 **Why it happens:** JSONB 컬럼의 `server_default`는 PostgreSQL이 실행할 SQL 표현식이어야 한다.
-**How to avoid:** `sa.text("'[]'::jsonb")` 또는 `sa.text("'[]'")` 사용. Alembic `op.add_column`에서는 `server_default=sa.text("'[]'::jsonb")`.
+**How to avoid:** `sa.text("'[]'::jsonb")` 사용. Alembic `op.add_column`과 ORM 모델 양쪽 모두 `server_default=sa.text("'[]'::jsonb")`.
 **Warning signs:** `alembic upgrade head` 실행 시 `ProgrammingError: column "tags" is of type jsonb but default expression is of type text`.
 
 ### Pitfall 3: frontend `Novel` 타입에 신규 필드 누락
@@ -276,11 +276,12 @@ def upgrade() -> None:
 
 ```python
 # Source: apps/api/src/domains/novel/models/novel_models.py (Chapter.content 패턴) [VERIFIED: codebase]
+import sqlalchemy as sa
 from sqlalchemy.dialects.postgresql import JSONB
 
 # Novel 클래스 내부
 tagline: Mapped[str | None] = mapped_column(String(255), nullable=True)
-tags: Mapped[list[str]] = mapped_column(JSONB, server_default="'[]'", nullable=False)
+tags: Mapped[list[str]] = mapped_column(JSONB, server_default=sa.text("'[]'::jsonb"), nullable=False)
 ```
 
 ### NovelUpdate 스키마 — `exclude_unset=True` 패턴
@@ -354,17 +355,13 @@ const handleSave = () => {
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **`list_novels`의 `chapter_count` 처리**
-   - What we know: `novel_service.py`의 `list_novels`는 `NovelResponse(..., chapter_count=count)` 로 직접 생성한다. `tagline`/`tags` 추가가 필요하다.
-   - What's unclear: 이미 확인 완료 — `novel_service.py:33-45`에서 `NovelResponse(...)`를 구성하므로 여기도 수정 대상.
-   - Recommendation: service의 `list_novels`와 router의 `create_novel`/`get_novel`/`update_novel` 총 4곳 모두 수정.
+1. **`list_novels`의 `chapter_count` 처리** — [RESOLVED]
+   - `novel_service.py:33-45`에서 `NovelResponse(...)`를 직접 구성한다. `list_novels` (service)와 `create_novel`/`get_novel`/`update_novel` (router) 총 4곳 모두 `tagline=novel.tagline, tags=novel.tags` 추가 대상으로 확정.
 
-2. **`tags` Pydantic 타입: `list[str]`의 SQLAlchemy JSONB 역직렬화**
-   - What we know: SQLAlchemy JSONB는 Python `list`로 자동 역직렬화된다. `Mapped[list[str]]` 타입 힌트는 런타임에 강제되지 않는다.
-   - What's unclear: mypy strict 모드에서 `Mapped[list[str]]`이 JSONB와 함께 타입 에러를 낼 수 있는지.
-   - Recommendation: `Mapped[list[str]]` 사용. 타입 에러 발생 시 `Mapped[list]`로 fallback하거나 `type: ignore` 주석 추가.
+2. **`tags` Pydantic 타입: `list[str]`의 SQLAlchemy JSONB 역직렬화** — [RESOLVED]
+   - **결정:** ORM 모델에 `Mapped[list[str]]` 사용. mypy strict 모드에서 JSONB와 함께 타입 에러가 발생할 경우 `Mapped[list]` 로 fallback하고 `type: ignore[assignment]` 주석을 추가한다. 런타임 동작에는 영향 없음 — SQLAlchemy JSONB는 Python list 직접 매핑.
 
 ---
 
@@ -372,9 +369,7 @@ const handleSave = () => {
 
 | # | Claim | Section | Risk if Wrong |
 |---|-------|---------|---------------|
-| A1 | `server_default="'[]'"` 문자열이 SQLAlchemy ORM 모델 정의에서 유효하게 동작함 | Standard Stack | 마이그레이션에서는 `sa.text("'[]'::jsonb")` 필요 — ORM 모델 정의의 `server_default`와 Alembic의 `server_default` 구문이 다를 수 있음 |
-
-> A1 주의: ORM 모델의 `server_default="'[]'"` 는 Python에서 Python 기본값이 아니라 DB 서버에 전달되는 SQL 표현식이다. PostgreSQL에서 `'[]'`는 text 리터럴이므로 JSONB 컬럼에 타입 불일치가 생길 수 있다. 안전한 방법은 ORM 모델에도 `mapped_column(JSONB, server_default=sa.text("'[]'::jsonb"), nullable=False)` 형식 사용. [ASSUMED]
+| A1 | ORM 모델과 Alembic 마이그레이션 양쪽 모두 `server_default=sa.text("'[]'::jsonb")` 사용 | Standard Stack | 문자열 `"'[]'"` 사용 시 PostgreSQL JSONB 타입 불일치 오류 발생 — `sa.text()` 래핑 필수 확인됨 |
 
 ---
 
