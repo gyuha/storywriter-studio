@@ -4,9 +4,11 @@ from __future__ import annotations
 
 import enum
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
-from sqlalchemy import DateTime, Enum as SAEnum, Float, ForeignKey, String, Text, func
+import sqlalchemy as sa
+from sqlalchemy import DateTime, Float, ForeignKey, String, Text, func
+from sqlalchemy import Enum as SAEnum
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -28,13 +30,17 @@ class Novel(Base):
     genre: Mapped[str | None] = mapped_column(String(100), nullable=True)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     cover_image_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    tagline: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    tags: Mapped[list[str]] = mapped_column(
+        JSONB, server_default=sa.text("'[]'::jsonb"), nullable=False
+    )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
-        onupdate=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(UTC),
     )
 
     chapters: Mapped[list[Chapter]] = relationship(
@@ -61,7 +67,7 @@ class Chapter(Base):
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
-        onupdate=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(UTC),
     )
 
     novel: Mapped[Novel] = relationship("Novel", back_populates="chapters")
@@ -98,5 +104,5 @@ class StoryBeat(Base):
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
-        onupdate=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(UTC),
     )

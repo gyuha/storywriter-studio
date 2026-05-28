@@ -197,12 +197,10 @@ function SectionHead({ icon: Icon, title, desc, danger }: {
 
 // ─── Content sections ─────────────────────────────────────────────────────────
 
-function SectionBasic({ title, genre, description, onChange }: {
-  title: string; genre: string; description: string;
-  onChange: (patch: { title?: string; genre?: string; description?: string }) => void;
+function SectionBasic({ title, genre, description, tagline, tags, onChange }: {
+  title: string; genre: string; description: string; tagline: string; tags: string[];
+  onChange: (patch: { title?: string; genre?: string; description?: string; tagline?: string; tags?: string[] }) => void;
 }) {
-  const [tags, setTags] = useState(['판타지', '성장', '모험', '1인칭', '여성주인공']);
-  const [tagline, setTagline] = useState('잠들지 못한 채 펼쳐지는, 천 일의 꿈을 좇는 이야기.');
   return (
     <section id="basic" style={{ background: 'var(--sw-bg-surface)', borderRadius: 16, border: '1px solid var(--sw-line-default)', padding: '28px 32px', scrollMarginTop: 24 }}>
       <SectionHead icon={FileText} title="기본 정보" desc="제목과 장르, 시놉시스 — 작품의 정체성을 결정합니다." />
@@ -210,7 +208,7 @@ function SectionBasic({ title, genre, description, onChange }: {
         <WsInput value={title} onChange={(v) => onChange({ title: v })} maxLength={60} />
       </Row>
       <Row label="한 줄 소개" hint="플랫폼 메인에 노출되는 카피">
-        <WsInput value={tagline} onChange={setTagline} maxLength={80} />
+        <WsInput value={tagline} onChange={(v) => onChange({ tagline: v })} maxLength={80} />
       </Row>
       <Row label="장르" required>
         <WsSelect value={genre ?? 'fantasy'} onChange={(v) => onChange({ genre: v })} options={[
@@ -228,7 +226,7 @@ function SectionBasic({ title, genre, description, onChange }: {
         <WsTextarea value={description ?? ''} onChange={(v) => onChange({ description: v })} maxLength={1000} rows={6} placeholder="작품 소개를 입력하세요" />
       </Row>
       <Row label="태그" hint="검색·추천에 사용됩니다 (최대 10개)">
-        <WsTags value={tags} onChange={(v) => setTags(v.slice(0, 10))} />
+        <WsTags value={tags} onChange={(v) => onChange({ tags: v.slice(0, 10) })} />
       </Row>
     </section>
   );
@@ -566,7 +564,7 @@ export function NovelSettingsPage({ novel }: NovelSettingsPageProps) {
   };
 
   const updateMutation = useUpdateNovelMutation();
-  const [draft, setDraft] = useState({ title: novel.title, genre: novel.genre ?? 'fantasy', description: novel.description ?? '' });
+  const [draft, setDraft] = useState({ title: novel.title, genre: novel.genre ?? 'fantasy', description: novel.description ?? '', tagline: novel.tagline ?? '', tags: novel.tags ?? [] });
   const [saved, setSaved] = useState(true);
 
   const handleChange = (patch: Partial<typeof draft>) => {
@@ -575,7 +573,7 @@ export function NovelSettingsPage({ novel }: NovelSettingsPageProps) {
   };
 
   const handleSave = () => {
-    updateMutation.mutate({ id: novel.id, data: { title: draft.title, genre: draft.genre, description: draft.description } }, {
+    updateMutation.mutate({ id: novel.id, data: { title: draft.title, genre: draft.genre, description: draft.description, tagline: draft.tagline, tags: draft.tags } }, {
       onSuccess: () => setSaved(true),
     });
   };
@@ -670,7 +668,7 @@ export function NovelSettingsPage({ novel }: NovelSettingsPageProps) {
             {/* Scrollable content */}
             <div ref={contentRef} style={{ overflowY: 'auto', padding: '32px 40px 80px' }}>
               <div style={{ maxWidth: 720, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 24 }}>
-                <SectionBasic title={draft.title} genre={draft.genre} description={draft.description} onChange={handleChange} />
+                <SectionBasic title={draft.title} genre={draft.genre} description={draft.description} tagline={draft.tagline} tags={draft.tags} onChange={handleChange} />
                 <SectionCover />
                 <SectionPublish chapterCount={novel.chapter_count} />
                 <SectionStats novelId={novel.id} />

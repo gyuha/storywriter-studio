@@ -37,6 +37,8 @@ class NovelService:
                 genre=novel.genre,
                 description=novel.description,
                 cover_image_url=novel.cover_image_url,
+                tagline=novel.tagline,
+                tags=novel.tags,
                 created_at=novel.created_at,
                 updated_at=novel.updated_at,
                 chapter_count=count,

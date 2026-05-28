@@ -15,6 +15,8 @@ class NovelCreate(BaseModel):
     genre: str | None = None
     description: str | None = None
     cover_image_url: str | None = None
+    tagline: str | None = None
+    tags: list[str] = []
 
 
 class NovelUpdate(BaseModel):
@@ -22,6 +24,8 @@ class NovelUpdate(BaseModel):
     genre: str | None = None
     description: str | None = None
     cover_image_url: str | None = None
+    tagline: str | None = None
+    tags: list[str] | None = None
 
 
 class NovelResponse(BaseModel):
@@ -33,6 +37,8 @@ class NovelResponse(BaseModel):
     genre: str | None
     description: str | None
     cover_image_url: str | None
+    tagline: str | None = None
+    tags: list[str] = []
     created_at: datetime
     updated_at: datetime
     chapter_count: int = 0
