@@ -36,15 +36,15 @@ tasks:
       - |
         echo ""
         echo "🚀  StoryWriter Studio 개발서버 시작 중..."
-        echo "     API  : http://localhost:8000"
-        echo "     Docs : http://localhost:8000/docs"
-        echo "     Web  : http://localhost:5173"
+        echo "     API  : http://localhost:8001"
+        echo "     Docs : http://localhost:8001/docs"
+        echo "     Web  : http://localhost:3001"
         echo "     Mail : http://localhost:8025"
         echo ""
       - task api:migrate
       - |
         trap 'kill $(jobs -p) 2>/dev/null' EXIT
-        (cd apps/api && uv run uvicorn main:app --host 0.0.0.0 --port 8000 --reload --reload-dir src --log-level info) &
+        (cd apps/api && uv run uvicorn main:app --host 0.0.0.0 --port 8001 --reload --reload-dir src --log-level info) &
         pnpm --dir apps/web dev
 
   # ── Infrastructure (Docker) ──────────────────────────────────────────────────

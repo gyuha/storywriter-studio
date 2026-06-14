@@ -20,7 +20,7 @@ vars:
   SRC_DIR: src
   TEST_DIR: tests
   HOST: 0.0.0.0
-  PORT: "8000"
+  PORT: "8001"
   DISPLAY_HOST: '{{if eq .HOST "0.0.0.0"}}localhost{{else}}{{.HOST}}{{end}}'
   POSTGRES_PORT: "5432"
   REDIS_PORT: "6379"
